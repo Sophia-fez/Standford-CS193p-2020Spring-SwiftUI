@@ -1,3 +1,4 @@
+//view
 import SwiftUI
 
 struct ContenView: View{

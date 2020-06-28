@@ -14,4 +14,4 @@ init{}  初始化
 通过viewmodel把model连到view上
 
 主要实现了每张card都有唯一identifier，通过model获取卡片的数量、卡面内容等，还有点击卡片的反馈
-![MyDemo_2效果图](./MyDemo_2效果图.png)
+![](./MyDemo_2效果图.png)
