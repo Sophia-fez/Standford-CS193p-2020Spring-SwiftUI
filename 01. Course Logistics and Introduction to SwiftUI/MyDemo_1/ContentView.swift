@@ -37,6 +37,7 @@ struct ContentView_Previews: PreviewProvider{
 	}
 }
 
+//----------------------------
 
 // //闭包/内联函数的糖
 // import SwiftUI

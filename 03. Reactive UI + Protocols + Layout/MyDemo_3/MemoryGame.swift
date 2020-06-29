@@ -44,6 +44,7 @@ struct MemoryGame<CardContent>{ //宣告CardContent是通用类型
 	}
 }
 
+//----------------------------
 
 // //不需要identifier版的代码
 // import Foundation

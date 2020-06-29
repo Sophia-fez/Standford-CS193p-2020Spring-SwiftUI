@@ -60,7 +60,7 @@ struct ContentView_Previews: PreviewProvider{
 	}
 }
 
-
+//----------------------------
 
 // //代码精简1 闭包
 // struct CardView: View{
