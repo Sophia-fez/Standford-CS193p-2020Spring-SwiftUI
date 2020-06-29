@@ -1,17 +1,16 @@
-# lecture_2总结
+# lecture_3总结
 ## demo
 - **view模块(ContentView.swift)**  
-文件开头 `import SwiftUI`  
-主要实现了UI，最终四张card并列显示在屏幕上
+`@ObervedObject var viewModel: EmojiMemoryGame` 加上@ObervedObject后，每次观察对象更新了就会重新绘制UI
+将fontSize变为自适应大小的  
+对代码进行封装排版，封装后不需要每个都加self.
 
 - **model模块(MemoryGame.swift)**  
-文件开头 `import Foundation`  
-`struct card{}` 定义一张card要有什么属性  
-`init{}`  初始化
+`mutating func choose()` 实现卡片的正反面点击效果，对self修改的func都要加mutating  
+`func index()` 找到所点击的卡片的id
 
 - **viewModel模块(EmojiMemoryGame.swift)**  
-本质上还是UI部分的，所以文件开头 `import SwiftUI`  
-通过viewmodel把model连到view上
+`@Published private var model: MemoryGame<String> = createMemeoryGmae()` 加上@Publishedviewmodel就会即时通知view更新
 
-主要实现了每张card都有唯一identifier，通过model获取卡片的数量、卡面内容等，还有点击卡片的反馈
-![](./MyDemo_2效果图.png)
+主要实现了点击卡片卡片翻面的效果
+![](./MyDemo_3效果图.png)
