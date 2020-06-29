@@ -2,7 +2,7 @@
 ## demo
 - **view模块**  
     - **EmojiMemoryGameView.swift**  
-    rename为EmojiMemoryGameView.swift  
+    ContentView.swift rename为EmojiMemoryGameView.swift  
     将 `struct ContenView: View{}` 里的 `var body: some View{}` 里的 `HStack{}` 改为 `Grid{}`
 
     - **新建Grid.swift**  
