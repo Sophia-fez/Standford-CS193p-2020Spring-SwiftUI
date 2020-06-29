@@ -2,8 +2,7 @@
 import SwiftUI
 
 struct ContenView: View{
-	//加上@ObervedObject后，每次观察对象更新了就会重新绘制UI
-	@ObervedObject var viewModel: EmojiMemoryGame
+	var viewModel: EmojiMemoryGame //就是EmojiMemoryGame这个class
 
 	var body: some View{
 		HStack{
@@ -17,6 +16,7 @@ struct ContenView: View{
 		}
 			.padding()
 			.foregroundColor(Color.orange)
+			.font(Font.largeTitle)
 	}
 }
 
@@ -24,32 +24,16 @@ struct CardView: View{
 	var card: MemoryGame<String>.Card
 
 	var body: some View{
-		GeometryReader{ geometry in
-			self.body(for: geometry.size)
-		}
-	}
-
-	func body(for size: CGSize) -> some View{
-		//现在不是嵌入geometry的所以不需要self.了
-		ZStack{
+		ZStack{		//本质上是一张卡片
 			if card.isFaceUp{
-				RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
-				RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
+				RoundedRectangle(cornerRadius: 10.0).fill(Color.white)
+				RoundedRectangle(cornerRadius: 10.0).stroke(lineWidth: 3)
 				Text(card.content)
 			}else{
-				RoundedRectangle(cornerRadius: cornerRadius).fill() 
+				//会自动匹配上面的foregroundColor(Color.orange)
+				RoundedRectangle(cornerRadius: 10.0).fill() 
 			}
-			//因为没有将整个gemetry传给body只传了size所以这里不需要geometry.
-			.font(Font.system(size: fontSize(for: size))
 		}
-	}
-
-	//MARK: - Drawing Constants
-
-	let cornerRadius: CGFloat = 10.0
-	let edgeLineWidth: CGFloat = 3
-	fuc fontSize(for size: CGSize) -> CGFloat{
-		min(size.width, size.height) * 0.75)
 	}
 }
 
@@ -59,56 +43,3 @@ struct ContentView_Previews: PreviewProvider{
 		ContentView(viewMedel: EmojiMemoryGame())
 	}
 }
-
-//----------------------------
-
-// //代码精简1 闭包
-// struct CardView: View{
-// 	var card: MemoryGame<String>.Card
-
-// 	var body: some View{
-// 		GeometryReader(content: { geometry in  //(content: 可以省略，闭包的糖
-// 			ZStack{
-// 				if self.card.isFaceUp{
-// 					RoundedRectangle(cornerRadius: 10.0).fill(Color.white)
-// 					RoundedRectangle(cornerRadius: 10.0).stroke(lineWidth: 3)
-// 					Text(self.card.content)
-// 				}else{
-// 					RoundedRectangle(cornerRadius: 10.0).fill() 
-// 				}
-// 				//更好的封装，把字体大小设置放到这里来
-// 				.font(Font.system(size: min(geometry.size.width, geometry.size.height) * 0.75))
-// 				//这些蓝色的数字分散在代码里其实很不好，所以可以建一个控制面板
-// 			}
-// 		})
-
-// 	}
-// }
-
-
-// //代码精简2 将数字替换掉，并省略self.
-// struct CardView: View{
-// 	var card: MemoryGame<String>.Card
-
-// 	var body: some View{
-// 		GeometryReader{ geometry in
-// 			ZStack{
-// 				if self.card.isFaceUp{
-// 					RoundedRectangle(cornerRadius: self.cornerRadius).fill(Color.white)
-// 					RoundedRectangle(cornerRadius: self.cornerRadius).stroke(lineWidth: self.edgeLineWidth)
-// 					Text(self.card.content)
-// 				}else{
-// 					RoundedRectangle(cornerRadius: self.cornerRadius).fill() 
-// 				}
-// 				//更好的封装，把字体大小设置放到这里来
-// 				.font(Font.system(size: min(geometry.size.width, geometry.size.height) * self.fontScaleFactor))
-// 			}
-// 		}
-// 	}
-
-// 	//MARK: - Drawing Constants
-
-// 	let cornerRadius: CGFloat = 10.0
-// 	let edgeLineWidth: CGFloat = 3
-// 	let fontScaleFactor: CGFloat = 0.75
-// }
