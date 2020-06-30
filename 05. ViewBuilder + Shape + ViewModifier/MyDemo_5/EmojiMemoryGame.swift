@@ -5,7 +5,7 @@ class EmojiMemoryGame: ObservableObject{
 	//@Published不是keyword，是property wrapper，这样viewmodel就会即时通知view更新
 	@Published private var model: MemoryGame<String> = createMemeoryGmae()
 
-	func createMemeoryGmae() -> MemoryGame<String>{
+	private static func createMemeoryGmae() -> MemoryGame<String>{
 		let emojis = ["A", "B", "C"]
 		MemoryGame<String>(numberOfPairsOfCards: emojis.count} {pairIndex in 
 			return emojis[pairIndex]

@@ -26,54 +26,73 @@ struct CardView: View{
 		}
 	}
 
-	func body(for size: CGSize) -> some View{
-		ZStack{
-			if card.isFaceUp{
-				RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
-				RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
+	@ViewBuilder
+	private func body(for size: CGSize) -> some View{
+		if card.isFaceUp || !card.isMatched{
+			ZStack{
+				Pie(startAngle: Angle.degress(0-90), endAngle: Angle.degress(110-90), clockwise: true)
 				Text(card.content)
-			}else{
-				//swiftUI里的empty view，如果卡片匹配就将它们从屏幕上清楚
-				if !card.isMatched{
-					RoundedRectangle(cornerRadius: cornerRadius).fill() 
-				}
+					.font(Font.system(size: fontSize(for: size))
 			}
-			.font(Font.system(size: fontSize(for: size))
+			//.modifier(Cardify(isFaceUp: card.isFaceUp)
+			.cardify(isFaceUp: card.isFaceUp)
 		}
 	}
 
 	//MARK: - Drawing Constants
 
-	let cornerRadius: CGFloat = 10.0
-	let edgeLineWidth: CGFloat = 3
-	fuc fontSize(for size: CGSize) -> CGFloat{
-		min(size.width, size.height) * 0.75)
+	private func fontSize(for size: CGSize) -> CGFloat{
+		min(size.width, size.height) * 0.7)
 	}
 }
 
-
+//返回resume显示的视图，修改为让第一张card被选中
 struct ContentView_Previews: PreviewProvider{
 	static var previews: some View{
-		ContentView(viewMedel: EmojiMemoryGame())
+		let game = EmojiMemoryGame()
+		game.choose(card: game.cards[0])
+		ContentView(viewMedel: game)
 	}
 }
 
-//----------------------------
+//---------------------------
 
-// //闭包的糖
-// struct ContenView: View{
-// 	//加上@ObervedObject后，每次观察对象更新了就会重新绘制UI
-// 	@ObervedObject var viewModel: EmojiMemoryGame
-
-// 	var body: some View{
-// 		// viewForItem:是最后一个argument所以可以省略
-// 		// items:也可以不需要，需要在Grid.swift里写init
-// 		Grid(items: viewModel.cards, viewForItem: { card in
-// 			CardView(card: card).onTapGesture{
-// 				self.viewModel.choose(card: card)
-// 			}
-// 		})
-// 			.padding()
-// 			.foregroundColor(Color.orange)
+// //修改前的
+// struct ContentView_Previews: PreviewProvider{
+// 	static var previews: some View{
+// 		ContentView(viewMedel: EmojiMemoryGame())
 // 	}
 // }
+
+//---------------------------
+
+// // //写animation前的
+// 	private func body(for size: CGSize) -> some View{
+// 		ZStack{
+// 			if card.isFaceUp{
+// 				RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
+// 				RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
+// 				//Circle().padding(5).opacity(0.4) //边框距离和透明度，写shape之前这么写的
+// 				Pie(startAngle: Angle.degress(0-90), endAngle: Angle.degress(110-90), clockwise: true)
+// 				Text(card.content)
+// 			}else{
+// 				if !card.isMatched{
+// 					RoundedRectangle(cornerRadius: cornerRadius).fill() 
+// 				}
+// 			}
+// 			.font(Font.system(size: fontSize(for: size))
+// 		}
+// 	}
+
+//---------------------------
+
+// //写extension前
+// 	private func body(for size: CGSize) -> some View{
+// 		ZStack{
+// 			Pie(startAngle: Angle.degress(0-90), endAngle: Angle.degress(110-90), clockwise: true)
+// 			Text(card.content)
+// 				.font(Font.system(size: fontSize(for: size))
+// 		}
+// 		.modifier(Cardify(isFaceUp: card.isFaceUp)
+// 		//.cardify(isFaceUp: card.isFaceUp)
+// 	}
