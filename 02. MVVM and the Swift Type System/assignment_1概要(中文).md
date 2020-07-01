@@ -1,7 +1,7 @@
 # assigment_1
 - **Required Tasks**  
 1. 实现 lecture1-2 的 demo，并且做出如下修改  
-2. 洗牌功能，不要让emoji相同的牌相邻出现（可以看看2017秋学期的课程，有实现这个功能）  
+2. <font color = #e32472>**洗牌功能**</font>，不要让emoji相同的牌相邻出现（可以看看2017秋学期的课程，有实现这个功能）  
 3. 课程里的demo卡片是占满了屏幕的显得很瘦长，将<font color = #e32472>**卡片长宽比调为 2:3**</font>  
 4. 游戏开始时有<font color = #e32472>**随机数量的牌**</font>，设置为2-5对  
 5. 仅5对牌的时候，将emoji<font color = #e32472>**字体调小**</font>，更少的牌的情况下字体还用 .largeTitle  
@@ -28,3 +28,7 @@
 
 - **Extra**  
 1. 随机emoji，不要每场游戏都是一样的emoji，每次游戏都从**emoji集**里选  
+
+- **MyTips**
+1. <font color = #e32472>**洗牌功能**</font>和<font color = #e32472>**New Game 按钮功能**</font>在lecture_6讲了  
+2. button 比 a text on tap geature 强大，尽量用button实现功能

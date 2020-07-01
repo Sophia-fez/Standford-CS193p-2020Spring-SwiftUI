@@ -3,7 +3,7 @@ import SwiftUI
 
 class EmojiMemoryGame{
 	//class需要手动init，所以在struct MemoryGame<CardContent>写了init
-	private var model: MemoryGame<String> = createMemeoryGmae()
+	private var model: MemoryGame<String> = EmojiMemoryGame.createMemeoryGmae()
 
 	static func createMemeoryGmae() -> MemoryGame<String>{
 		//let emojis: Array<String> = ["A", "B"]，Array<String>可以省略

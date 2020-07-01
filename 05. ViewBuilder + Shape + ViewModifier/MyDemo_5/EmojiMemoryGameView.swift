@@ -31,6 +31,7 @@ struct CardView: View{
 		if card.isFaceUp || !card.isMatched{
 			ZStack{
 				Pie(startAngle: Angle.degress(0-90), endAngle: Angle.degress(110-90), clockwise: true)
+					.padding(5).opacity(0.4)
 				Text(card.content)
 					.font(Font.system(size: fontSize(for: size))
 			}

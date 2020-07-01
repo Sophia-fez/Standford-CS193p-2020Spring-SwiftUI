@@ -3,7 +3,7 @@ import SwiftUI
 
 class EmojiMemoryGame: ObservableObject{
 	//@Published不是keyword，是property wrapper，这样viewmodel就会即时通知view更新
-	@Published private var model: MemoryGame<String> = createMemeoryGmae()
+	@Published private var model: MemoryGame<String> = EmojiMemoryGame.createMemeoryGmae()
 
 	func createMemeoryGmae() -> MemoryGame<String>{
 		let emojis = ["A", "B", "C"]
