@@ -1,11 +1,22 @@
 //shape
 import SwiftUI
 
-//绘制背景的圆
+//struct Pie: Shape,Animatable，其中shape已经被假定都是animatable，所以Animatable可以省略
 struct Pie: Shape{
 	var startAngle: Angle
 	var endAngle: Angle
 	var clockwise: Bool = false
+
+	//使背景的pie转动
+	var animatableDate: AnimatablePair<Double, Double>{
+		get{
+			AnimatablePair(startAngle.radians, endAngle.radians)
+		}
+		set{
+			startAngle = Angle.radians(newValue.first)
+			endAngle = Angle.radians(newValue.second)
+		}
+	}
 
 	func path(in rect: CGRect) -> Path{
 		let center = CGPoint(x: rect.midX, y: rect.midY)

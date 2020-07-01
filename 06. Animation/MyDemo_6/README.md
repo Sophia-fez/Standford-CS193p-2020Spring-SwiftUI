@@ -1,21 +1,22 @@
-# lecture_5 demo 总结
+# lecture_6 demo 总结
 ## view模块
 - **EmojiMemoryGameView.swift**  
-    - AccessControl，加 `private` or `private(set)`   
-    - 使用 `.modifier` 把卡片背景部分封装到 Cardify.swift 里  
-    - 使用 `.cardifier` ，在 Cardify.swift 里添加 `extension`    
+    - implicit animation, 卡片内容一直旋转的动画
+    - 卡片翻面时渐入渐出动画
+    - 卡片通过缩放动画出现/消失
+    - 卡片背景 <font color = #e32472>**pie随时间减少而减小角度**</font>的动画(这个实现比较复杂)
+    - 卡片匹配时emoji旋转动画
 
 - **Grid.swift**  
-    - AccessControl，加 `private` or `private(set)`
 
 - **GridLayout.swift**
 
-- **新建Pie.swift**
-    - 绘制emoji后面半透明的一定角度的扇形背景
+- **Pie.swift**
+    - 使背景的pie转动
 
-- **新建Cardify.swift**
-    - 将卡片背景部分封装到这里 
-    - 对 `View` 添加 `extension`，这样 EmojiMemoryGameView.swift 里只需要调用 cardify 而不是 modifier
+- **Cardify.swift**
+    - 卡片3D旋转动画
+    - 通过设置透明度来隐藏卡片内容达到原来的卡片正反面效果，可以使得isMatched属性晚点设置，这样就有一个更新，卡片内容旋转的animation就可以执行了（*这里还有点不是很明白*）。如果不这样做的话，就会在点击卡片卡片旋转后isMatched的属性才被设置，这时候没有更新，所以旋转的animation就无法执行
 
 ## extension
 - **Array+Identifiable.swift**  
@@ -23,12 +24,12 @@
 
 ## model模块
 - **MemoryGame.swift**
-    - AccessControl，加 `private` or `private(set)`
+    - 在 init 里添加洗牌功能，`cards.shuffle()`
+    - 增加奖励计时功能
 
 ## viewModel模块
 - **EmojiMemoryGame.swift**  
-    - AccessControl，加 `private` or `private(set)`
 
 ## 最终效果
-主要实现了使用shape和ViewModifier重新绘制卡片背景部分  
-![](./MyDemo_5效果图.png)
+主要实现了以上动画  
+![](./MyDemo_6效果图.png)

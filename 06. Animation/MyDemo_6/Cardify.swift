@@ -1,21 +1,36 @@
 //viewModifier
 import SwiftUI
 
-//仅绘制卡片，卡面上内容取决于call modifier的content
-struct Cardify: ViewModifier{
-	var isFaceUp: Bool
+struct Cardify: AnimatableModifier{
+//或者struct Cardify: ViewModifier, Animatable{
+	var rotation: Double
+
+	init(isFaceUp: Bool){
+		rotation = isFaceUp ? 0 : 180
+	}
+
+	var isFaceUp: Bool{
+		rotation < 90
+	}
+
+	//将rotation重命名为animatableData
+	var animatableData: Double{
+		get{return rotation}
+		set{rotation = newValue}
+	}
 
 	func body(content: Content) -> some View{
 		ZStack{
-			if isFaceUp{
+			Group{
 				RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
 				RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
-				content //卡片上的内容要放在该放的位置
-			}else{
-				//因为可以modfier任何view所以，iaMatched属性不放在这
-				RoundedRectangle(cornerRadius: cornerRadius).fill() 
+				content
 			}
+				.opacity(isFaceUp ? 1 : 0)
+			RoundedRectangle(cornerRadius: cornerRadius).fill() 
+				.opacity(isFaceUp ? 0 : 1) //通过设置透明度来隐藏一面，但是始终显示的
 		}
+		.rotation3DEffect(Angle.degrees(rotation), axis: (0,1,0))
 	}
 
 	private let cornerRadius: CGFloat = 10.0
