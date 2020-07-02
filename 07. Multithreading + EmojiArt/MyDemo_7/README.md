@@ -1,35 +1,35 @@
-# lecture_6 demo 总结
+# lecture_7 Demo_EmojiArt 总结
 ## view模块
-- **EmojiMemoryGameView.swift**  
-    - implicit animation, 卡片内容一直旋转的动画
-    - 卡片翻面时渐入渐出动画
-    - 卡片通过缩放动画出现/消失
-    - 卡片背景 <font color = #e32472>**pie随时间减少而减小角度**</font>的动画(这个实现比较复杂)
-    - 卡片匹配时emoji旋转动画
-
-- **Grid.swift**  
-
-- **GridLayout.swift**
-
-- **Pie.swift**
-    - 使背景的pie转动
-
-- **Cardify.swift**
-    - 卡片3D旋转动画
-    - 通过设置透明度来隐藏卡片内容达到原来的卡片正反面效果，可以使得isMatched属性晚点设置，这样就有一个更新，卡片内容旋转的animation就可以执行了（*这里还有点不是很明白*）。如果不这样做的话，就会在点击卡片卡片旋转后isMatched的属性才被设置，这时候没有更新，所以旋转的animation就无法执行
-
-## extension
-- **Array+Identifiable.swift**  
-- **ArrayOnly.swift**  
+- **新建EmojiArtDocumentView.swift**
+    - emoji palette
+    - 画布
+    - 对image和emoji实现drag & drop
+    - drop后绘制UI，显示出来
 
 ## model模块
-- **MemoryGame.swift**
-    - 在 init 里添加洗牌功能，`cards.shuffle()`
-    - 增加奖励计时功能
+- **新建EmojiArt.swift**
+    - `struct Emoji: Identifiable{}`, 通过 `fileprivate init()` 实现只有该文件可以创建修改emoji
+
+## extension
+- **导入EmojiArtExtensions.swift**
+    - `func firstIndex(){}`, `func contains(){}`
+    - `imageURL{}`
+    - 异步程序的同步问题
+    - `GeomotryProxy{}` convert from coordinate space
 
 ## viewModel模块
-- **EmojiMemoryGame.swift**  
+- **新建EmojiArtDocument.swift**
+    - `func addEmoji(){}`
+    - `func moveEmoji(){}`
+    - `func scaleEmoji(){}`
+    - `private func fetchBackgroundImageData(){}` image 的 drag & drop，多线程，异步
+
+## 创建项目时已有的文档
+- **SceneDelegate.swift**
+    - `let contentView = EmojiArtDocumentView(document: EmojiArtDocument())`
 
 ## 最终效果
-主要实现了以上动画  
-![](./MyDemo_6效果图.png)
+![](./MyDemo_7效果图.png)
+
+## MyTips
+这期涉及的东西有点多，没有都搞懂，需要进一步研究
