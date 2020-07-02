@@ -1,4 +1,4 @@
-# lecture_6 demo 总结
+# lecture_6 Demo_Memorize 总结
 ## view模块
 - **EmojiMemoryGameView.swift**  
     - implicit animation, 卡片内容一直旋转的动画

@@ -1,4 +1,4 @@
-# lecture_2 demo 总结
+# lecture_2 Demo_Memorize 总结
 ## view模块
 - **ContentView.swift**  
     - 文件开头 `import SwiftUI`  

@@ -1,4 +1,4 @@
-# lecture_3 demo 总结
+# lecture_3 Demo_Memorize 总结
 ## view模块
 - **ContentView.swift**  
     - `@ObervedObject var viewModel: EmojiMemoryGame` 加上@ObervedObject后，每次观察对象更新了就会重新绘制UI

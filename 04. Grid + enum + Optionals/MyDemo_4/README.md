@@ -1,4 +1,4 @@
-# lecture_4 demo 总结
+# lecture_4 Demo_Memorize 总结
 ## view模块
 - **EmojiMemoryGameView.swift**  
     - ContentView.swift rename为EmojiMemoryGameView.swift  

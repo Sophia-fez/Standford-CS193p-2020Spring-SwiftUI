@@ -1,4 +1,4 @@
-# lecture_5 demo 总结
+# lecture_5 Demo_Memorize 总结
 ## view模块
 - **EmojiMemoryGameView.swift**  
     - AccessControl，加 `private` or `private(set)`   
