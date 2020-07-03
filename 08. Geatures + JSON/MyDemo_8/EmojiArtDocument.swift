@@ -5,7 +5,24 @@ class EmojiArtDocument: ObservableObject{
 	
 	static let palette: String = "ABCDEF"
 
-	@Published private var emojiArt: EmojiArt = EmojiArt()
+	//@Published  // workaround for property observer problem with property wraooers
+	private var emojiArt: EmojiArt {
+		willSet{
+			objectWillChange.send()
+		}
+		didSet{
+			//print("json = \(emojiArt.json?.utf8 ?? "nil")")
+			UderDefaults.standard.set(emojiArt.json, forKey: EmojiArtDocument.untitled)
+		}
+	}
+
+	private static let untitled = "EmojiArtDocument.Untitled"
+
+	//如果之前有存就显示之前的，没有的话就创建一个新的空白EmojiArt
+	init(){
+		emojiArt = emojiArt(json: UserDefault.standard.data(forKey: EmojiArtDocument.untitled)) ?? EmojiArt()
+		fetchBackgroundImageData() 
+	}
 
 	@Publiched private(set) var backgroundImage: UIImage?
 

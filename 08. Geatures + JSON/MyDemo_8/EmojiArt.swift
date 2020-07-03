@@ -1,24 +1,36 @@
 //model
 import Foundation
 
-struct EmojiArt{
+struct EmojiArt: Encodable{
 	var backgroundURL: URL?
 	var var emojis = [Emoji]()
 
-	struct Emoji: Identifiable{
-		let text: String
-		var x: Int // offset from center
-		var y: Int // offset from center
+	//struct Emoji: Identifiable, Encodable, Decodable
+	struct Emoji: Identifiable, Codable{
+		var x: Int
+		var y: Int
 		var size: Int
-		var id = Int //我们只需要保证在这个model里emoji是有唯一id的
+		var id = Int
 		
-		//fileprivate仅限于这个file里私有，让EmojiArt这个file可以调用并创建emoji，而其他人不可以
 		fileprivate init(text: String, x: Int, y: Int, size: Int, id: Int){
 			self.text = text
 			self.x = x
 			self.y = y
 			self.size = size
 			self.id = id
+		}
+	}
+
+	var json: Data? {
+		return try? JSONEncoder().encode(self)
+	}
+
+	//Decode
+	init(json: Data?){
+		if json != nil, let newEmojiArt = try? JSONDecoder().decode(EmojiArt.self, from: json!){
+			self = newEmojiArt
+		}else{
+			return nil
 		}
 	}
 
