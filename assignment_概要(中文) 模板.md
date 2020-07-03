@@ -1,14 +1,14 @@
 # assigment_1
-- **Required Tasks**  
+## Required Tasks
 1. 
 
-- **Hints**  
+## Hints
 1. 
 
-- **Things to Learn**  
+## Things to Learn
 1. 
 
-- **Extra**  
+## Extra
 1. 
 
  <font color = #e32472>****</font>
