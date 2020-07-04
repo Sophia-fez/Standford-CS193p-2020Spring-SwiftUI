@@ -1,32 +1,44 @@
-# lecture_7 Demo_EmojiArt 总结
+# lecture_9 Demo_EmojiArt 总结
 ## view模块
 - **EmojiArtDocumentView.swift**
-    + 双击缩放image的gesture  
-    + 两指缩放image的gesture  
-    + 单指移动image的gesture
+    + 在等待时间添加一直spinning的icon
+    + image调整到合适的大小再显示
+    + 加入PaletteChooser这个view
+    + 设置初始就显示paletteName对应的emoji
+    + 通过 `$chosenPalette` 绑定 PaletteChooser.swift 里的 `@Binding` 对应的 var,达到点击加减号PaletteName和对应eomiji都切换的效果
 
-- **新建OptionalImage.swift**
-    + 将显示image的功能封装出来  
+- **新增Spinning.swift**
+    + 封装一直spinning的icon功能
 
-- **导入AnimatableSystemFontModifier.swift**
-    + make animatable data: font size，解决缩放时候emoji卡住的问题  
+- **新增PaletteChooser.swift**
+    + 封装了PaletteChooser这个view
+    + `.fixedSize()` 去掉多余空间
+    + `.onAppear{}` 设置初始就显示paletteName
+    + 通过 `@Binding` 绑定
+
+- **导入EmojiArtDocumentPalette.swift**
+    + 给出了一些default palette
+    + 从palette添加或者删除emoji
+    + 获取这个palette前一个或者后一个palette
+
+- **OptionalImage.swift**
+
+- **AnimatableSystemFontModifier.swift**
 
 ## model模块
 - **EmojiArt.swift**
-    + Codable  
-    + `init(json: Data?){}` 进行 Decode  
 
 ## extension
 - **EmojiArtExtensions.swift**
 
 ## viewModel模块
 - **EmojiArtDocument.swift**
-    + 将每一次的编辑存为json文件，及时更新model  
-    + `init(){}` 打开app是如果有上一次保存的文件则打开没有的话打开空白画布  
-
+    + 用 `@Punlished` 实现image加载好再显示
+    + `private func fetchBackgroundImageData(){}` 也改成了published 的版本
 
 ## 最终效果
-![](./MyDemo_8效果图.png)
+![](./MyDemo_9效果图.png)
 
 ## MyTips
-- EmojiArtDocumentView.swift需要再研究一下，如何实现双击缩放、两指缩放、单指移动image同时起作用的
+- 几个Published写法怎么回事要再研究一下
+- EmojiArtDocumentView.swift和PaletteChooser.swift之间的Binding

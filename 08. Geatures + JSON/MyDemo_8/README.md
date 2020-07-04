@@ -1,4 +1,4 @@
-# lecture_7 Demo_EmojiArt 总结
+# lecture_8 Demo_EmojiArt 总结
 ## view模块
 - **EmojiArtDocumentView.swift**
     + 双击缩放image的gesture  

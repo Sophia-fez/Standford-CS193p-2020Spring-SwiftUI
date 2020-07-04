@@ -4,16 +4,23 @@ import SwiftUI
 struct ContentView: View{
 	@ObservedObject var document: EmojiArtDocument
 	
+	@State private var chosenPalette: String = ""
+
 	var vody: some View{
 		VStack{
-			ScrollView(.horizontal){
-				HStack{
-					ForEach(EmojiArtDocument.palette.map {String($0)}, id: \.self){ emoji in
-						Text(emoji)
-							.font(Font.system(size: self.defaultEmojiSize))
-							.onDrag{ NSItemProvider(object: emoji as NSString)}
+			HStack{
+				//$chosenPalette是上面@State里chosenPalette的Binding
+				PaletteChooser(document: document, chosenPalette: $chosenPalette)
+				ScrollView(.horizontal){
+					HStack{
+						ForEach(chosenPalette.map {String($0)}, id: \.self){ emoji in
+							Text(emoji)
+								.font(Font.system(size: self.defaultEmojiSize))
+								.onDrag{ NSItemProvider(object: emoji as NSString)}
+						}
 					}
 				}
+				.onAppear{self.chosenPalette = self.document.defaultPalette} //设置初始就显示paletteName对应的emoji
 			}
 			.padding(.horizontal)
 			GeometryReader{ geometry in
@@ -24,16 +31,23 @@ struct ContentView: View{
 							.offset(self.panOffset)
 					)
 						.gesture(self.doubleTapZoom(in: geometry.size))	
-					ForEach(self.document.emojis){ emoji in
-						Text(emoji.text)
-							.font(animatableWithSize: emoji.fontSize * self.zoomScale)
-							.position(self.position(for: emoji, in: geometry.size))
+					if !self.isLoading{  //加载新image前不显示emoji
+						Image(systemName: "hourglass").imageScale(.large).spinning() //timer是一个icon
+					}else{
+						ForEach(self.document.emojis){ emoji in
+							Text(emoji.text)
+								.font(animatableWithSize: emoji.fontSize * self.zoomScale)
+								.position(self.position(for: emoji, in: geometry.size))
+						}
 					}
 				}
-				.clipped()//在拖入巨大image时还显示emoji pallet
+				.clipped()
 				.gesture(self.panOffset())
 				.gesture(self.zoomGeature())
 				.edgesIgnoringSafeArea([.horizontal, .bottom])
+				.onReceive(self.document.$backgroundImage){image in  //先通过zoom将image调整到合适的大小再显示
+					self.zoomToFit(image, in: geometry.size)
+				}
 				.onDrop(of: ["public.image", "public.text"], isTargeted: nil){ providers, location in
 					var location = geometry.convert(location, from: .global)
 					locetion = CGPoint(x: location.x - geometry.size.width/2, y:location.y - geometry.size.height/2)
@@ -43,6 +57,10 @@ struct ContentView: View{
 				}
 			}
 		}
+	}
+
+	var isLoading: Bool{
+		document.setBackgroundURL != nil && document.backgroundImage == nil
 	}
 
 	@State private var steadyStateZoomScale: CGFloat = 1.0 //双击缩放的比例
@@ -116,7 +134,7 @@ struct ContentView: View{
 	private func drop(providers: [NSItemProvider], at location: CGPoint) -> Bool {
 		var found = providers.loadFirstObject(ofType: URL.self){ url in
 			//print("dropped \(url)")
-			self.document.setBackgroundURL(url)
+			self.document.backgroundURL = url //加载新image前不显示emoji
 		}
 		if !found {
 			found = providers.loadObjects(ofType: String.self) { string in
@@ -127,16 +145,3 @@ struct ContentView: View{
 
 	private let defaultEmojiSize: CGFloat = 40
 }
-
-// //处理可能为nil的image，这段代码可以单独放到一个新文件里
-// struct OptionalImage: View{
-// 	var uiImage: UIImage?
-
-// 	var body: some View{
-// 		Group{
-// 			if uiImage != nil {
-// 				Image(uilImage: uiImage!)
-// 			}
-// 		}
-// 	}
-// }

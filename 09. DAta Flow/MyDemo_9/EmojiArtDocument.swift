@@ -1,26 +1,23 @@
 //viewModel
 import SwiftUI
+import Combine
 
 class EmojiArtDocument: ObservableObject{
 	
 	static let palette: String = "ABCDEF"
 
-	//@Published  // workaround for property observer problem with property wraooers
-	private var emojiArt: EmojiArt {
-		willSet{
-			objectWillChange.send()
-		}
-		didSet{
-			//print("json = \(emojiArt.json?.utf8 ?? "nil")")
-			UderDefaults.standard.set(emojiArt.json, forKey: EmojiArtDocument.untitled)
-		}
-	}
+	@Published private var emojiArt: EmojiArt 
 
 	private static let untitled = "EmojiArtDocument.Untitled"
 
-	//如果之前有存就显示之前的，没有的话就创建一个新的空白EmojiArt
+	private var autosaveCancellable: AnyCancellable?
+
 	init(){
 		emojiArt = emojiArt(json: UserDefault.standard.data(forKey: EmojiArtDocument.untitled)) ?? EmojiArt()
+		autosaveCancellable = $emojiArt.sink { emojiArt in
+			//print("/(emojiArt.json?.utf8 ?? "nil")")
+			UserDefault.standard.data(forKey: EmojiArtDocument.untitled))
+		}
 		fetchBackgroundImageData() 
 	}
 
@@ -47,25 +44,27 @@ class EmojiArtDocument: ObservableObject{
 		}
 	}
 
-	func setBackgroundURL(_ url: URL?){
-		emojiArt.backgroundURL = url?.imageURL
-		fetchBackgroundImageData()
+	var backgroundURL: URL?{ //加载新image前不显示emoji
+		get{
+			emojiArt.backgroundURL
+		}
+		set{
+			emojiArt.backgroundURL = url?.imageURL
+			fetchBackgroundImageData()
+		}
 	}
 
-	//多线程异步程序
+	private var fetchImageCancellable: AnyCancellable?
+
 	private func fetchBackgroundImageData(){
 		backgroundImage = nil
 		if let url = self.emojiArt.backgroundURL{
-			DispatchQueue.global(qos: userInitiated).async{ //放到background thread里
-				if let imageData = try? Data(contentsOf: url){ //如果要等到5s也不会影响程序的其他功能
-					DispatchQueue.main.asyno{
-						if url == self.emojiArt.backgroundURL{
-							self.backgroundImage = UIImage(data: imageData) //要回到main thread
-						}
-					}
-				}
-			}
-
+			fetchImageCancellable?.cancel()
+			fetchImageCancellable = URLSession.shared.dataTaskPublisher(for: url)
+				.map{data, urlResponse in UIImage(data: data)}
+				.receive(on: DispatchQueue.main)
+				.replaceError(with: nil)
+				.assign(to: \.backgroundImage, on: self)
 		}
 	}
 
@@ -76,3 +75,18 @@ extension EmojiArt.Emoji{
 	var fontSize: CGFloat(CGFloat(self.size))
 	var location: CGPoint(CGPoint(x: CGFloat(x), y: CGFloat(y)))
 }
+
+// //调整前
+// 	private func fetchBackgroundImageData(){
+// 		backgroundImage = nil
+// 		if let url = self.emojiArt.backgroundURL{
+// 			fetchImageCancellable?.cancel()
+// 			let session = URLSession.shared
+// 			let publisher = session.dataTaskPublisher(for: url)
+// 				.map{data, urlResponse in UIImage(data: data)}
+// 				.receive(on: DispatchQueue.main)
+// 				.replaceError(with: nil)
+// 			//publisher.assign(to: \EmojiArtDocument.backgroundImage, on: self)
+// 			fetchImageCancellable = publisher.assign(to: \.backgroundImage, on: self)
+// 		}
+// 	}
