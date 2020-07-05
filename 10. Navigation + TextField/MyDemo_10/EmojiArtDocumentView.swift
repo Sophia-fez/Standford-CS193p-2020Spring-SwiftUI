@@ -6,10 +6,15 @@ struct ContentView: View{
 	
 	@State private var chosenPalette: String = ""
 
+	//设置初始就显示paletteName对应的emoji
+	init(document: EmojiArtDocument){
+		self.document = document
+		_chosenPalette = State(wrappedValue: self.document.defaultPalette)
+	}
+
 	var vody: some View{
 		VStack{
 			HStack{
-				//$chosenPalette是上面@State里chosenPalette的Binding
 				PaletteChooser(document: document, chosenPalette: $chosenPalette)
 				ScrollView(.horizontal){
 					HStack{
@@ -20,7 +25,6 @@ struct ContentView: View{
 						}
 					}
 				}
-				.onAppear{self.chosenPalette = self.document.defaultPalette} //设置初始就显示paletteName对应的emoji
 			}
 			.padding(.horizontal)
 			GeometryReader{ geometry in
@@ -55,6 +59,13 @@ struct ContentView: View{
 					location = CGPoint(x: location.x / self.zoomScale, y: location.y / self.zoomScale)
 					return self.drop(providers: providers, at: location)
 				}
+				.navigationBarItems(trailing: Button(action:{  //粘贴背景image
+					if let url = UIPasteboard.general.url{
+						self.document.backgroundURL = url
+					}
+				},label{
+					Image(systemName: "doc.on.clipboard").imageScale(.large)
+				}))
 			}
 		}
 	}
@@ -63,12 +74,11 @@ struct ContentView: View{
 		document.setBackgroundURL != nil && document.backgroundImage == nil
 	}
 
-	@State private var steadyStateZoomScale: CGFloat = 1.0 //双击缩放的比例
 	@GestureState private var geometryZoomScale: CGFloat = 1.0
 
 	//两个缩放比例取有效值
 	private var zoomScale: CGFloat{
-		steadyStateZoomScale * geometryZoomScale
+		document.steadyStateZoomScale * geometryZoomScale
 	}
 
 	//两指缩放图片的gesture
@@ -79,17 +89,14 @@ struct ContentView: View{
 				geometryZoomScale =  latestGestureScale
 			}
 			.onEnded{finalGeatureScale in
-				self.steadyStateZoomScale *= finalGeatureScale
+				self.document.steadyStateZoomScale *= finalGeatureScale
 			}
 	}
 
-	//单指移动的gesture
-	@State private var steadyStatePanOffset: CGPoint = .zero
 	@GestureState private var gesturePanOffset: CGPoint = .zero
 
 	private var gesturePanOffset: CGPoint{
-		//这样直接加一搬做不了的，所以增加了extension
-		(steadyStatePanOffset + gesturePanOffset) * zoomScale
+		(document.steadyStatePanOffset + gesturePanOffset) * zoomScale
 	}
 
 	private func panGesture() -> some Gesture{
@@ -98,7 +105,7 @@ struct ContentView: View{
 				gesturePanOffset = latestDragGestureValue.translation / self.zoomScale
 			}
 			.onEnded{ finalDragGestureValue in
-				self.steadyStatePanOffset = self.steadyStatePanOffset + (finalDragGestureValue.translation / self.zoomScale)
+				self.document.steadyStatePanOffset = self.document.document.document.steadyStatePanOffset + (finalDragGestureValue.translation / self.zoomScale)
 			}
 	}
 
@@ -114,11 +121,12 @@ struct ContentView: View{
 	}
 
 	private func zoomToFit(_ image: UIImage?, in size: CGPoint){
-		if let image = iamge, image.size.width > 0, image.height > 0{
+		//增加size.height > 0, size.width > 0的判断，这样粘贴的image就不会被缩小为0*0了
+		if let image = iamge, image.size.width > 0, image.height > 0, size.height > 0, size.width > 0{ 
 			let hZoom = size.widtn / image.size.width
 			let vZoom = size.height / image.size.height
-			self.steadyStatePanOffset = .zero
-			self.steadyStateZoomScale = min(hZoom, vZoom)
+			self.document.steadyStatePanOffset = .zero
+			self.document.steadyStateZoomScale = min(hZoom, vZoom)
 		}
 	}
 
