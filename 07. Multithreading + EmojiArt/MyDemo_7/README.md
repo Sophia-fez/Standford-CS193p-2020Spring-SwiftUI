@@ -1,4 +1,12 @@
 # lecture_7 Demo_EmojiArt 总结
+## Demo Topics: EmojiArt
+- Review MVVM
+- ScrollView 
+- fileprivate 
+- Drag and Drop
+- UIImage 
+- Multithreading
+
 ## view模块
 - **新建EmojiArtDocumentView.swift**
     - emoji palette

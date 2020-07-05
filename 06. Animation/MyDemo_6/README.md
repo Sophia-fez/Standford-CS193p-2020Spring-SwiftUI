@@ -1,4 +1,18 @@
 # lecture_6 Demo_Memorize 总结
+## Demo Topics: Memorize
+- **Match Somersault**
+    + Let’s have our emoji celebrate when there’s a match!
+- **Card Rearrangement**
+    + This is just changing the .position modiﬁer on Views.
+    + Automatically animated if an animation is in progress.
+- **Card Flipping**
+    + Cardify can handle this since it is a ViewModiﬁer.
+    + It will sync up the 3D rotation animation and the face-up-ness of the card.
+- **Card Disappearing on Match**
+    + This is a “transition” animation.
+- **Bonus Scoring Pie Animation**
+    + Make our Pie slice animate.
+
 ## view模块
 - **EmojiMemoryGameView.swift**  
     - implicit animation, 卡片内容一直旋转的动画

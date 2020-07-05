@@ -16,12 +16,12 @@ class EmojiArtDocument: ObservableObject{
 		emojiArt = emojiArt(json: UserDefault.standard.data(forKey: EmojiArtDocument.untitled)) ?? EmojiArt()
 		autosaveCancellable = $emojiArt.sink { emojiArt in
 			//print("/(emojiArt.json?.utf8 ?? "nil")")
-			UserDefault.standard.data(forKey: EmojiArtDocument.untitled))
+			UserDefault.standard.set(emojiArt.json, forKey: EmojiArtDocument.untitled))
 		}
 		fetchBackgroundImageData() 
 	}
 
-	@Publiched private(set) var backgroundImage: UIImage?
+	@Published private(set) var backgroundImage: UIImage?
 
 	var emojis: [EmojiArt.Emoji]{emojiArt.emojis}
 

@@ -1,4 +1,13 @@
 # lecture_2 Demo_Memorize 总结
+## Demo Topics: Memorize
+- **MVVM and Types in Action**  
+    + We’re going to use the special **init** function (in both our Model and our ViewModel)  
+    + We’re going to use generics in our implementation of our Model  
+    + We’re going to use a function as a type in our Model  
+    + We’re going to see a **class** for the ﬁrst time (our ViewModel will be a class)  
+    + We’re going to implement an “Intent” in our MVVM  
+    + And ﬁnally, we will make our UI “reactive” through our MVVM design  
+
 ## view模块
 - **ContentView.swift**  
     - 文件开头 `import SwiftUI`  

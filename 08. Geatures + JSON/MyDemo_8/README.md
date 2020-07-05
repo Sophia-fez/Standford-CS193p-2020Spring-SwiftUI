@@ -1,4 +1,9 @@
 # lecture_8 Demo_EmojiArt 总结
+## Demo Topics: EmojiArt
+- JSON/Codable
+- UserDefaults  OptionalImage  Animatable Font Size
+- Gesture
+
 ## view模块
 - **EmojiArtDocumentView.swift**
     + 双击缩放image的gesture  

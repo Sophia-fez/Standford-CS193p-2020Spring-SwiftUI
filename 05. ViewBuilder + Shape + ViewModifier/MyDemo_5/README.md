@@ -1,4 +1,9 @@
 # lecture_5 Demo_Memorize 总结
+## Demo Topics: Memorize
+- **Cardify**  
+    + Let’s go implement Cardify in our Memorize application!  
+    + We’ll start the next lecture talking about how we animate using ViewModifiers.  
+
 ## view模块
 - **EmojiMemoryGameView.swift**  
     - AccessControl，加 `private` or `private(set)`   

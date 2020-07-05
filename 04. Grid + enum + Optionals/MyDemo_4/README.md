@@ -1,4 +1,10 @@
 # lecture_4 Demo_Memorize 总结
+## Demo Topics: Memorize
+- **Optional in action**  
+    + Let’s ﬁx that “bogus” Array method firstIndex(matching:).  
+    + Then we’ll make Memorize actually play the game!  
+    + Both of these will feature the Optional type prominently.  
+
 ## view模块
 - **EmojiMemoryGameView.swift**  
     - ContentView.swift rename为EmojiMemoryGameView.swift  
