@@ -60,15 +60,40 @@ struct ContentView: View{
 					return self.drop(providers: providers, at: location)
 				}
 				.navigationBarItems(trailing: Button(action:{  //粘贴背景image
-					if let url = UIPasteboard.general.url{
-						self.document.backgroundURL = url
+					if let url = UIPasteboard.general.url, url != self.document.backgroundURL{ //已经粘贴了再次粘贴一样的iamge也会发出alert
+						self.confirmBackgroundPaste = true
+					}else{
+						self.explainBackgroundPaste = true
 					}
 				},label{
 					Image(systemName: "doc.on.clipboard").imageScale(.large)
+					.alert(isPresented: self.$explainBackgroundPaste) {
+						return Alert(
+							title: Text("Paste Background"),
+							message: Text("Copy the URL of an image to the clip board and touch this button to make it the background of your document."),
+							dismissButton: default(Text("OK"))
+						)
+					}
 				}))
 			}
+			.zIndex(-1)
+		}
+		//一个image上不能放两个alert，所以这个放在VStack上
+		.alert(isPresented: self.$explainBackgroundPaste) {
+			return Alert(
+				title: Text("Paste Background"),
+				message: Text("Replace your background with \(UIPasteboard.general.url?.absoluteString ?? "nothing")?."),
+				primaryButton: default(Text("OK")){
+					self.document.backgroundURL = UIPasteboard.general.url
+				},
+				secondaryButton: .cancel()
+				//secondaryButton: Alert.Button.cancel()
+			)
 		}
 	}
+
+	@State private var explainBackgroundPaste = false
+	@State private var confirmBackgroundPaste = false
 
 	var isLoading: Bool{
 		document.setBackgroundURL != nil && document.backgroundImage == nil
