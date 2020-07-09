@@ -1,4 +1,4 @@
-# Standford-CS193p-2020-Spring
+# Standford-CS193p-2020-Spring-SwiftUI
 ## 简介
 这是斯坦福2020春季关于IOS的SwiftUI课程，包括幻灯片、阅读材料、作业、**完整demo项目**代码等官方材料，还有自己的学习笔记和MyDemo  
 老师还是Paul Hegarty  
@@ -29,14 +29,6 @@
 | [Lecture 13] | 13. Persistence | [slide](13.Persistence/lecture_13.pdf) | [EmojiArtL13](13.Persistence/EmojiArtL13.zip) |
 | [Lecture 14] | 14. UIKit Integration | [slide](14.UIKit_Integration/lecture_14.pdf)  | [EmojiArtL14](14.UIKit_Integration/EmojiArtL14.zip) [EnrouteL14](14.UIKit_Integration/EnrouteL14.zip) |
 
-
-<!-- ## Reading 
-| Reading                             | Name |
-| ----------------------------------- |:----:|
-|  1. |[Reading 1: Intro to Swift](Reading/Reading_1.pdf)
-|  2. |[Reading 2: More Swift](Reading/Reading_2.pdf) 
-|  3. |[Reading 3: The Rest of Swift](Reading/Reading_3.pdf)  -->
-
 ## Assignment 
 |  Assignment                               | lecture | theme |
 | ----------------------------------------  | :----: | :----: |
@@ -46,6 +38,13 @@
 | [assignment_4](08.Geatures+JSON/assignment_4.pdf) | 08. Geatures + JSON | EmojiArt |
 | [assignment_5](08.Geatures+JSON/assignment_5.pdf) | 08. Geatures + JSON | Memorize |
 | [assignment_6](10.Navigation+TextField/assignment_6.pdf)| 10. Navigation + TextField | Memorize |
+
+<!-- ## Reading 
+| Reading                             | Name |
+| ----------------------------------- |:----:|
+|  1. |[Reading 1: ](Reading/Reading_1.pdf)
+|  2. |[Reading 2: ](Reading/Reading_2.pdf) 
+|  3. |[Reading 3: ](Reading/Reading_3.pdf)  -->
 
 ## 主要内容
 1. 包括课程官网给出幻灯片slides、阅读材料reading、作业assignment、demo材料包、**完整demo项目代码**
