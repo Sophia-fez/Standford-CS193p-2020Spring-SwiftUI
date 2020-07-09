@@ -7,40 +7,48 @@
 官网给出的youtube地址：https://youtu.be/jbtqIBpUG7g  
 国内搬运带机翻字幕的：https://www.bilibili.com/video/BV1EV411C77B?p=1  
 
+
 ## 课程目录
-1. Course Logistics and Introduction to SwiftUI
-2. MVVM and the Swift Type System
-3. Reactive UI + Protocols + Layout
-4. Grid + enum + Optionals
-5. ViewBuilder + Shape + ViewModifier
-6. Animation
-7. Multithreading + EmojiArt
-8. Geatures + JSON
-9. DAta Flow
-10. Navigation + TextField
-11. Picker
-12. Core Data
-13. Persistence
-14. UIKit Integration
-
-## Demo & assignment
-**请以官方给出的完整项目代码为准，在每个lecture的压缩包里**  
+**Demo请以官方给出的完整项目代码为准，除lecture 1-6 外每个lecture的压缩包里有官网给出的Demo完整项目代码**  
 **MyDemo文件夹是自建的跟敲代码可以无视，每个lecture里的README.md记录了Demo各文件主要修改的部分，新增的功能**  
-**lecture 1-6：Memorize**，官网**未给出**项目代码  
-**lecture 7-10：EmojiArt**，官网**每节课都给出**项目代码  
-**lecture 11-12：Enroute**，官网**每节课都给出**项目代码  
-**lecture 13：EmojiArt**，官网**每节课都给出**项目代码  
-**lecture 14：Enroute & EmojiArt**，官网**每节课都给出**项目代码  
 
-assignment 1-6 中只有 assigment_4 是关于 EmojiArt 的，其余都是关于 Memorize的，assigment_3 是关于 Memorize 的期中作业
-assignment 1 在 lecture_2
-assignment 2 在 lecture_4
-assignment 3 在 lecture_6
-assignment 4-5 在 lecture_8
-assignment 6 在 lecture_10
+|  Lectures |  Name  | Slides | Demo |
+| :--------:| :-----:|:-----: | :---: |
+| [Lecture 1] | 01. Course Logistics and Introduction to SwiftUI |[slide](01.Course_Logistics_and_Introduction_to_SwiftUI/lecture_1.pdf) | nil |
+| [Lecture 2] | 02. MVVM and the Swift Type System |[slide](02.MVVM_and_the_Swift_Type_System/lecture_2.pdf) | nil |
+| [Lecture 3] | 03. Reactive UI + Protocols + Layout |[slide](03.Reactive_UI+Protocols+Layout/lecture3_.pdf) | nil |
+| [Lecture 4] | 04. Grid + enum + Optionals |[slide](04.Grid+enum+Optionals/lecture_4.pdf) | nil |
+| [Lecture 5] | 05. ViewBuilder + Shape + ViewModifier | [slide](05.ViewBuilder+Shape+ViewModifier/lecture_5.pdf) | nil |
+| [Lecture 6] | 06. Animation | [slide](06.Animation/lecture_6.pdf) | nil |
+| [Lecture 7] | 07. Multithreading + EmojiArt | [slide](07.Multithreading+EmojiArt/lecture_7.pdf) | [EmojiArtL7](07.Multithreading+EmojiArt/EmojiArtL7.zip) |
+| [Lecture 8] | 08. Geatures + JSON | [slide](08.Geatures+JSON/lecture_8.pdf) | [EmojiArtL8](08.Geatures+JSON/EmojiArtL8.zip) |
+| [Lecture 9] | 09. Data Flow | [slide](09.DataFlow/lecture_9.pdf) | [EmojiArtL9](09.DataFlow/EmojiArtL9.zip) |
+| [Lecture 10] | 10. Navigation + TextField | [slide](10.Navigation+TextField/lecture_10.pdf) | [EmojiArtL10](10.Navigation+TextField/EmojiArtL10.zip) |
+| [Lecture 11] | 11. Picker | [slide](11.Picker/lecture_11.pdf) | [EnrouteL11](11.Picker/EnrouteL11.zip) |
+| [Lecture 12] | 12. Core Data | [slide](12.CoreData/lecture_12.pdf)  | [EnrouteL12](12.CoreData/EnrouteL12.zip) |
+| [Lecture 13] | 13. Persistence | [slide](13.Persistence/lecture_13.pdf) | [EmojiArtL13](13.Persistence/EmojiArtL13.zip) |
+| [Lecture 14] | 14. UIKit Integration | [slide](14.UIKit_Integration/lecture_14.pdf)  | [EmojiArtL14](14.UIKit_Integration/EmojiArtL14.zip) [EnrouteL14](14.UIKit_Integration/EnrouteL14.zip) |
+
+
+<!-- ## Reading 
+| Reading                             | Name |
+| ----------------------------------- |:----:|
+|  1. |[Reading 1: Intro to Swift](Reading/Reading_1.pdf)
+|  2. |[Reading 2: More Swift](Reading/Reading_2.pdf) 
+|  3. |[Reading 3: The Rest of Swift](Reading/Reading_3.pdf)  -->
+
+## Assignment 
+|  Assignment                               | lecture | theme |
+| ----------------------------------------  | :----: | :----: |
+| [assignment_1](02.MVVM_and_the_Swift_Type_System/assignment_1.pdf) | 02. MVVM and the Swift Type System | Memorize |
+| [assignment_2](04.Grid+enum+Optionals/assignment_2.pdf) | 04. Grid + enum + Optionals | Memorize |
+| [assignment_3](06.Animation/assignment_3.pdf) | 06. Animation | Memorize(期中作业) |
+| [assignment_4](08.Geatures+JSON/assignment_4.pdf) | 08. Geatures + JSON | EmojiArt |
+| [assignment_5](08.Geatures+JSON/assignment_5.pdf) | 08. Geatures + JSON | Memorize |
+| [assignment_6](10.Navigation+TextField/assignment_6.pdf)| 10. Navigation + TextField | Memorize |
 
 ## 主要内容
-1. 包括课程官网给出幻灯片、阅读材料、作业、demo材料包、**完整demo项目代码**
+1. 包括课程官网给出幻灯片slides、阅读材料reading、作业assignment、demo材料包、**完整demo项目代码**
 2. 包括自己跟敲的代码MyDemo，存在小错误还未有条件纠正（还在等活动买mac），MyDemo可无视，直接参考官网给出的Demo项目代码
 3. 每个lecture的README.md，记录了Demo各文件主要修改的部分，新增的功能等    
 3. 包括对课程官网给出的材料的中文笔记，如有**assignment的中文概要笔记**
