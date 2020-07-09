@@ -1,4 +1,4 @@
-# assigment_1
+# assigment_1 Memorize
 ## Required Tasks
 1. 实现 lecture1-2 的 demo，并且做出如下修改  
 2. <font color = #e32472>**洗牌功能**</font>，不要让emoji相同的牌相邻出现（可以看看2017秋学期的课程，有实现这个功能）  

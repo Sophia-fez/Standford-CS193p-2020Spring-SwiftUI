@@ -1,4 +1,4 @@
-# assigment_2
+# assigment_2 Memorize
 ## Required Tasks
 1. 实现 lecture1-4的demo   
 2. 仍然要洗牌    

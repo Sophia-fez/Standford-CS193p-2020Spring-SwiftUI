@@ -23,7 +23,7 @@
 13. Persistence
 14. UIKit Integration
 
-## Demo
+## Demo & assignment
 **请以官方给出的完整项目代码为准，在每个lecture的压缩包里**  
 **MyDemo文件夹是自建的跟敲代码可以无视，每个lecture里的README.md记录了Demo各文件主要修改的部分，新增的功能**  
 **lecture 1-6：Memorize**，官网**未给出**项目代码  
@@ -31,6 +31,13 @@
 **lecture 11-12：Enroute**，官网**每节课都给出**项目代码  
 **lecture 13：EmojiArt**，官网**每节课都给出**项目代码  
 **lecture 14：Enroute & EmojiArt**，官网**每节课都给出**项目代码  
+
+assignment 1-6 中只有 assigment_4 是关于 EmojiArt 的，其余都是关于 Memorize的，assigment_3 是关于 Memorize 的期中作业
+assignment 1 在 lecture_2
+assignment 2 在 lecture_4
+assignment 3 在 lecture_6
+assignment 4-5 在 lecture_8
+assignment 6 在 lecture_10
 
 ## 主要内容
 1. 包括课程官网给出幻灯片、阅读材料、作业、demo材料包、**完整demo项目代码**
