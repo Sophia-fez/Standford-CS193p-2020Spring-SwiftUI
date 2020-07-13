@@ -1235,3 +1235,829 @@ print("zero!")
 // -1...
 // zero!
 ```
+# Closure
+- 全局函数是具有名称且不捕获任何值的闭包。
+- 嵌套函数是具有名称的闭包，可以从其闭包函数捕获值。
+- 闭包表达式是用轻量级语法编写的未命名的闭包，可以从其周围的上下文中捕获值。
+
+Swift的闭包表达式特点：
+- 从上下文推断参数和返回值类型
+- 单表达式闭包的隐式返回
+- 速记参数名称
+- 尾随闭包语法
+
+## 闭包表达式（各种省略方式）
+闭包表达式语法具有以下一般形式：
+```swift
+{ (parameters) -> return type in
+    statements
+}
+```
+
+```swift
+let names = ["Chris", "Alex", "Ewa", "Barry", "Daniella"]
+func backward(_ s1: String, _ s2: String) -> Bool {
+    return s1 > s2
+}
+var reversedNames = names.sorted(by: backward)
+// reversedNames is equal to ["Ewa", "Daniella", "Chris", "Barry", "Alex"]
+
+// 闭包写法
+reversedNames = names.sorted(by: { (s1: String, s2: String) -> Bool in
+    return s1 > s2
+})
+
+// 从上下文推断类型
+reversedNames = names.sorted(by: { s1, s2 in return s1 > s2 } )
+
+// 单表达式可以省略return
+reversedNames = names.sorted(by: { s1, s2 in s1 > s2 } )
+
+// Shorthand Argument Names
+reversedNames = names.sorted(by: { $0 > $1 } )
+
+// Operator Methods
+reversedNames = names.sorted(by: >)
+```
+## 尾随闭包
+
+```swift
+func someFunctionThatTakesAClosure(closure: () -> Void) {
+    // function body goes here
+}
+
+// Here's how you call this function without using a trailing closure:
+
+someFunctionThatTakesAClosure(closure: {
+    // closure's body goes here
+})
+
+// Here's how you call this function with a trailing closure instead:
+
+// 闭包表达式作为函数或方法的唯一参数
+someFunctionThatTakesAClosure() {
+    // trailing closure's body goes here
+}
+reversedNames = names.sorted { $0 > $1 }
+```
+
+```swift
+let digitNames = [
+    0: "Zero", 1: "One", 2: "Two",   3: "Three", 4: "Four",
+    5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine"
+]
+let numbers = [16, 58, 510]
+
+// number的类型可以从要映射的数组中的值推断出来
+let strings = numbers.map { (number) -> String in
+    var number = number
+    var output = ""
+    repeat {
+        output = digitNames[number % 10]! + output  //字典下标返回的是一个可选值
+        number /= 10
+    } while number > 0
+    return output
+}
+// strings is inferred to be of type [String]
+// its value is ["OneSix", "FiveEight", "FiveOneZero"]
+```
+如果一个函数使用多个闭包，则可以省略第一个尾随闭包的参数标签，并标记其余的尾随闭包。
+```swift
+func loadPicture(from server: Server, completion: (Picture) -> Void, onFailure: () -> Void) {
+    if let picture = download("photo.jpg", from: server) {
+        completion(picture)
+    } else {
+        onFailure()
+    }
+}
+
+loadPicture(from: someServer) { picture in
+    someView.currentPicture = picture
+} onFailure: {
+    print("Couldn't download the next picture.")
+}
+```
+在此示例中，该loadPicture(from:completion:onFailure:)函数将其网络任务分派到后台，并在网络任务完成时调用两个完成处理程序之一。通过这种方式编写函数，可以使您将负责处理网络故障的代码与成功下载后更新用户界面的代码完全区分开，而不必使用只处理两种情况的闭包。
+## 捕获上下文的value
+最简单的可以Capturing Values的闭包形式是嵌套函数，它写在另一个函数的主体内。嵌套函数可以捕获其外部函数的任何自变量，还可以捕获在外部函数内定义的任何常量和变量。
+
+```swift
+func makeIncrementer(forIncrement amount: Int) -> () -> Int {
+    var runningTotal = 0
+    func incrementer() -> Int {
+        runningTotal += amount
+        return runningTotal
+    }
+    return incrementer
+}
+```
+## 函数和闭包是引用类型
+将函数或闭包分配给常量或变量时，实际上就是在将该常量或变量设置为对该函数或闭包的引用。
+
+```swift
+let incrementByTen = makeIncrementer(forIncrement: 10)
+incrementByTen()
+// returns a value of 10
+incrementByTen()
+// returns a value of 20
+incrementByTen()
+// returns a value of 30
+
+let incrementBySeven = makeIncrementer(forIncrement: 7)
+incrementBySeven()
+// returns a value of 7
+
+incrementByTen()
+// returns a value of 40
+```
+如果将闭包分配给两个不同的常量或变量，则这两个常量或变量都引用同一个闭包。下例调用alsoIncrementByTen与相同incrementByTen，它们都引用相同的闭包，所以它们都递增并返回相同的运行总计。
+
+```swift
+let alsoIncrementByTen = incrementByTen
+alsoIncrementByTen()
+// returns a value of 50
+
+incrementByTen()
+// returns a value of 60
+```
+## Escaping Closures(关于self的问题待研究)
+当闭包作为函数的参数传递给闭包时，闭包被认为是对函数的转义，但是在函数返回后会被调用。声明将闭包作为其参数之一的函数时，可以@escaping在参数的类型之前编写，以指示允许对闭包进行转义。
+闭包可以escaping的一种方法是将这个闭包存储在函数外部定义的变量中。
+```swift
+var completionHandlers = [() -> Void]()
+func someFunctionWithEscapingClosure(completionHandler: @escaping () -> Void) {
+    completionHandlers.append(completionHandler)
+}
+```
+该someFunctionWithEscapingClosure(_:)函数将闭包作为其参数，并将其添加到在函数外部声明的数组中。如果未使用标记该函数的参数@escaping，则会出现编译时错误。
+
+**如果self引用一个class的实例，则引用self的转义闭包需要特别考虑，可能会形成cycle。**
+ 例如，在下面的代码中，传递给`someFunctionWithEscapingClosure（_ :)`的闭包显式地引用了`self`。 相比之下，传递给`someFunctionWithNonescapingClosure（_ :)`的闭包是nonescaping closure，这意味着它可以隐式引用self。
+
+```swift
+func someFunctionWithNonescapingClosure(closure: () -> Void) {
+    closure()
+}
+
+class SomeClass {
+    var x = 10
+    func doSomething() {
+        someFunctionWithEscapingClosure { self.x = 100 }
+        someFunctionWithNonescapingClosure { x = 200 }
+    }
+}
+
+let instance = SomeClass()
+instance.doSomething()
+print(instance.x)
+// Prints "200"
+
+completionHandlers.first?()
+print(instance.x)
+// Prints "100"
+```
+
+```swift
+// 通过将self包含在闭包的捕获列表中来捕获self，然后隐式地引用self：
+class SomeOtherClass {
+    var x = 10
+    func doSomething() {
+        someFunctionWithEscapingClosure { [self] in x = 100 }
+        someFunctionWithNonescapingClosure { x = 200 }
+    }
+}
+```
+## Autoclosures（待研究）
+Autoclosures可以延迟evaluation，因为在调用闭包之前，内部代码不会运行。延迟评估对于具有副作用或计算量大的代码很有用，因为它使您可以控制何时评估该代码。
+```swift
+var customersInLine = ["Chris", "Alex", "Ewa", "Barry", "Daniella"]
+print(customersInLine.count)
+// Prints "5"
+
+let customerProvider = { customersInLine.remove(at: 0) }
+print(customersInLine.count)
+// Prints "5"
+
+print("Now serving \(customerProvider())!")
+// Prints "Now serving Chris!"
+print(customersInLine.count)
+// Prints "4"
+```
+如果从不调用闭包，则闭包内部的表达式不会被求值，这意味着数组元素不会被删除。
+
+```swift
+// customersInLine is ["Alex", "Ewa", "Barry", "Daniella"]
+func serve(customer customerProvider: () -> String) {
+    print("Now serving \(customerProvider())!")
+}
+serve(customer: { customersInLine.remove(at: 0) } )
+// Prints "Now serving Alex!"
+
+
+// customersInLine is ["Ewa", "Barry", "Daniella"]
+func serve(customer customerProvider: @autoclosure () -> String) {
+    print("Now serving \(customerProvider())!")
+}
+serve(customer: customersInLine.remove(at: 0))
+// Prints "Now serving Ewa!"
+```
+serve(customer:)上面清单中的函数采用显式闭包，该闭包返回客户的姓名。下面的版本serve(customer:)执行相同的操作，但不是采用显式的关闭，而是通过使用@autoclosure属性标记其参数类型来进行自动关闭。现在，您可以像调用带String参数而不是使用闭包一样调用函数。参数将自动转换为闭包，因为customerProvider参数的类型已用@autoclosure属性标记。
+
+如果要允许自动关闭功能可以转义，请同时使用@autoclosure和@escaping属性。
+
+```swift
+// customersInLine is ["Barry", "Daniella"]
+var customerProviders: [() -> String] = []
+func collectCustomerProviders(_ customerProvider: @autoclosure @escaping () -> String) {
+    customerProviders.append(customerProvider)
+}
+collectCustomerProviders(customersInLine.remove(at: 0))
+collectCustomerProviders(customersInLine.remove(at: 0))
+
+print("Collected \(customerProviders.count) closures.")
+// Prints "Collected 2 closures."
+for customerProvider in customerProviders {
+    print("Now serving \(customerProvider())!")
+}
+// Prints "Now serving Barry!"
+// Prints "Now serving Daniella!"
+```
+
+# Enumerations
+## enum语法
+
+```swift
+enum CompassPoint {
+    case north
+    case south
+    case east
+    case west
+}
+var directionToHead = CompassPoint.west
+directionToHead = .east     // 类型推断
+
+directionToHead = .south
+switch directionToHead {
+case .north:
+    print("Lots of planets have a north")
+case .south:
+    print("Watch out for penguins")
+case .east:
+    print("Where the sun rises")
+case .west:
+    print("Where the skies are blue")
+}
+// Prints "Watch out for penguins"
+```
+## 遍历enum
+
+```swift
+enum Beverage: CaseIterable {
+    case coffee, tea, juice
+}
+let numberOfChoices = Beverage.allCases.count
+print("\(numberOfChoices) beverages available")
+// Prints "3 beverages available"
+
+for beverage in Beverage.allCases {
+    print(beverage)
+}
+// coffee
+// tea
+// juice
+```
+## Associated Values 
+
+```swift
+enum Barcode {
+    case upc(Int, Int, Int, Int)
+    case qrCode(String)
+}
+
+var productBarcode = Barcode.upc(8, 85909, 51226, 3)
+productBarcode = .qrCode("ABCDEFGHIJKLMNOP")
+
+switch productBarcode {
+case .upc(let numberSystem, let manufacturer, let product, let check):
+    print("UPC: \(numberSystem), \(manufacturer), \(product), \(check).")
+case .qrCode(let productCode):
+    print("QR code: \(productCode).")
+}
+// Prints "QR code: ABCDEFGHIJKLMNOP."
+
+// 如果都是let或者var可以放到前面去
+switch productBarcode {
+case let .upc(numberSystem, manufacturer, product, check):
+    print("UPC : \(numberSystem), \(manufacturer), \(product), \(check).")
+case let .qrCode(productCode):
+    print("QR code: \(productCode).")
+}
+// Prints "QR code: ABCDEFGHIJKLMNOP."
+```
+## Raw Values
+```swift
+enum ASCIIControlCharacter: Character {
+    case tab = "\t"
+    case lineFeed = "\n"
+    case carriageReturn = "\r"
+}
+```
+### Implicitly Assigned Raw Values
+
+```swift
+enum Planet: Int {
+    case mercury = 1, venus, earth, mars, jupiter, saturn, uranus, neptune
+}
+// 当整数用于原始值时，每种情况的隐式值都比前一种情况大一。如果第一种情况未设置值，则其值为0。
+
+enum CompassPoint: String {
+    case north, south, east, west
+}
+// CompassPoint.south其隐式原始值为"south"，依此类推。
+
+let earthsOrder = Planet.earth.rawValue
+// earthsOrder is 3
+
+let sunsetDirection = CompassPoint.west.rawValue
+// sunsetDirection is "west"
+
+let possiblePlanet = Planet(rawValue: 7)
+// possiblePlanet is of type Planet? and equals Planet.uranus
+
+let positionToFind = 11
+if let somePlanet = Planet(rawValue: positionToFind) {
+    switch somePlanet {
+    case .earth:
+        print("Mostly harmless")
+    default:
+        print("Not a safe place for humans")
+    }
+} else {
+    print("There isn't a planet at position \(positionToFind)")
+}
+// Prints "There isn't a planet at position 11"
+```
+## Recursive Enumerations
+加前缀 `indirect`
+
+```swift
+enum ArithmeticExpression {
+    case number(Int)
+    indirect case addition(ArithmeticExpression, ArithmeticExpression)
+    indirect case multiplication(ArithmeticExpression, ArithmeticExpression)
+}
+
+indirect enum ArithmeticExpression {
+    case number(Int)
+    case addition(ArithmeticExpression, ArithmeticExpression)
+    case multiplication(ArithmeticExpression, ArithmeticExpression)
+}
+
+let five = ArithmeticExpression.number(5)
+let four = ArithmeticExpression.number(4)
+let sum = ArithmeticExpression.addition(five, four)
+let product = ArithmeticExpression.multiplication(sum, ArithmeticExpression.number(2))
+// (5 + 4) * 2
+
+func evaluate(_ expression: ArithmeticExpression) -> Int {
+    switch expression {
+    case let .number(value):
+        return value
+    case let .addition(left, right):
+        return evaluate(left) + evaluate(right)
+    case let .multiplication(left, right):
+        return evaluate(left) * evaluate(right)
+    }
+}
+print(evaluate(product))
+// Prints "18"
+```
+# Structures and Classes
+Swift不需要为自定义结构和类创建单独的接口和实现文件，**可以在单个文件中定义结构或类，并且该类或结构的外部接口会自动提供给其他代码使用。**
+## struct和class的共同点和区别
+- Define properties to store values
+- Define methods to provide functionality
+- Define subscripts to provide access to their values using subscript syntax
+- Define initializers to set up their initial state
+- 可以用extension扩展其功能
+- 符合protocols以提供standard functionality 
+
+class具有struct没有的其他功能：
+- 继承使一个类可以继承另一个类的特征。
+- 通过类型转换，可以在运行时检查和解释类实例的类型。
+- 反初始化程序使类的实例可以释放其已分配的所有资源。
+- 引用计数允许对一个类实例进行多个引用。
+
+```swift
+struct Resolution {
+    var width = 0
+    var height = 0
+}
+class VideoMode {
+    var resolution = Resolution()
+    var interlaced = false
+    var frameRate = 0.0
+    var name: String?
+}
+
+// 创建实例（对象）
+let someResolution = Resolution()
+let someVideoMode = VideoMode()
+
+// 访问属性
+print("The width of someResolution is \(someResolution.width)")
+// Prints "The width of someResolution is 0"
+print("The width of someVideoMode is \(someVideoMode.resolution.width)")
+// Prints "The width of someVideoMode is 0"
+someVideoMode.resolution.width = 1280
+print("The width of someVideoMode is now \(someVideoMode.resolution.width)")
+// Prints "The width of someVideoMode is now 1280"
+
+// struct具有Initializers，class需要init
+let vga = Resolution(width: 640, height: 480)
+```
+## struct和enum是value type值类型的
+Swift中的所有基本类型（整数，浮点数，布尔值，字符串，数组和字典）都是值类型，所有结struct和enum都是值类型。这意味着创建的任何struct和enum实例以及它们具有的任何值类型作为属性，都将在它们在代码中传递时始终被**复制**。
+由标准库定义的集合（例如数组，字典和字符串）使用优化来降低复制的性能成本。这些集合不共享立即复制的功能，而是共享存储在原始实例和任何副本之间的元素的内存。如果修改了集合的副本之一，则在修改之前就将元素复制。您在代码中看到的行为始终就像是立即进行了复制一样。
+
+## class是引用类型
+与值类型不同，将引用类型分配给var或let或将其传递给函数时，不会复制引用类型，而是都是同一个实例的引用。
+
+可以通过 `===` 或者 `!==` 比较两个是否引用相同的实例
+ `===` 表示var或者let都引用同一个实例，而`==`表示两个实例的值相等
+```swift
+if tenEighty === alsoTenEighty {
+    print("tenEighty and alsoTenEighty refer to the same VideoMode instance.")
+}
+// Prints "tenEighty and alsoTenEighty refer to the same VideoMode instance."
+```
+## 指针
+引用某种引用类型的实例的var或let类似于C中的指针，但不是指向内存中地址的直接指针，并且不需要写星号（*）来表示 您正在创建参考。 相反，这些引用的定义与Swift中的其他任何var或let一样。 
+
+# Properties
+## Stored Properties
+
+```swift
+struct FixedLengthRange {
+    var firstValue: Int
+    let length: Int  //创建后无法修改
+}
+var rangeOfThreeItems = FixedLengthRange(firstValue: 0, length: 3)
+// the range represents integer values 0, 1, and 2
+rangeOfThreeItems.firstValue = 6
+// the range now represents integer values 6, 7, and 8
+
+let rangeOfFourItems = FixedLengthRange(firstValue: 0, length: 4) //创建后无法修改
+// this range represents integer values 0, 1, 2, and 3
+rangeOfFourItems.firstValue = 6
+// this will report an error, even though firstValue is a variable property
+```
+## Lazy Stored Properties
+Lazy Stored Properties在首次使用之前不会计算其初始值。
+
+```swift
+class DataImporter {
+    /*
+    DataImporter is a class to import data from an external file.
+    The class is assumed to take a nontrivial amount of time to initialize.
+    */
+    var filename = "data.txt"
+    // the DataImporter class would provide data importing functionality here
+}
+
+// 仅在首次访问该属性时才创建该属性的DataImporter实例
+class DataManager {
+    lazy var importer = DataImporter()
+    var data = [String]()
+    // the DataManager class would provide data management functionality here
+}
+
+let manager = DataManager()
+manager.data.append("Some data")
+manager.data.append("Some more data")
+// the DataImporter instance for the importer property has not yet been created
+
+print(manager.importer.filename)
+// the DataImporter instance for the importer property has now been created
+// Prints "data.txt"
+```
+## Computed Properties: get, set
+
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+}
+struct Size {
+    var width = 0.0, height = 0.0
+}
+struct Rect {
+    var origin = Point()
+    var size = Size()
+    var center: Point {
+        get {
+            let centerX = origin.x + (size.width / 2)
+            let centerY = origin.y + (size.height / 2)
+            return Point(x: centerX, y: centerY)
+        }
+        set(newCenter) {
+            origin.x = newCenter.x - (size.width / 2)
+            origin.y = newCenter.y - (size.height / 2)
+        }
+    }
+}
+var square = Rect(origin: Point(x: 0.0, y: 0.0),
+                  size: Size(width: 10.0, height: 10.0))
+let initialSquareCenter = square.center
+square.center = Point(x: 15.0, y: 15.0)
+print("square.origin is now at (\(square.origin.x), \(square.origin.y))")
+// Prints "square.origin is now at (10.0, 10.0)"
+
+// newValue
+struct CompactRect {
+    var origin = Point()
+    var size = Size()
+    var center: Point {
+        get {  // 省略return
+            Point(x: origin.x + (size.width / 2),
+                  y: origin.y + (size.height / 2))
+        }
+        set {
+            origin.x = newValue.x - (size.width / 2)
+            origin.y = newValue.y - (size.height / 2)
+        }
+    }
+}
+
+// 只读的property可以省略get{}
+struct Cuboid {
+    var width = 0.0, height = 0.0, depth = 0.0
+    var volume: Double {
+        return width * height * depth
+    }
+}
+let fourByFiveByTwo = Cuboid(width: 4.0, height: 5.0, depth: 2.0)
+print("the volume of fourByFiveByTwo is \(fourByFiveByTwo.volume)")
+// Prints "the volume of fourByFiveByTwo is 40.0"
+```
+## Property Observers
+可以在以下位置添加Property Observers：
+- 定义的Stored properties
+- 继承的Stored properties
+- 继承的Computed properties
+对于继承的属性，可以通过在子类中重写该属性来添加属性观察器。对于定义的计算属性，请使用属性的setter观察并响应值更改，而不是尝试创建观察者。
+
+可以选择在属性上定义这些观察者之一或全部：
+- willSet 在值存储之前被调用。则它将新的属性值作为常量参数传递。可以在实现中为此参数指定名称willSet。如果您未在实现中编写参数名称和括号，则该参数的默认参数名称为newValue。
+- didSet 新值存储后立即调用。则会传递一个包含旧属性值的常量参数。您可以命名参数或使用默认参数名称oldValue。如果您在其自己的didSet观察器中为属性分配值，则分配的新值将替换刚刚设置的值。
+
+```swift
+class StepCounter {
+    var totalSteps: Int = 0 {
+        willSet(newTotalSteps) {
+            print("About to set totalSteps to \(newTotalSteps)")
+        }
+        didSet {
+            if totalSteps > oldValue  {
+                print("Added \(totalSteps - oldValue) steps")
+            }
+        }
+    }
+}
+let stepCounter = StepCounter()
+stepCounter.totalSteps = 200
+// About to set totalSteps to 200
+// Added 200 steps
+stepCounter.totalSteps = 360
+// About to set totalSteps to 360
+// Added 160 steps
+stepCounter.totalSteps = 896
+// About to set totalSteps to 896
+// Added 536 steps
+```
+## Property Wrappers
+使用属性包装器时，定义包装器时，只需编写一次管理代码，然后通过将其应用于多个属性来重用该管理代码。
+
+```swift
+// 该TwelveOrLess struct确保包装的值始终 <= 12的数字
+@propertyWrapper
+struct TwelveOrLess {
+    private var number: Int
+    init() { self.number = 0 }
+    var wrappedValue: Int {
+        get { return number }
+        set { number = min(newValue, 12) }
+    }
+}
+
+struct SmallRectangle {
+    @TwelveOrLess var height: Int
+    @TwelveOrLess var width: Int
+}
+
+var rectangle = SmallRectangle()
+print(rectangle.height)
+// Prints "0"
+
+rectangle.height = 10
+print(rectangle.height)
+// Prints "10"
+
+rectangle.height = 24
+print(rectangle.height)
+// Prints "12"
+
+// 将其属性包装在TwelveOrLess结构中，而不是将@TwelveOrLess编写为属性
+struct SmallRectangle {
+    private var _height = TwelveOrLess()
+    private var _width = TwelveOrLess()
+    var height: Int {
+        get { return _height.wrappedValue }
+        set { _height.wrappedValue = newValue }
+    }
+    var width: Int {
+        get { return _width.wrappedValue }
+        set { _width.wrappedValue = newValue }
+    }
+}
+```
+### 几种init方法
+使用此属性包装器的代码不能为被包装的属性指定其他初始值，如SmallRectangle不能给出height或width初始值的定义。所以属性包装器需要添加一个初始化程序。
+
+```swift
+@propertyWrapper
+struct SmallNumber {
+    private var maximum: Int
+    private var number: Int
+
+    var wrappedValue: Int {
+        get { return number }
+        set { number = min(newValue, maximum) }
+    }
+
+    init() {
+        maximum = 12
+        number = 0
+    }
+    init(wrappedValue: Int) {
+        maximum = 12
+        number = min(wrappedValue, maximum)
+    }
+    init(wrappedValue: Int, maximum: Int) {
+        self.maximum = maximum
+        number = min(wrappedValue, maximum)
+    }
+}
+
+//通过init()初始化
+struct ZeroRectangle {
+    @SmallNumber var height: Int
+    @SmallNumber var width: Int
+}
+var zeroRectangle = ZeroRectangle()
+print(zeroRectangle.height, zeroRectangle.width)
+// Prints "0 0"
+
+
+// 通过init(wrappedValue:)初始化
+struct UnitRectangle {
+    @SmallNumber var height: Int = 1
+    @SmallNumber var width: Int = 1
+}
+var unitRectangle = UnitRectangle()
+print(unitRectangle.height, unitRectangle.width)
+// Prints "1 1"
+
+
+// 通过init(wrappedValue:maximum:)初始化
+struct NarrowRectangle {
+    @SmallNumber(wrappedValue: 2, maximum: 5) var height: Int
+    @SmallNumber(wrappedValue: 3, maximum: 4) var width: Int
+}
+
+var narrowRectangle = NarrowRectangle()
+print(narrowRectangle.height, narrowRectangle.width)
+// Prints "2 3"
+
+narrowRectangle.height = 100
+narrowRectangle.width = 100
+print(narrowRectangle.height, narrowRectangle.width)
+// Prints "5 4"
+```
+
+```swift
+struct MixedRectangle {
+    @SmallNumber var height: Int = 1
+    @SmallNumber(maximum: 9) var width: Int = 2
+}
+
+var mixedRectangle = MixedRectangle()
+print(mixedRectangle.height)
+// Prints "1"
+
+mixedRectangle.height = 20
+print(mixedRectangle.height)
+// Prints "12"
+```
+height通过SmallNumber(wrappedValue: 1)初始化，default的最大值是12
+weight通过SmallNumber(wrappedValue: 2, maximum: 9)初始化，最大值是9
+## Projecting a Value From a Property Wrapper：$
+
+```swift
+@propertyWrapper
+struct SmallNumber {
+    private var number: Int
+    var projectedValue: Bool
+    init() {
+        self.number = 0
+        self.projectedValue = false
+    }
+    var wrappedValue: Int {
+        get { return number }
+        set {
+            if newValue > 12 {
+                number = 12
+                projectedValue = true
+            } else {
+                number = newValue
+                projectedValue = false
+            }
+        }
+    }
+}
+struct SomeStructure {
+    @SmallNumber var someNumber: Int
+}
+var someStructure = SomeStructure()
+
+someStructure.someNumber = 4
+print(someStructure.$someNumber)
+// Prints "false"
+
+someStructure.someNumber = 55
+print(someStructure.$someNumber)
+// Prints "true"
+```
+当从属于类型一部分的代码中访问projected value时（如属性获取器或实例方法），可以self.像访问其他属性一样在属性名称之前省略。下面例子height 和width的projected value是$height 和 $width
+
+```swift
+enum Size {
+    case small, large
+}
+
+struct SizedRectangle {
+    @SmallNumber var height: Int
+    @SmallNumber var width: Int
+
+    mutating func resize(to size: Size) -> Bool {
+        switch size {
+        case .small:
+            height = 10
+            width = 20
+        case .large:
+            height = 100
+            width = 100
+        }
+        return $height || $width
+    }
+}
+```
+## 全局和局部变量
+全局常量和变量总是 computed lazily。与 Lazy Stored Properties不同，全局常量和变量不需要用lazy修饰符标记。
+局部常量和变量绝不会延迟计算。
+## Type Properties（待研究）
+Instance properties实例属性是属于特定类型的实例的属性。每次创建该类型的新实例时，它都有自己的属性值集，与其他任何实例分开。可以定义属于类型本身的属性，而不是属于该类型的任何一个实例的属性。
+
+```swift
+struct SomeStructure {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 1
+    }
+}
+enum SomeEnumeration {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 6
+    }
+}
+class SomeClass {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 27
+    }
+    class var overrideableComputedTypeProperty: Int {
+        return 107
+    }
+}
+
+
+print(SomeStructure.storedTypeProperty)
+// Prints "Some value."
+SomeStructure.storedTypeProperty = "Another value."
+print(SomeStructure.storedTypeProperty)
+// Prints "Another value."
+print(SomeEnumeration.computedTypeProperty)
+// Prints "6"
+print(SomeClass.computedTypeProperty)
+// Prints "27"
+```
