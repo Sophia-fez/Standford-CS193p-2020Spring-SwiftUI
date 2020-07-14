@@ -2061,3 +2061,819 @@ print(SomeEnumeration.computedTypeProperty)
 print(SomeClass.computedTypeProperty)
 // Prints "27"
 ```
+
+# Methods
+Methods是与特定类型关联的函数。类，结构和enumerations都可以定义实例方法，这些实例方法封装了用于处理给定类型的实例的特定任务和功能。类，结构和枚举也可以定义与类型本身关联的类型方法。
+## Instance Methods
+实例方法是属于特定类，结构或枚举的实例的函数。它们通过提供访问和修改实例属性的方式，或者通过提供与实例目的相关的功能，来支持那些实例的功能。
+
+```swift
+class Counter {
+    var count = 0
+    func increment() {
+        count += 1
+    }
+    func increment(by amount: Int) {
+        count += amount
+    }
+    func reset() {
+        count = 0
+    }
+}
+
+let counter = Counter()
+// the initial counter value is 0
+counter.increment()
+// the counter's value is now 1
+counter.increment(by: 5)
+// the counter's value is now 6
+counter.reset()
+// the counter's value is now 0
+```
+类型的每个实例都有一个称为的隐式属性self，它与实例本身完全等效。
+
+```swift
+func increment() {
+    self.count += 1
+}
+
+struct Point {
+    var x = 0.0, y = 0.0
+    func isToTheRightOf(x: Double) -> Bool {
+        return self.x > x   //用self消除歧义
+    }
+}
+let somePoint = Point(x: 4.0, y: 5.0)
+if somePoint.isToTheRightOf(x: 1.0) {
+    print("This point is to the right of the line where x == 1.0")
+}
+// Prints "This point is to the right of the line where x == 1.0"
+```
+## 从实例方法中修改值类型 mutating
+结构和枚举是值类型。默认情况下，不能从其实例方法中修改值类型的属性。在func前面添加mutating关键字，可以从方法内部更改（即更改）其属性，并在方法结束时将其所做的任何更改写回到原始结构。
+下例，Point上面的结构定义了一种变异moveBy(x:y:)方法，该方法将Point实例移动一定量。实际上，此方法不是返回新的点，而是修改了调用它的点。
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+    mutating func moveBy(x deltaX: Double, y deltaY: Double) {
+        x += deltaX
+        y += deltaY
+    }
+}
+var somePoint = Point(x: 1.0, y: 1.0)
+somePoint.moveBy(x: 2.0, y: 3.0)
+print("The point is now at (\(somePoint.x), \(somePoint.y))")
+// Prints "The point is now at (3.0, 4.0)"
+
+let fixedPoint = Point(x: 3.0, y: 3.0)  // 不能在struct的let上调用Mutating methods
+fixedPoint.moveBy(x: 2.0, y: 3.0)
+// this will report an error
+```
+## Mutating methods 中分配给self
+Mutating methods 可以为隐式self属性分配一个全新的实例。Point上面显示的示例可能是通过以下方式编写的：
+
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+    mutating func moveBy(x deltaX: Double, y deltaY: Double) {
+        self = Point(x: x + deltaX, y: y + deltaY)
+    }
+}
+```
+
+```swift
+enum TriStateSwitch {
+    case off, low, high
+    mutating func next() {
+        switch self {
+        case .off:
+            self = .low
+        case .low:
+            self = .high
+        case .high:
+            self = .off
+        }
+    }
+}
+var ovenLight = TriStateSwitch.low
+ovenLight.next()
+// ovenLight is now equal to .high
+ovenLight.next()
+// ovenLight is now equal to .off
+```
+## Type Methods
+实例方法是您在特定类型的实例上调用的方法，还可以定义在类型本身上调用的方法。
+```swift
+class SomeClass {
+    class func someTypeMethod() {
+        // type method implementation goes here
+    }
+}
+SomeClass.someTypeMethod()
+```
+在类型方法主体内使用的任何不合格的方法和属性名称都将引用其他类型级别的方法和属性。一个类型方法可以使用另一个方法的名称来调用另一个类型方法，而无需在其前面加上类型名称。同样，结构和枚举上的类型方法可以使用类型属性的名称访问类型属性，而无需使用类型名称前缀。
+
+这里有一个例子`struct LevelTracker {}`可跟踪玩家在游戏的不同级别或阶段的进度，暂不放入。
+
+# 下标Subscript
+Classes, structures, enumerations都可以定义Subscript，这些下标是用于访问集合，列表或序列的成员元素的快捷方式。subscripts可以是读写的也可以是只读的，应get{}和set{}实现
+
+```swift
+subscript(index: Int) -> Int {
+    get {
+        // Return an appropriate subscript value here.
+    }
+    set(newValue) {
+        // Perform a suitable setting action here.
+    }
+}
+
+// 只读，省略get{}
+subscript(index: Int) -> Int {
+    // Return an appropriate subscript value here.
+}
+
+struct TimesTable {
+    let multiplier: Int
+    subscript(index: Int) -> Int {
+        return multiplier * index
+    }
+}
+let threeTimesTable = TimesTable(multiplier: 3)
+print("six times three is \(threeTimesTable[6])")
+// Prints "six times three is 18"
+```
+## 下标用法
+下标通常用作访问集合，列表或序列中的成员元素的快捷方式。Dictionary类型实现了下标来设置和检索Dictionary实例中存储的值，键值下标接受并返回type Int?或“ optional int”的值
+
+```swift
+var numberOfLegs = ["spider": 8, "ant": 6, "cat": 4]
+numberOfLegs["bird"] = 2
+```
+下标可以采用任意数量的输入参数，并且这些输入参数可以是任何类型。下标还可以返回任何类型的值。与function不同，下标不能使用输入输出参数。
+```swift
+struct Matrix {
+    let rows: Int, columns: Int
+    var grid: [Double]
+    init(rows: Int, columns: Int) {
+        self.rows = rows
+        self.columns = columns
+        grid = Array(repeating: 0.0, count: rows * columns)
+    }
+    func indexIsValid(row: Int, column: Int) -> Bool {
+        return row >= 0 && row < rows && column >= 0 && column < columns
+    }
+    subscript(row: Int, column: Int) -> Double {
+        get {
+            assert(indexIsValid(row: row, column: column), "Index out of range")
+            return grid[(row * columns) + column]
+        }
+        set {
+            assert(indexIsValid(row: row, column: column), "Index out of range")
+            grid[(row * columns) + column] = newValue
+        }
+    }
+}
+
+var matrix = Matrix(rows: 2, columns: 2)
+
+matrix[0, 1] = 1.5
+matrix[1, 0] = 3.2
+
+let someValue = matrix[2, 2]
+// This triggers an assert, because [2, 2] is outside of the matrix bounds.
+```
+上面的示例创建一个Matrix具有两行两列的新实例。该实例的grid数组Matrix实际上是矩阵的展平版本，从左上角到右下角读取：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200714173805103.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200714173721351.png)
+## Type Subscripts
+如上所述，实例下标是您在特定类型的实例上调用的下标。您还可以定义在类型本身上调用的下标。这种下标称为类型下标。**可以subscript关键字之前写入关键字static。**
+
+```swift
+enum Planet: Int {
+    case mercury = 1, venus, earth, mars, jupiter, saturn, uranus, neptune
+    static subscript(n: Int) -> Planet {
+        return Planet(rawValue: n)!
+    }
+}
+let mars = Planet[4]
+print(mars)
+```
+# 继承Inheritance
+一个类可以从另一个类继承方法，属性和其他特征。当一个类从另一个类继承时，继承的类称为子类，而其继承的类称为其超类。
+## 基类Base Class
+任何不从其他类继承的类都称为基类。
+
+```swift
+class Vehicle {
+    var currentSpeed = 0.0
+    var description: String {
+        return "traveling at \(currentSpeed) miles per hour"
+    }
+    func makeNoise() {
+        // do nothing - an arbitrary vehicle doesn't necessarily make a noise
+    }
+}
+
+let someVehicle = Vehicle()
+
+print("Vehicle: \(someVehicle.description)")
+// Vehicle: traveling at 0.0 miles per hour
+```
+## 子类Subclass
+子类化是在现有类的基础上建立新类的行为。子类继承现有类的特征，然后可以对其进行优化。还可以向子类添加新特征。
+
+```swift
+class SomeSubclass: SomeSuperclass {  // 在超类名称之前写上子类名称
+    // subclass definition goes here
+}
+```
+```swift
+class Bicycle: Vehicle {
+    var hasBasket = false // Bicycle类定义的新属性
+}
+bicycle.currentSpeed = 15.0  // 修改属性
+print("Bicycle: \(bicycle.description)")
+// Bicycle: traveling at 15.0 miles per hour
+
+
+class Tandem: Bicycle {  // 子类本省还可以继续子类化
+    var currentNumberOfPassengers = 0
+}let tandem = Tandem()
+tandem.hasBasket = true
+tandem.currentNumberOfPassengers = 2
+tandem.currentSpeed = 22.0
+print("Tandem: \(tandem.description)")
+// Tandem: traveling at 22.0 miles per hour
+```
+## Overriding
+子类可以提供其自己的实例方法，类型方法，实例属性，类型属性或下标的自定义实现，否则该实例方法将从超类继承。这称为覆盖。要覆盖原本会被继承的特征，在覆盖定义的前面加上override关键字。
+
+```swift
+class Train: Vehicle {
+    override func makeNoise() {
+        print("Choo Choo")
+    }
+}
+
+let train = Train()
+train.makeNoise()
+// Prints "Choo Choo"
+```
+通过在子类属性重写中同时提供getter和setter，可以将继承的只读属性呈现为读写属性。但不能将继承的读写属性表示为只读属性，如果在属性替代中提供了一个setter，则还必须为该替代提供一个getter。
+### Overriding Property Observers
+您可以使用属性覆盖将属性观察器添加到继承的属性。这使您可以在继承属性的值更改时得到通知。
+不能将属性观察器添加到继承的常量存储属性或继承的只读计算属性。这些属性的值无法设置，因此不建议提供willSet或didSet实现作为替代的一部分。
+
+```swift
+class AutomaticCar: Car {
+    override var currentSpeed: Double {
+        didSet {
+            gear = Int(currentSpeed / 10.0) + 1
+        }
+    }
+}
+
+let automatic = AutomaticCar()
+automatic.currentSpeed = 35.0
+print("AutomaticCar: \(automatic.description)")
+// AutomaticCar: traveling at 35.0 miles per hour in gear 4
+```
+
+## 防止被Override
+可以通过将方法，属性或下标标记为final来防止其被覆盖，如`final var, final func, final class func, final subscript`
+
+# Initialization
+初始化是准备使用的类，结构或枚举实例的过程。Swift初始化程序不会返回值。它们的主要作用是确保在首次使用类型之前，正确初始化类型的新实例。
+## 设置存储属性的初始值
+class和struct必须在创建该class或者struct的实例时将其所有存储的属性设置为适当的初始值。存储的属性不能处于不确定状态。
+可以在初始化程序中为存储的属性设置初始值，或者通过将默认属性值分配为属性定义的一部分来设置初始值。
+### 初始化器Initializers
+
+```swift
+init() {
+    // perform some initialization here
+}
+```
+### 默认属性值Default Property Values
+
+```swift
+struct Fahrenheit {
+    var temperature = 32.0
+}
+```
+## 自定义初始化
+可以使用输入参数和可选属性类型，或通过在初始化过程中分配常量属性来自定义初始化过程。
+### 初始化参数
+初始化参数具有与function和method参数相同的功能和语法
+```swift
+struct Celsius {
+    var temperatureInCelsius: Double
+    init(fromFahrenheit fahrenheit: Double) {
+        temperatureInCelsius = (fahrenheit - 32.0) / 1.8
+    }
+    init(fromKelvin kelvin: Double) {
+        temperatureInCelsius = kelvin - 273.15
+    }
+}
+let boilingPointOfWater = Celsius(fromFahrenheit: 212.0)
+// boilingPointOfWater.temperatureInCelsius is 100.0
+let freezingPointOfWater = Celsius(fromKelvin: 273.15)
+// freezingPointOfWater.temperatureInCelsius is 0.0
+```
+### 参数名称和参数标签
+function和method参数一样，初始化参数可以具有在初始化程序的主体内使用的参数名称和在调用初始化程序时使用的参数标签。但是，初始化程序在其括号前没有以function和method那样的方式标识函数的名称。因此，初始化器参数的名称和类型在确定应调用哪个初始化器中起着特别重要的作用。
+
+```swift
+struct Color {
+    let red, green, blue: Double
+    init(red: Double, green: Double, blue: Double) {
+        self.red   = red
+        self.green = green
+        self.blue  = blue
+    }
+    init(white: Double) {
+        red   = white
+        green = white
+        blue  = white
+    }
+}
+
+let magenta = Color(red: 1.0, green: 0.0, blue: 1.0)
+let halfGray = Color(white: 0.5)
+
+let veryGreen = Color(0.0, 1.0, 0.0) // 调用时必须写标签
+// this reports a compile-time error - argument labels are required
+```
+### 不带参数标签的初始化参数
+如果不想为初始化参数使用参数标签，为替代显示参数标签，可以为该参数写下划线（_）
+
+```swift
+struct Celsius {
+    var temperatureInCelsius: Double
+    init(fromFahrenheit fahrenheit: Double) {
+        temperatureInCelsius = (fahrenheit - 32.0) / 1.8
+    }
+    init(fromKelvin kelvin: Double) {
+        temperatureInCelsius = kelvin - 273.15
+    }
+    init(_ celsius: Double) {
+        temperatureInCelsius = celsius
+    }
+}
+let bodyTemperature = Celsius(37.0)
+// bodyTemperature.temperatureInCelsius is 37.0
+```
+### 可选属性类型
+如果自定义类型的存储属性在逻辑上被允许为nil（可能是因为在初始化期间无法设置其值，或者因为稍后某个时候允许为nil），就需要设置为可选类型。可选类型的属性将使用值自动初始化nil。
+
+```swift
+class SurveyQuestion {
+    var text: String
+    var response: String?
+    init(text: String) {
+        self.text = text
+    }
+    func ask() {
+        print(text)
+    }
+}
+let cheeseQuestion = SurveyQuestion(text: "Do you like cheese?")
+cheeseQuestion.ask()
+// Prints "Do you like cheese?" ，直到询问问题后，才能知道对调查问题的回答
+cheeseQuestion.response = "Yes, I do like cheese."
+```
+### 在初始化期间分配常量属性
+可以在初始化期间的任何时候为常量属性分配一个值，只要在初始化完成时将其设置为确定值即可。为常数属性分配值后，就无法再对其进行修改。
+对于类实例，只能在引入常量的类的初始化期间对其进行修改。子类不能修改它。
+## 默认初始化器
+默认初始化程序仅创建一个新实例，并将其所有属性设置为其默认值。
+```swift
+class ShoppingListItem {
+    var name: String?
+    var quantity = 1
+    var purchased = false
+}
+var item = ShoppingListItem()
+```
+### 结构类型的成员初始化器
+与默认初始化程序不同，该结构即使在存储了没有默认值的属性的情况下，也会接收成员初始化程序。逐成员初始化器是初始化新结构实例的成员属性的简便方法。可以通过名称将新实例的属性的初始值传递给成员初始化器。
+
+```swift
+struct Size {
+    var width = 0.0, height = 0.0
+}
+let twoByTwo = Size(width: 2.0, height: 2.0)
+
+// 调用成员初始化器时，可以忽略具有默认值的任何属性的值。
+let zeroByTwo = Size(height: 2.0)
+print(zeroByTwo.width, zeroByTwo.height)
+// Prints "0.0 2.0"
+
+let zeroByZero = Size()
+print(zeroByZero.width, zeroByZero.height)
+// Prints "0.0 0.0"
+```
+## Initializer Delegation for Value Types
+初始化程序可以调用其他初始化程序来执行实例初始化的一部分。此过程称为初始化程序delegation ，可避免在多个初始化程序之间重复代码。
+
+```swift
+struct Size {
+    var width = 0.0, height = 0.0
+}
+struct Point {
+    var x = 0.0, y = 0.0
+}
+
+struct Rect {
+    var origin = Point()
+    var size = Size()
+    init() {}
+    init(origin: Point, size: Size) {
+        self.origin = origin
+        self.size = size
+    }
+    init(center: Point, size: Size) {
+        let originX = center.x - (size.width / 2)
+        let originY = center.y - (size.height / 2)
+        self.init(origin: Point(x: originX, y: originY), size: size)
+    }
+}
+
+let basicRect = Rect()
+// basicRect's origin is (0.0, 0.0) and its size is (0.0, 0.0)
+
+let originRect = Rect(origin: Point(x: 2.0, y: 2.0),
+                      size: Size(width: 5.0, height: 5.0))
+// originRect's origin is (2.0, 2.0) and its size is (5.0, 5.0)
+```
+## 类继承和初始化
+在初始化期间，必须为类的所有存储属性（包括该类从其超类继承的所有属性）分配一个初始值。
+### 指定的初始化程序和便利性初始化程序
+**指定的初始化程序将完全初始化该类引入的所有属性，并调用适当的超类初始化程序以继续超类链中的初始化过程。**
+每个类必须至少有一个指定的初始化程序。在某些情况下，可以通过从超类继承一个或多个指定的初始化程序来满足此要求。
+
+便利的初始值设定项是辅助的，支持类的初始值设定项。可以定义一个便捷初始化程序，以从与便捷初始化程序相同的类中调用一个指定初始化程序，并将某些指定初始值设定项的参数设置为默认值。您还可以定义一个便捷初始化程序，以针对特定用例或输入值类型创建该类的实例。
+
+### 指定和便捷初始化程序的语法
+指定的类初始化器的编写方式与值类型的简单初始化器的编写方式相同：
+
+```swift
+init(parameters) {
+    statements
+}
+```
+
+便捷初始化程序将convenience修饰符放在init关键字之前，并用空格分隔：
+
+```swift
+convenience init(parameters) {
+    statements
+}
+```
+### 类类型的初始化程序委托
+为了简化指定初始化器和便捷初始化器之间的关系，Swift将以下三个规则应用于初始化器之间的委托delegation 调用：
+**规则1**指定的初始值设定项必须从其直接超类调用指定的初始值设定项。
+**规则2**便捷初始化程序必须从同一类调用另一个初始化程序。
+**规则3**便利初始化程序必须最终调用指定的初始化程序。
+
+- 指定的初始值必须始终delegate up。
+- 便利的初始化必须始终delegate across。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200714205951960.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+### 两阶段初始化（待研究）
+Swift中的类初始化是一个分为两个阶段的过程。在第一阶段，每个存储的属性都由引入它的类分配一个初始值。一旦确定了每个存储属性的初始状态，便开始第二阶段，并且在认为新实例可以使用之前，每个类都有机会自定义其存储属性。
+两阶段初始化过程的使用使初始化安全，同时仍为类层次结构中的每个类提供了完全的灵活性。两阶段初始化可防止在初始化属性值之前对其进行访问，并防止其他初始化程序意外地将属性值设置为其他值。
+
+Swift的编译器执行四项有用的安全检查，以确保两阶段初始化完成且没有错误，这里就不展开说四项安全检查和两个阶段了。
+### 初始化程序的继承和覆盖
+Swift子类默认情况下不会继承其超类初始化程序。
+如果希望自定义子类提供一个或多个与其父类相同的初始化器，则可以在子类中提供这些初始化器的自定义实现。
+当编写与超类指定的初始化程序匹配的子类初始化程序时，实际上是在提供该指定的初始化程序的替代。因此，必须在子类的初始化程序定义之前加override修饰符。
+
+```swift
+class Vehicle {
+    var numberOfWheels = 0
+    var description: String {
+        return "\(numberOfWheels) wheel(s)"
+    }
+}
+let vehicle = Vehicle()
+print("Vehicle: \(vehicle.description)")
+// Vehicle: 0 wheel(s)
+
+
+class Bicycle: Vehicle {
+    override init() {
+        super.init()
+        numberOfWheels = 2
+    }
+}
+let bicycle = Bicycle()
+print("Bicycle: \(bicycle.description)")
+// Bicycle: 2 wheel(s)
+
+
+class Hoverboard: Vehicle {
+    var color: String
+    init(color: String) {
+        self.color = color
+        // super.init() implicitly called here
+    }
+    override var description: String {
+        return "\(super.description) in a beautiful \(color)"
+    }
+}
+let hoverboard = Hoverboard(color: "silver")
+print("Hoverboard: \(hoverboard.description)")
+// Hoverboard: 0 wheel(s) in a beautiful silver
+```
+### 自动初始化程序继承
+**默认情况下，子类不继承其超类初始化程序。但是，如果满足某些条件，则会自动继承超类初始化器。**
+假设为子类中引入的任何新属性提供默认值，则适用以下两个规则：
+**规则1**如果您的子类没有定义任何指定的初始化器，它将自动继承其所有超类的指定初始化器。
+**规则2**如果您的子类提供了其所有超类指定初始化器的实现（通过按规则1继承它们，或通过提供自定义实现作为其定义的一部分），那么它将自动继承所有超类便利性初始化器。
+
+即使您的子类添加了进一步的便利初始化程序，这些规则也适用。
+### 指定的便捷初始化器
+以下示例显示了实际的指定初始化器，便捷初始化器和自动初始化器继承。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200714213330385.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+```swift
+class Food {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+    convenience init() {
+        self.init(name: "[Unnamed]")
+    }
+}
+
+let namedMeat = Food(name: "Bacon")
+// namedMeat's name is "Bacon"
+
+let mysteryMeat = Food()
+// mysteryMeat's name is "[Unnamed]"
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200714213520579.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+class RecipeIngredient: Food {
+    var quantity: Int
+    init(name: String, quantity: Int) {
+        self.quantity = quantity
+        super.init(name: name)
+    }
+    override convenience init(name: String) {
+        self.init(name: name, quantity: 1)
+    }
+}
+
+let oneMysteryItem = RecipeIngredient()
+let oneBacon = RecipeIngredient(name: "Bacon")
+let sixEggs = RecipeIngredient(name: "Eggs", quantity: 6)
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200714213623663.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+```swift
+class ShoppingListItem: RecipeIngredient {
+    var purchased = false
+    var description: String {
+        var output = "\(quantity) x \(name)"
+        output += purchased ? " ✔" : " ✘"
+        return output
+    }
+}
+
+var breakfastList = [
+    ShoppingListItem(),
+    ShoppingListItem(name: "Bacon"),
+    ShoppingListItem(name: "Eggs", quantity: 6),
+]
+breakfastList[0].name = "Orange juice"
+breakfastList[0].purchased = true
+for item in breakfastList {
+    print(item.description)
+}
+// 1 x Orange juice ✔
+// 1 x Bacon ✘
+// 6 x Eggs ✘
+```
+
+## 初始化失败
+无效的初始化参数值，缺少必需的外部资源或其他阻止初始化成功的条件可能触发此失败。在init关键字（init?）后面放置问号，可以编写失败的初始化程序。
+
+```swift
+struct Animal {
+    let species: String
+    init?(species: String) {
+        if species.isEmpty { return nil }
+        self.species = species
+    }
+}
+
+let someCreature = Animal(species: "Giraffe")
+// someCreature is of type Animal?, not Animal
+
+if let giraffe = someCreature {
+    print("An animal was initialized with a species of \(giraffe.species)")
+}
+// Prints "An animal was initialized with a species of Giraffe"
+
+let anonymousCreature = Animal(species: "")
+// anonymousCreature is of type Animal?, not Animal
+
+if anonymousCreature == nil {
+    print("The anonymous creature could not be initialized")
+}
+// Prints "The anonymous creature could not be initialized"
+```
+### 枚举失败的初始化程序
+您可以使用故障初始化程序基于一个或多个参数来选择适当的枚举用例。如果提供的参数与适当的枚举情况不匹配，则初始化器可能会失败。
+
+```swift
+enum TemperatureUnit {
+    case kelvin, celsius, fahrenheit
+    init?(symbol: Character) {
+        switch symbol {
+        case "K":
+            self = .kelvin
+        case "C":
+            self = .celsius
+        case "F":
+            self = .fahrenheit
+        default:
+            return nil
+        }
+    }
+}
+
+let fahrenheitUnit = TemperatureUnit(symbol: "F")
+if fahrenheitUnit != nil {
+    print("This is a defined temperature unit, so initialization succeeded.")
+}
+// Prints "This is a defined temperature unit, so initialization succeeded."
+
+let unknownUnit = TemperatureUnit(symbol: "X")
+if unknownUnit == nil {
+    print("This is not a defined temperature unit, so initialization failed.")
+}
+// Prints "This is not a defined temperature unit, so initialization failed."
+```
+### 带有原始值的枚举失败的初始化程序
+带有原始值的枚举会自动接收一个失败的初始化器，init?(rawValue:)该初始化器采用称为rawValue合适原始值类型的参数，并在找到匹配的枚举情况下选择匹配的枚举用例，如果不存在匹配的值则触发初始化失败。
+
+```swift
+enum TemperatureUnit: Character {
+    case kelvin = "K", celsius = "C", fahrenheit = "F"
+}
+
+let fahrenheitUnit = TemperatureUnit(rawValue: "F")
+if fahrenheitUnit != nil {
+    print("This is a defined temperature unit, so initialization succeeded.")
+}
+// Prints "This is a defined temperature unit, so initialization succeeded."
+
+let unknownUnit = TemperatureUnit(rawValue: "X")
+if unknownUnit == nil {
+    print("This is not a defined temperature unit, so initialization failed.")
+}
+// Prints "This is not a defined temperature unit, so initialization failed."
+```
+### 初始化失败的传播
+class，struct或enum的故障初始化器可以委托同一class，struct或enum的另一个故障初始化器。类似地，子类可故障初始化器可以委托最多超类可故障初始化器。在任何一种情况下，如果委托给另一个导致初始化失败的初始化程序，则整个初始化过程将立即失败，并且不会执行其他初始化代码。
+
+```swift
+class Product {
+    let name: String
+    init?(name: String) {
+        if name.isEmpty { return nil }
+        self.name = name
+    }
+}
+
+class CartItem: Product {
+    let quantity: Int
+    init?(name: String, quantity: Int) {
+        if quantity < 1 { return nil }
+        self.quantity = quantity
+        super.init(name: name)
+    }
+}
+
+if let twoSocks = CartItem(name: "sock", quantity: 2) {
+    print("Item: \(twoSocks.name), quantity: \(twoSocks.quantity)")
+}
+// Prints "Item: sock, quantity: 2"
+
+if let zeroShirts = CartItem(name: "shirt", quantity: 0) {
+    print("Item: \(zeroShirts.name), quantity: \(zeroShirts.quantity)")
+} else {
+    print("Unable to initialize zero shirts")
+}
+// Prints "Unable to initialize zero shirts"
+
+if let oneUnnamed = CartItem(name: "", quantity: 1) {
+    print("Item: \(oneUnnamed.name), quantity: \(oneUnnamed.quantity)")
+} else {
+    print("Unable to initialize one unnamed product")
+}
+// Prints "Unable to initialize one unnamed product"
+```
+### 覆盖失败的初始化程序
+可以在子类中覆盖超类可失败的初始化程序，或可以使用子类不可失败的初始化程序来覆盖超类可失败的初始化程序。
+
+```swift
+class Document {
+    var name: String?
+    // this initializer creates a document with a nil name value
+    init() {}
+    // this initializer creates a document with a nonempty name value
+    init?(name: String) {
+        if name.isEmpty { return nil }
+        self.name = name
+    }
+}
+
+class AutomaticallyNamedDocument: Document {
+    override init() {
+        super.init()
+        self.name = "[Untitled]"
+    }
+    override init(name: String) {
+        super.init()
+        if name.isEmpty {
+            self.name = "[Untitled]"
+        } else {
+            self.name = name
+        }
+    }
+}
+
+class UntitledDocument: Document {
+    override init() {
+        super.init(name: "[Untitled]")!
+    }
+}
+```
+### init!
+可以定义一个初始化程序使用（init?）来创建适当类型的可选实例。还可以定义一个失败的初始化程序使用（init!），该初始化程序创建适当类型的隐式展开的可选实例。
+可以从委托init?到init!，反之亦然；可以覆盖init?与init!，反之亦然；也可以从委托init到init!，但如果init!初始化初始化失败会引发一个断言。
+## 必需的初始化器
+指示该类的每个子类都必须实现该初始化器：
+
+```swift
+class SomeClass {
+    required init() {
+        // initializer implementation goes here
+    }
+}
+```
+
+您还必须required在所需的初始化程序的每个子类实现之前编写修饰符，以指示初始化程序要求适用于链中的其他子类。override覆盖必需的指定初始值设定项时，您无需编写修饰符：
+
+```swift
+class SomeSubclass: SomeClass {
+    required init() {
+        // subclass implementation of the required initializer goes here
+    }
+}
+```
+## 使用closure或function设置默认属性值
+如果存储的属性的默认值需要一些自定义或设置，则可以使用闭包或全局函数为该属性提供自定义的默认值。每当初始化属性所属类型的新实例时，都会调用闭包或函数，并将其返回值分配为属性的默认值。
+
+```swift
+class SomeClass {
+    let someProperty: SomeType = {
+        // create a default value for someProperty inside this closure
+        // someValue must be of the same type as SomeType
+        return someValue
+    }()
+}
+```
+闭包的末大括号后跟一对空括号。这告诉Swift立刻执行关闭。如果省略这些括号，则尝试将闭包本身分配给属性，而不是闭包的返回值。
+如果使用闭包来初始化属性，则在执行闭包时实例的其余部分尚未初始化。这意味着无法从闭包内部访问任何其他属性值，即使这些属性具有默认值也是如此。也不能使用隐式self属性，也不能调用实例的任何方法。
+
+```swift
+struct Chessboard {
+    let boardColors: [Bool] = {
+        var temporaryBoard = [Bool]()
+        var isBlack = false
+        for i in 1...8 {
+            for j in 1...8 {
+                temporaryBoard.append(isBlack)
+                isBlack = !isBlack
+            }
+            isBlack = !isBlack
+        }
+        return temporaryBoard
+    }()
+    func squareIsBlackAt(row: Int, column: Int) -> Bool {
+        return boardColors[(row * 8) + column]
+    }
+}
+
+let board = Chessboard()
+print(board.squareIsBlackAt(row: 0, column: 1))
+// Prints "true"
+print(board.squareIsBlackAt(row: 7, column: 7))
+// Prints "false"
+```
