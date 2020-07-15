@@ -2877,3 +2877,746 @@ print(board.squareIsBlackAt(row: 0, column: 1))
 print(board.squareIsBlackAt(row: 7, column: 7))
 // Prints "false"
 ```
+# Deinitialization
+当不再需要实例时，Swift会自动释放其实例，以释放资源。通常，在实例被释放后，无需执行手动清理。但是，当使用自己的资源时，可能需要自己执行一些额外的清理。如如果创建一个自定义类来打开文件并向其中写入一些数据，则可能需要在释放该类实例之前关闭该文件。
+
+```swift
+deinit {
+    // perform the deinitialization
+}
+```
+# Optional Chaining
+可选链接是在调用可能为nil的properties, methods, and subscripts
+## 可选链接作为强制展开的替代方法
+您可以通过在要调用其properties, methods, and subscripts的可选值之后放置问号（?）来指定可选链。这非常类似于将感叹号（!）放在可选值之后以强制展开其值。
+
+```swift
+class Person {
+    var residence: Residence?
+}
+
+class Residence {
+    var numberOfRooms = 1
+}
+
+let john = Person()
+
+let roomCount = john.residence!.numberOfRooms
+// this triggers a runtime error
+
+
+if let roomCount = john.residence?.numberOfRooms {
+    print("John's residence has \(roomCount) room(s).")
+} else {
+    print("Unable to retrieve the number of rooms.")
+}
+// Prints "Unable to retrieve the number of rooms."
+
+
+if let roomCount = john.residence?.numberOfRooms {
+    print("John's residence has \(roomCount) room(s).")
+} else {
+    print("Unable to retrieve the number of rooms.")
+}
+// Prints "John's residence has 1 room(s)."
+```
+## 为Optional Chaining定义Model Classes
+可以将可选链接与深度超过一级的属性，方法和下标一起使用。这使您可以深入研究相互关联类型的复杂模型中的子属性，并检查是否可以访问这些子属性上的属性，方法和下标。
+
+```swift
+class Person {
+    var residence: Residence?
+}
+
+class Residence {
+    var rooms = [Room]()
+    var numberOfRooms: Int {
+        return rooms.count
+    }
+    subscript(i: Int) -> Room {
+        get {
+            return rooms[i]
+        }
+        set {
+            rooms[i] = newValue
+        }
+    }
+    func printNumberOfRooms() {
+        print("The number of rooms is \(numberOfRooms)")
+    }
+    var address: Address?
+}
+
+class Room {
+    let name: String
+    init(name: String) { self.name = name }
+}
+
+class Address {
+    var buildingName: String?
+    var buildingNumber: String?
+    var street: String?
+    func buildingIdentifier() -> String? {
+        if let buildingNumber = buildingNumber, let street = street {
+            return "\(buildingNumber) \(street)"
+        } else if buildingName != nil {
+            return buildingName
+        } else {
+            return nil
+        }
+    }
+}
+```
+## 通过可选链接访问properties
+
+```swift
+let john = Person()
+if let roomCount = john.residence?.numberOfRooms {
+    print("John's residence has \(roomCount) room(s).")
+} else {
+    print("Unable to retrieve the number of rooms.")
+}
+// Prints "Unable to retrieve the number of rooms."
+
+let someAddress = Address()
+someAddress.buildingNumber = "29"
+someAddress.street = "Acacia Road"
+john.residence?.address = someAddress
+
+func createAddress() -> Address {
+    print("Function was called.")
+
+    let someAddress = Address()
+    someAddress.buildingNumber = "29"
+    someAddress.street = "Acacia Road"
+
+    return someAddress
+}
+john.residence?.address = createAddress()
+```
+## 通过可选链接调用Methods
+
+```swift
+func printNumberOfRooms() {
+    print("The number of rooms is \(numberOfRooms)")
+}
+
+if john.residence?.printNumberOfRooms() != nil {
+    print("It was possible to print the number of rooms.")
+} else {
+    print("It was not possible to print the number of rooms.")
+}
+// Prints "It was not possible to print the number of rooms."
+```
+## 通过可选链接访问subscripts
+通过可选链访问可选值上的下标时，将问号放在下标的括号之前，而不是之后。可选链接问号总是紧接在表达式的可选部分之后。
+
+```swift
+if let firstRoomName = john.residence?[0].name {
+    print("The first room name is \(firstRoomName).")
+} else {
+    print("Unable to retrieve the first room name.")
+}
+// Prints "Unable to retrieve the first room name."
+
+
+john.residence?[0] = Room(name: "Bathroom")
+
+
+let johnsHouse = Residence()
+johnsHouse.rooms.append(Room(name: "Living Room"))
+johnsHouse.rooms.append(Room(name: "Kitchen"))
+john.residence = johnsHouse
+
+if let firstRoomName = john.residence?[0].name {
+    print("The first room name is \(firstRoomName).")
+} else {
+    print("Unable to retrieve the first room name.")
+}
+// Prints "The first room name is Living Room."
+```
+访问可选类型的下标：如果下标返回的是可选类型的值，则在下标的右括号后面放置一个问号，以链接到其可选的返回值上：
+```swift
+var testScores = ["Dave": [86, 82, 84], "Bev": [79, 94, 81]]
+testScores["Dave"]?[0] = 91
+testScores["Bev"]?[0] += 1
+testScores["Brian"]?[0] = 72
+// the "Dave" array is now [91, 82, 84] and the "Bev" array is now [80, 94, 81]
+```
+## Linking Multiple Levels of Chaining
+如果您尝试检索的类型不是可选的，则由于可选的链接，它将变为可选的。
+如果你正在尝试检索类型是已经可选的，它不会变得更因为链接可选。
+因此：
+
+如果尝试吧一个Int值通过可选的链接检索值，则无论使用多少级链接，总是会返回Int?。
+同样，如果您尝试Int?通过可选的链接检索值，则无论使用多少级链接，总是会返回Int?。
+
+```swift
+if let johnsStreet = john.residence?.address?.street {
+    print("John's street name is \(johnsStreet).")
+} else {
+    print("Unable to retrieve the address.")
+}
+// Prints "Unable to retrieve the address."
+
+
+let johnsAddress = Address()
+johnsAddress.buildingName = "The Larches"
+johnsAddress.street = "Laurel Street"
+john.residence?.address = johnsAddress
+
+if let johnsStreet = john.residence?.address?.street {
+    print("John's street name is \(johnsStreet).")
+} else {
+    print("Unable to retrieve the address.")
+}
+// Prints "John's street name is Laurel Street."
+```
+## 链接具有可选返回值的Methods
+前面的示例显示了如何通过可选链接检索可选类型的属性的值。还可以使用可选链接来调用返回可选类型值的方法，并根据需要链接该方法的返回值。
+
+```swift
+if let buildingIdentifier = john.residence?.address?.buildingIdentifier() {
+    print("John's building identifier is \(buildingIdentifier).")
+}
+// Prints "John's building identifier is The Larches."
+
+if let beginsWithThe =
+    john.residence?.address?.buildingIdentifier()?.hasPrefix("The") {
+    if beginsWithThe {
+        print("John's building identifier begins with \"The\".")
+    } else {
+        print("John's building identifier does not begin with \"The\".")
+    }
+}
+// Prints "John's building identifier begins with "The"."
+```
+要将可选链接问号放在括号后，因为要串联上可选的值是buildingIdentifier()方法的返回值，而不是buildingIdentifier()方法本身。
+
+# Error Handling
+错误处理是响应程序错误状态并从错误状态中恢复的过程。
+## 表示和抛出错误
+
+```swift
+enum VendingMachineError: Error {
+    case invalidSelection
+    case insufficientFunds(coinsNeeded: Int)
+    case outOfStock
+}
+
+throw VendingMachineError.insufficientFunds(coinsNeeded: 5)
+```
+## 处理错误
+要在代码中标识这些位置，请在一段调用可能引发错误的函数，方法或初始化程序的代码之前，写上try关键字（ try?或try!）
+### 使用投掷函数传播错误：throws
+标throws有的函数称为抛出函数。如果函数指定了返回类型，则throws在返回箭头（->）之前写入关键字。
+
+```swift
+func canThrowErrors() throws -> String
+func cannotThrowErrors() -> String
+```
+
+```swift
+struct Item {
+    var price: Int
+    var count: Int
+}
+
+class VendingMachine {
+    var inventory = [
+        "Candy Bar": Item(price: 12, count: 7),
+        "Chips": Item(price: 10, count: 4),
+        "Pretzels": Item(price: 7, count: 11)
+    ]
+    var coinsDeposited = 0
+
+    func vend(itemNamed name: String) throws {
+        guard let item = inventory[name] else {
+            throw VendingMachineError.invalidSelection
+        }
+
+        guard item.count > 0 else {
+            throw VendingMachineError.outOfStock
+        }
+
+        guard item.price <= coinsDeposited else {
+            throw VendingMachineError.insufficientFunds(coinsNeeded: item.price - coinsDeposited)
+        }
+
+        coinsDeposited -= item.price
+
+        var newItem = item
+        newItem.count -= 1
+        inventory[name] = newItem
+
+        print("Dispensing \(name)")
+    }
+}
+
+let favoriteSnacks = [
+    "Alice": "Chips",
+    "Bob": "Licorice",
+    "Eve": "Pretzels",
+]
+func buyFavoriteSnack(person: String, vendingMachine: VendingMachine) throws {
+    let snackName = favoriteSnacks[person] ?? "Candy Bar"
+    try vendingMachine.vend(itemNamed: snackName)
+}
+
+struct PurchasedSnack {
+    let name: String
+    init(name: String, vendingMachine: VendingMachine) throws {
+        try vendingMachine.vend(itemNamed: name)
+        self.name = name
+    }
+}
+```
+## 使用Do-Catch处理错误
+如果do子句中的代码引发错误，则将其与catch子句进行匹配以确定其中哪一个可以处理该错误。如果catch子句没有模式，则该子句匹配任何错误，并将错误绑定到名为的局部常量error。
+
+```swift
+var vendingMachine = VendingMachine()
+vendingMachine.coinsDeposited = 8
+do {
+    try buyFavoriteSnack(person: "Alice", vendingMachine: vendingMachine)
+    print("Success! Yum.")
+} catch VendingMachineError.invalidSelection {
+    print("Invalid Selection.")
+} catch VendingMachineError.outOfStock {
+    print("Out of Stock.")
+} catch VendingMachineError.insufficientFunds(let coinsNeeded) {
+    print("Insufficient funds. Please insert an additional \(coinsNeeded) coins.")
+} catch {
+    print("Unexpected error: \(error).")
+}
+// Prints "Insufficient funds. Please insert an additional 2 coins."
+```
+在nonthrowing函数中，do- catch语句必须处理该错误。在throwing函数中，do- catch语句或调用者都必须处理错误。
+
+```swift
+func nourish(with item: String) throws {
+    do {
+        try vendingMachine.vend(itemNamed: item)
+    } catch is VendingMachineError {
+        print("Couldn't buy that from the vending machine.")
+    }
+}
+
+do {
+    try nourish(with: "Beet-Flavored Chips")
+} catch {
+    print("Unexpected non-vending-machine-related error: \(error)")
+}
+// Prints "Couldn't buy that from the vending machine."
+```
+多个捕获多个错误使用逗号隔开
+
+```swift
+func eat(item: String) throws {
+    do {
+        try vendingMachine.vend(itemNamed: item)
+    } catch VendingMachineError.invalidSelection, VendingMachineError.insufficientFunds, VendingMachineError.outOfStock {
+        print("Invalid selection, out of stock, or not enough money.")
+    }
+}
+```
+### 将错误转换为可选值：try?
+可以try?通过将错误转换为可选值来处理错误。如果在评估try?表达式时抛出错误，则表达式的值为nil。
+
+```swift
+func someThrowingFunction() throws -> Int {
+    // ...
+}
+
+let x = try? someThrowingFunction()
+
+let y: Int?
+do {
+    y = try someThrowingFunction()
+} catch {
+    y = nil
+}
+```
+可以使用try?编写简洁的错误处理代码
+
+```swift
+func fetchData() -> Data? {
+    if let data = try? fetchDataFromDisk() { return data }
+    if let data = try? fetchDataFromServer() { return data }
+    return nil
+}
+```
+### 禁用错误传播：try!
+在知道抛出函数或方法实际上不会在运行时抛出错时，可以在表达式之前编写try!以禁用错误传播，并将调用包装在不会引发任何错误的运行时断言中。如果实际抛出错误，将收到运行时错误。
+
+```swift
+let photo = try! loadImage(atPath: "./Resources/John Appleseed.jpg")
+```
+## 指定清理措施（待研究）
+可以defer在代码执行离开当前代码块之前使用一条语句来执行一组语句。一条defer语句推迟执行，直到退出当前范围。该语句由defer关键字和以后要执行的语句组成。延迟的语句可能不包含任何将控制权移出该语句的代码，例如break或return语句，或throwing an error。延迟的操作以与代码中写入的顺序相反的顺序执行。也就是说，第一个defer语句中的代码最后执行，第二个defer语句中的代码倒数第二执行，依此类推。defer源代码顺序中的最后一条语句首先执行。
+
+```swift
+func processFile(filename: String) throws {
+    if exists(filename) {
+        let file = open(filename)
+        defer {
+            close(file)
+        }
+        while let line = try file.readline() {
+            // Work with the file.
+        }
+        // close(file) is called here, at the end of the scope.
+    }
+}
+```
+
+# 类型转换
+您可以将类型转换与类和子类的层次结构一起使用，以检查特定类实例的类型，并将该实例转换为相同层次结构中的另一个类。
+
+```swift
+class MediaItem {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+}
+class Movie: MediaItem {
+    var director: String
+    init(name: String, director: String) {
+        self.director = director
+        super.init(name: name)
+    }
+}
+
+class Song: MediaItem {
+    var artist: String
+    init(name: String, artist: String) {
+        self.artist = artist
+        super.init(name: name)
+    }
+}
+
+let library = [
+    Movie(name: "Casablanca", director: "Michael Curtiz"),
+    Song(name: "Blue Suede Shoes", artist: "Elvis Presley"),
+    Movie(name: "Citizen Kane", director: "Orson Welles"),
+    Song(name: "The One And Only", artist: "Chesney Hawkes"),
+    Song(name: "Never Gonna Give You Up", artist: "Rick Astley")
+]
+// the type of "library" is inferred to be [MediaItem]
+```
+## 检查类型：is
+使用类型检查运算符（is）检查实例是否属于某个子类类型。类型检查运算符将返回true实例是否属于该子类类型，false如果不是。
+
+```swift
+var movieCount = 0
+var songCount = 0
+
+for item in library {
+    if item is Movie {
+        movieCount += 1
+    } else if item is Song {
+        songCount += 1
+    }
+}
+
+print("Media library contains \(movieCount) movies and \(songCount) songs")
+// Prints "Media library contains 2 movies and 3 songs"
+```
+## Downcasting：as
+某个类类型的常量或变量实际上可能是指幕后子类的实例。某个类类型的常量或变量实际上可能是指幕后子类的实例。如果您认为是这种情况，可以尝试使用类型转换运算符（as?或as!）将其转换为子类类型。
+当您不确定向下转换是否成功时，请使用类型转换运算符（as?）的条件形式。这种形式的运算符将始终返回一个可选值，该值将在nil无法向下转换的情况下返回。这使您能够检查下调是否成功。
+仅当您确定向下转换将始终成功时，才使用类型转换运算符（as!）的强制形式。如果您尝试向下转换为不正确的类类型，则此形式的运算符将触发运行时错误。
+
+```swift
+for item in library {
+    if let movie = item as? Movie {
+        print("Movie: \(movie.name), dir. \(movie.director)")
+    } else if let song = item as? Song {
+        print("Song: \(song.name), by \(song.artist)")
+    }
+}
+
+// Movie: Casablanca, dir. Michael Curtiz
+// Song: Blue Suede Shoes, by Elvis Presley
+// Movie: Citizen Kane, dir. Orson Welles
+// Song: The One And Only, by Chesney Hawkes
+// Song: Never Gonna Give You Up, by Rick Astley
+```
+## 类型转换为Any和AnyObject
+- Any 可以代表任何类型的实例，包括函数类型。
+- AnyObject 可以代表任何类类型的实例。
+
+```swift
+var things = [Any]()
+
+things.append(0)
+things.append(0.0)
+things.append(42)
+things.append(3.14159)
+things.append("hello")
+things.append((3.0, 5.0))
+things.append(Movie(name: "Ghostbusters", director: "Ivan Reitman"))
+things.append({ (name: String) -> String in "Hello, \(name)" })
+
+for thing in things {
+    switch thing {
+    case 0 as Int:
+        print("zero as an Int")
+    case 0 as Double:
+        print("zero as a Double")
+    case let someInt as Int:
+        print("an integer value of \(someInt)")
+    case let someDouble as Double where someDouble > 0:
+        print("a positive double value of \(someDouble)")
+    case is Double:
+        print("some other double value that I don't want to print")
+    case let someString as String:
+        print("a string value of \"\(someString)\"")
+    case let (x, y) as (Double, Double):
+        print("an (x, y) point at \(x), \(y)")
+    case let movie as Movie:
+        print("a movie called \(movie.name), dir. \(movie.director)")
+    case let stringConverter as (String) -> String:
+        print(stringConverter("Michael"))
+    default:
+        print("something else")
+    }
+}
+
+// zero as an Int
+// zero as a Double
+// an integer value of 42
+// a positive double value of 3.14159
+// a string value of "hello"
+// an (x, y) point at 3.0, 5.0
+// a movie called Ghostbusters, dir. Ivan Reitman
+// Hello, Michael
+```
+Any类型表示任何类型的值，包括可选类型。如果您在Any期望使用类型值的情况下使用可选值，则Swift会警告您。如果确实需要使用可选值作为Any值，则可以使用as运算符将可选值显式转换为Any，如下所示。
+
+```swift
+let optionalNumber: Int? = 3
+things.append(optionalNumber)        // Warning
+things.append(optionalNumber as Any) // No warning
+```
+# 嵌套类型
+
+```swift
+struct BlackjackCard {
+
+    // nested Suit enumeration
+    enum Suit: Character {
+        case spades = "♠", hearts = "♡", diamonds = "♢", clubs = "♣"
+    }
+
+    // nested Rank enumeration
+    enum Rank: Int {
+        case two = 2, three, four, five, six, seven, eight, nine, ten
+        case jack, queen, king, ace
+        struct Values {  // enum Rank的嵌套结构
+            let first: Int, second: Int?
+        }
+        var values: Values {
+            switch self {
+            case .ace:
+                return Values(first: 1, second: 11)
+            case .jack, .queen, .king:
+                return Values(first: 10, second: nil)
+            default:
+                return Values(first: self.rawValue, second: nil)
+            }
+        }
+    }
+
+    // BlackjackCard properties and methods
+    let rank: Rank, suit: Suit
+    var description: String {
+        var output = "suit is \(suit.rawValue),"
+        output += " value is \(rank.values.first)"
+        if let second = rank.values.second {
+            output += " or \(second)"
+        }
+        return output
+    }
+}
+
+let theAceOfSpades = BlackjackCard(rank: .ace, suit: .spades)
+print("theAceOfSpades: \(theAceOfSpades.description)")
+// Prints "theAceOfSpades: suit is ♠, value is 1 or 11"
+```
+Rank和Suit嵌套在其中BlackjackCard，它们的类型也可以从上下文中推断出来，因此，此实例的初始化能够仅通过其案例名称（.ace和.spades）来引用枚举案例。
+## 引用嵌套类型（待研究）
+要在其定义上下文之外使用嵌套类型，要为其名称钱加上所嵌套的类型名称的前缀：
+
+```swift
+let heartsSymbol = BlackjackCard.Suit.hearts.rawValue
+// heartsSymbol is "♡"
+```
+# Extensions
+扩展为现有的类，结构，枚举或协议类型添加了新功能。
+- 添加计算实例属性和计算类型属性
+- 定义实例方法和类型方法
+- 提供新的初始化器
+- 定义下标
+- 定义和使用新的嵌套类型
+- 使现有类型符合协议
+
+```swift
+extension SomeType {
+    // new functionality to add to SomeType goes here
+}
+```
+扩展可以扩展现有类型以使其采用一种或多种协议。要添加协议一致性，请使用与为类或结构编写协议名称相同的方式编写协议名称：
+```swift
+extension SomeType: SomeProtocol, AnotherProtocol {
+    // implementation of protocol requirements goes here
+}
+```
+## 计算属性
+扩展可以将计算的实例属性和计算的类型属性添加到现有类型。
+
+```swift
+extension Double {
+    var km: Double { return self * 1_000.0 }
+    var m: Double { return self }
+    var cm: Double { return self / 100.0 }
+    var mm: Double { return self / 1_000.0 }
+    var ft: Double { return self / 3.28084 }
+}
+let oneInch = 25.4.mm
+print("One inch is \(oneInch) meters")
+// Prints "One inch is 0.0254 meters"
+let threeFeet = 3.ft
+print("Three feet is \(threeFeet) meters")
+// Prints "Three feet is 0.914399970739201 meters"
+
+let aMarathon = 42.km + 195.m
+print("A marathon is \(aMarathon) meters long")
+// Prints "A marathon is 42195.0 meters long"
+```
+## Initializers
+扩展可以向现有类型添加新的初始化器。这使您可以扩展其他类型，以接受自己的自定义类型作为初始化程序参数，或提供未包含在该类型的原始实现中的其他初始化选项。
+扩展可以将新的便捷初始化程序添加到类，但是不能将新的指定初始化程序或反初始化程序添加到类。指定的初始化程序和反初始化程序必须始终由原始类实现提供。
+
+```swift
+struct Size {
+    var width = 0.0, height = 0.0
+}
+struct Point {
+    var x = 0.0, y = 0.0
+}
+struct Rect {
+    var origin = Point()
+    var size = Size()
+}
+
+let defaultRect = Rect()
+let memberwiseRect = Rect(origin: Point(x: 2.0, y: 2.0),
+   size: Size(width: 5.0, height: 5.0))
+   
+extension Rect {
+    init(center: Point, size: Size) {
+        let originX = center.x - (size.width / 2)
+        let originY = center.y - (size.height / 2)
+        self.init(origin: Point(x: originX, y: originY), size: size)
+    }
+}
+
+let centerRect = Rect(center: Point(x: 4.0, y: 4.0),
+                      size: Size(width: 3.0, height: 3.0))
+// centerRect's origin is (2.5, 2.5) and its size is (3.0, 3.0)
+```
+## Methods
+扩展可以向现有类型添加新的实例方法和类型方法。
+
+```swift
+extension Int {
+    func repetitions(task: () -> Void) {
+        for _ in 0..<self {
+            task()
+        }
+    }
+}
+
+3.repetitions {
+    print("Hello!")
+}
+// Hello!
+// Hello!
+// Hello!
+```
+Mutating Instance Methods
+
+```swift
+extension Int {
+    mutating func square() {
+        self = self * self
+    }
+}
+var someInt = 3
+someInt.square()
+// someInt is now 9
+```
+## Subscripts
+扩展可以将新的下标添加到现有类型。
+
+```swift
+extension Int {
+    subscript(digitIndex: Int) -> Int {
+        var decimalBase = 1
+        for _ in 0..<digitIndex {
+            decimalBase *= 10
+        }
+        return (self / decimalBase) % 10
+    }
+}
+746381295[0]
+// returns 5
+746381295[1]
+// returns 9
+746381295[2]
+// returns 2
+746381295[8]
+// returns 7
+
+746381295[9]
+// returns 0, as if you had requested:
+0746381295[9]
+```
+## 嵌套类型
+扩展可以将新的嵌套类型添加到现有的类，结构和枚举中
+
+```swift
+extension Int {
+    enum Kind {
+        case negative, zero, positive
+    }
+    var kind: Kind {
+        switch self {
+        case 0:
+            return .zero
+        case let x where x > 0:
+            return .positive
+        default:
+            return .negative
+        }
+    }
+}
+
+func printIntegerKinds(_ numbers: [Int]) {
+    for number in numbers {
+        switch number.kind {
+        case .negative:
+            print("- ", terminator: "")
+        case .zero:
+            print("0 ", terminator: "")
+        case .positive:
+            print("+ ", terminator: "")
+        }
+    }
+    print("")
+}
+printIntegerKinds([3, 19, -27, 0, -6, 0, 7])
+// Prints "+ + - 0 - 0 + "
+```
