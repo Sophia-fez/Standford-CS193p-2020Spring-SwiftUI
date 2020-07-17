@@ -3620,3 +3620,721 @@ func printIntegerKinds(_ numbers: [Int]) {
 printIntegerKinds([3, 19, -27, 0, -6, 0, 7])
 // Prints "+ + - 0 - 0 + "
 ```
+# Opaque Types
+返回值类型不透明的函数或方法将隐藏其返回值的类型信息。
+
+```swift
+protocol Shape {
+    func draw() -> String
+}
+
+struct Triangle: Shape {
+    var size: Int
+    func draw() -> String {
+        var result = [String]()
+        for length in 1...size {
+            result.append(String(repeating: "*", count: length))
+        }
+        return result.joined(separator: "\n")
+    }
+}
+let smallTriangle = Triangle(size: 3)
+print(smallTriangle.draw())
+// *
+// **
+// ***
+
+struct FlippedShape<T: Shape>: Shape {
+    var shape: T
+    func draw() -> String {
+        let lines = shape.draw().split(separator: "\n")
+        return lines.reversed().joined(separator: "\n")
+    }
+}
+let flippedTriangle = FlippedShape(shape: smallTriangle)
+print(flippedTriangle.draw())
+// ***
+// **
+// *
+
+struct JoinedShape<T: Shape, U: Shape>: Shape {
+    var top: T
+    var bottom: U
+    func draw() -> String {
+        return top.draw() + "\n" + bottom.draw()
+    }
+}
+let joinedTriangles = JoinedShape(top: smallTriangle, bottom: flippedTriangle)
+print(joinedTriangles.draw())
+// *
+// **
+// ***
+// ***
+// **
+// *
+```
+
+## 返回Opaque Types（待研究）
+可以认为不透明类型就像是通用类型的逆向。具有不透明返回类型的函数必须仅返回单个类型的值。
+
+```swift
+struct Square: Shape {
+    var size: Int
+    func draw() -> String {
+        let line = String(repeating: "*", count: size)
+        let result = Array<String>(repeating: line, count: size)
+        return result.joined(separator: "\n")
+    }
+}
+
+func makeTrapezoid() -> some Shape {
+    let top = Triangle(size: 2)
+    let middle = Square(size: 2)
+    let bottom = FlippedShape(shape: top)
+    let trapezoid = JoinedShape(
+        top: top,
+        bottom: JoinedShape(top: middle, bottom: bottom)
+    )
+    return trapezoid
+}
+let trapezoid = makeTrapezoid()
+print(trapezoid.draw())
+// *
+// **
+// **
+// **
+// **
+// *
+
+func flip<T: Shape>(_ shape: T) -> some Shape {
+    return FlippedShape(shape: shape)
+}
+func join<T: Shape, U: Shape>(_ top: T, _ bottom: U) -> some Shape {
+    JoinedShape(top: top, bottom: bottom)
+}
+
+let opaqueJoinedTriangles = join(smallTriangle, flip(smallTriangle))
+print(opaqueJoinedTriangles.draw())
+// *
+// **
+// ***
+// ***
+// **
+// *
+
+func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
+    if shape is Square {
+        return shape // Error: return types don't match
+    }
+    return FlippedShape(shape: shape) // Error: return types don't match
+}
+
+struct FlippedShape<T: Shape>: Shape {
+    var shape: T
+    func draw() -> String {
+        if shape is Square {
+            return shape.draw()
+        }
+        let lines = shape.draw().split(separator: "\n")
+        return lines.reversed().joined(separator: "\n")
+    }
+}
+```
+## Opaque Types 和 Protocol Types的区别
+返回不透明类型看起来与使用协议类型作为函数的返回类型非常相似，但是这两种返回类型在是否保留类型标识方面有所不同。不透明类型是指一种特定的类型，尽管函数的调用者无法看到哪种类型。协议类型可以指符合协议的
+# Automatic Reference Counting
+Swift使用自动引用计数（ARC）来跟踪和管理应用程序的内存使用情况。
+## ARC如何运作
+每次创建类的新实例时，ARC都会分配一块内存来存储有关该实例的信息。该内存保存有关实例类型的信息，以及与该实例关联的所有存储属性的值。当不再需要某个实例时，ARC会释放该实例使用的内存，以便该内存可用于其他目的。这样可以确保不再需要类实例时，它们不会占用内存空间。
+
+```swift
+class Person {
+    let name: String
+    init(name: String) {
+        self.name = name
+        print("\(name) is being initialized")
+    }
+    deinit {
+        print("\(name) is being deinitialized")
+    }
+}
+
+var reference1: Person?
+var reference2: Person?
+var reference3: Person?
+
+reference1 = Person(name: "John Appleseed")
+// Prints "John Appleseed is being initialized"
+
+reference2 = reference1
+reference3 = reference1
+
+// 如果通过分配nil两个变量来破坏其中两个强引用（包括原始引用），Person则会保留一个强引用，并且不会释放该实例
+reference1 = nil
+reference2 = nil
+
+// Person直到第三个也是最后一个强引用被破坏，ARC才会取消分配实例，这时很明显您不再使用该Person实例
+reference3 = nil
+// Prints "John Appleseed is being deinitialized"
+```
+## 类实例之间的strong reference cycle
+如果两个类实例相互之间有很强的引用，从而使每个实例使另一个实例保持活动状态，则可能发生这种情况。这被称为strong reference cycle。可以通过将类之间的某些关系定义为弱引用或无主引用而不是强引用，可以解决强引用循环问题。
+```swift
+class Person {
+    let name: String
+    init(name: String) { self.name = name }
+    var apartment: Apartment?
+    deinit { print("\(name) is being deinitialized") }
+}
+
+class Apartment {
+    let unit: String
+    init(unit: String) { self.unit = unit }
+    var tenant: Person?
+    deinit { print("Apartment \(unit) is being deinitialized") }
+}
+
+var john: Person?
+var unit4A: Apartment?
+
+john = Person(name: "John Appleseed")
+unit4A = Apartment(unit: "4A")
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200715224520975.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+john!.apartment = unit4A
+unit4A!.tenant = john
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200715224528138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+// Person实例与Apartment实例之间的强引用将保留并且不能被破坏。
+john = nil
+unit4A = nil
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200715224541378.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+## 解决类实例之间的强引用循环
+### Weak References
+将weak关键字放在属性或变量声明之前。因为弱引用不能完全保持它所引用的实例，所以有可能在弱引用仍在引用该实例时将其释放。因此，ARC会自动为nil它所引用的实例被释放时设置一个弱引用。而且，由于弱引用需要允许nil在运行时将其值更改为，因此它们始终被声明为可选类型的变量，而不是常量。
+
+```swift
+class Person {
+    let name: String
+    init(name: String) { self.name = name }
+    var apartment: Apartment?
+    deinit { print("\(name) is being deinitialized") }
+}
+
+class Apartment {
+    let unit: String
+    init(unit: String) { self.unit = unit }
+    weak var tenant: Person?
+    deinit { print("Apartment \(unit) is being deinitialized") }
+}
+
+var john: Person?
+var unit4A: Apartment?
+
+john = Person(name: "John Appleseed")
+unit4A = Apartment(unit: "4A")
+
+john!.apartment = unit4A
+unit4A!.tenant = john
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200715224552964.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+john = nil
+// Prints "John Appleseed is being deinitialized"
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200715224642832.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+### Unowned References
+将unowned关键字放在属性或变量声明之前来指示Unowned References。
+
+```swift
+class Department {
+    var name: String
+    var courses: [Course]
+    init(name: String) {
+        self.name = name
+        self.courses = []
+    }
+}
+
+class Course {
+    var name: String
+    unowned var department: Department
+    unowned var nextCourse: Course?
+    init(name: String, in department: Department) {
+        self.name = name
+        self.department = department
+        self.nextCourse = nil
+    }
+}
+
+let department = Department(name: "Horticulture")
+
+let intro = Course(name: "Survey of Plants", in: department)
+let intermediate = Course(name: "Growing Common Herbs", in: department)
+let advanced = Course(name: "Caring for Tropical Plants", in: department)
+
+intro.nextCourse = intermediate
+intermediate.nextCourse = advanced
+department.courses = [intro, intermediate, advanced]
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200716151656503.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+### Unowned References和隐式展开的可选属性
+
+```swift
+class Country {
+    let name: String
+    var capitalCity: City!
+    init(name: String, capitalName: String) {
+        self.name = name
+        self.capitalCity = City(name: capitalName, country: self)
+    }
+}
+
+class City {
+    let name: String
+    unowned let country: Country
+    init(name: String, country: Country) {
+        self.name = name
+        self.country = country
+    }
+}
+
+var country = Country(name: "Canada", capitalName: "Ottawa")
+print("\(country.name)'s capital city is called \(country.capitalCity.name)")
+// Prints "Canada's capital city is called Ottawa"
+```
+在上面的示例中，使用隐式解包的可选意味着所有两阶段类初始化器要求都得到满足。capitalCity一旦初始化完成，就可以像使用非可选值一样使用和访问该属性，同时仍然避免了强引用周期。
+## Closures的Strong Reference Cycles（待深究）
+如果将闭包分配给类实例的属性，并且闭包的主体捕获该实例，则也会发生强引用循环。之所以会发生这种捕获，是因为闭包的主体访问实例的属性，例如self.someProperty，或者因为闭包在实例上调用了一个方法，例如self.someMethod()。无论哪种情况，这些访问都会导致闭包被“捕获” self，从而创建了一个强大的参考周期。
+之所以会发生这种强烈的引用循环，是因为闭包（比如class）是引用类型。将闭包分配给属性时，就是在分配对该闭包的引用。本质上还是两个强引用使彼此保持生命。但是，这次不是两个class实例，而是一个使彼此保持活动状态的class实例和一个closure。
+Swift使用closure capture list解决这个问题。
+
+```swift
+class HTMLElement {
+
+    let name: String
+    let text: String?
+
+    lazy var asHTML: () -> String = {
+        if let text = self.text {
+            return "<\(self.name)>\(text)</\(self.name)>"
+        } else {
+            return "<\(self.name) />"
+        }
+    }
+    // 仅当元素实际需要以某种HTML输出目标的字符串值形式呈现时，才需要属性asHTML
+
+    init(name: String, text: String? = nil) {
+        self.name = name
+        self.text = text
+    }
+
+    deinit {
+        print("\(name) is being deinitialized")
+    }
+
+}
+
+let heading = HTMLElement(name: "h1")
+let defaultText = "some default text"
+heading.asHTML = {
+    return "<\(heading.name)>\(heading.text ?? defaultText)</\(heading.name)>"
+}
+print(heading.asHTML())
+// Prints "<h1>some default text</h1>"
+
+var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
+print(paragraph!.asHTML())
+// Prints "<p>hello, world</p>"
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200716153214611.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+属性asHTML指向closure是strong reference ，由于closure指向它里面的self（如self.name和self.text）也是strong reference，所以产生了strong reference cycle。
+## 解决Closures的Strong Reference Cycles（待深究）
+### 定义捕获列表
+捕获列表中的每一项都是将weak或unowned关键字与对类实例的引用（例如self）或用某个值初始化的变量（例如delegate = self.delegate）配对。这些配对写在一对方括号内，并用逗号分隔。
+
+```swift
+lazy var someClosure = {
+    [unowned self, weak delegate = self.delegate]
+    (index: Int, stringToProcess: String) -> String in
+    // closure body goes here
+}
+
+// 如果闭包没有指定参数列表或返回类型（因为可以从上下文中推断出它们），将捕获列表放在闭包的最开始，然后是in关键字：
+lazy var someClosure = {
+    [unowned self, weak delegate = self.delegate] in
+    // closure body goes here
+}
+```
+### Weak and Unowned References
+当闭包及其捕获的实例始终相互引用且始终在同一时间解除分配时，将闭包中的捕获定义为unowned reference。
+相反，当捕获的参考nil将来可能成为某个点时，将捕获定义为weak reference。弱引用始终是可选类型，并且nil在释放它们引用的实例时会自动变为弱引用。
+如果捕获的引用永远不会成为nil，则应始终将其捕获为unowned reference，而不是weak reference。
+
+```swift
+class HTMLElement {
+
+    let name: String
+    let text: String?
+
+    lazy var asHTML: () -> String = {
+        [unowned self] in
+        if let text = self.text {
+            return "<\(self.name)>\(text)</\(self.name)>"
+        } else {
+            return "<\(self.name) />"
+        }
+    }
+
+    init(name: String, text: String? = nil) {
+        self.name = name
+        self.text = text
+    }
+
+    deinit {
+        print("\(name) is being deinitialized")
+    }
+
+}
+
+var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
+print(paragraph!.asHTML())
+// Prints "<p>hello, world</p>"
+
+paragraph = nil
+// Prints "p is being deinitialized"
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200716155950699.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+# Memory Safety
+默认情况下，Swift防止代码中发生不安全行为。例如，Swift确保在使用变量之前先对其进行初始化，在释放变量后不访问内存，并检查数组索引是否存在越界错误。大多数时候不需要考虑访问内存，但要了解在何处可能发生冲突，来避免编写对内存的访问有冲突的代码。
+
+在冲突的访问环境中要考虑内存访问的三个特征：访问是读还是写，访问的持续时间以及要访问的内存位置。
+- 至少一个是写访问权限。
+- 它们访问内存中的相同位置。
+- 它们的持续时间重叠。
+
+读和写访问之间的区别通常很明显：写访问会更改内存中的位置，但读访问不会。内存中的位置是指所访问的内容，例如，变量，常量或属性。内存访问的持续时间是瞬时的或长期的。如果在访问开始之后但结束之前不可能运行其他代码，则访问是瞬时的。从本质上讲，两个瞬时访问不能同时发生。大多数内存访问是瞬时的。
+## 对In-Out参数的访问冲突
+函数可以对其所有In-Out参数进行长期写访问。在对所有非In-Out参数进行评估之后，将开始对In-Out参数进行写访问，并持续该函数调用的整个过程。如果有多个In-Out参数，则写入访问的开始顺序与参数出现的顺序相同。
+这种长期写访问的结果是，即使作用域规则和访问控制允许这样做，您也无法访问以in-out形式传递的原始变量-对原始文件的任何访问都会产生冲突。例如：
+```swift
+var stepSize = 1
+
+func increment(_ number: inout Int) {
+    number += stepSize
+}
+
+increment(&stepSize)
+// Error: conflicting accesses to stepSize
+```
+对stepSize的读取访问与对的number写入访问重叠，所以报错
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200716181215558.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+解决此冲突的一种方法是显式复制stepSize：
+
+```swift
+// Make an explicit copy.
+var copyOfStepSize = stepSize
+increment(&copyOfStepSize)
+
+// Update the original.
+stepSize = copyOfStepSize
+// stepSize is now 2
+```
+
+长期对in-out参数进行写访问的另一个结果是，将单个变量作为同一函数的多个in-out参数的参数传递会产生冲突。例如：
+
+```swift
+func balance(_ x: inout Int, _ y: inout Int) {
+    let sum = x + y
+    x = sum / 2
+    y = sum - x
+}
+var playerOneScore = 42
+var playerTwoScore = 30
+balance(&playerOneScore, &playerTwoScore)  // OK
+balance(&playerOneScore, &playerOneScore)
+// Error: conflicting accesses to playerOneScore
+```
+用playerOneScore和playerTwoScore作为参数调用不会产生冲突，这时有两个时间重叠的写访问，但是它们访问内存中的不同位置。相反，传递两个playerOneScore参数的值会产生冲突，因为它试图同时对内存中的同一位置执行两次写访问。
+
+由于运算符是函数，因此他们也可以长期访问其输入输出参数。例如，如果`balance(_:_:)`是一个名为的运算符`<^>`，则写入`playerOneScore <^> playerOneScore`将导致与`balance(&playerOneScore, &playerOneScore)`相同的冲突。
+## Methods中的self获取冲突
+
+```swift
+struct Player {
+    var name: String
+    var health: Int
+    var energy: Int
+
+    static let maxHealth = 10
+    mutating func restoreHealth() {
+        health = Player.maxHealth
+    }
+}
+
+extension Player {
+    mutating func shareHealth(with teammate: inout Player) {
+        balance(&teammate.health, &health)
+    }
+}
+
+var oscar = Player(name: "Oscar", health: 10, energy: 10)
+var maria = Player(name: "Maria", health: 5, energy: 10)
+oscar.shareHealth(with: &maria)  // OK
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200716182123638.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+oscar.shareHealth(with: &oscar)
+// Error: conflicting accesses to oscar
+```
+mutation方法需要self在该方法的持续时间内进行写访问，而in-out参数需要teammate在相同的持续时间内进行写访问。在该方法中，两个self和都teammate指向内存中的同一位置-如下图所示。这两个写访问引用相同的内存，并且它们重叠，从而产生冲突。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200716182146613.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+## 访问属性冲突
+诸如结构，元组和枚举之类的类型由各个组成值组成，例如结构的属性或元组的元素。因为这些是值类型，所以对值的任何部分进行更改都会对整个值进行更改，这意味着对属性之一的读或写访问要求对整个值的读或写访问。例如，对元组元素的重叠写访问会产生冲突：
+
+```swift
+var playerInformation = (health: 10, energy: 20)
+balance(&playerInformation.health, &playerInformation.energy)
+// Error: conflicting access to properties of playerInformation
+```
+下面的代码显示，对存储在全局变量中的结构的属性进行重叠的写访问时，会出现相同的错误。
+
+```swift
+var holly = Player(name: "Holly", health: 10, energy: 10)
+balance(&holly.health, &holly.energy)  // Error
+```
+
+实际上，对结构属性的大多数访问都可以安全地重叠。例如，如果将holly上面示例中的变量更改为局部变量而不是全局变量，则编译器可以证明对结构的存储属性的重叠访问是安全的：
+
+```swift
+func someFunction() {
+    var oscar = Player(name: "Oscar", health: 10, energy: 10)
+    balance(&oscar.health, &oscar.energy)  // OK
+}
+```
+保留内存安全性并非始终需要限制对结构属性的重叠访问。内存安全是理想的保证，但是独占访问是比内存安全更严格的要求-这意味着即使某些代码违反了对内存的独占访问，某些代码仍可以保留内存安全。如果编译器可以证明对内存的非独占访问仍然是安全的，则Swift允许使用此内存安全代码。具体来说，如果满足以下条件，则可以证明重叠访问结构的属性是安全的：
+
+- 仅访问实例的存储属性，而不访问计算的属性或类属性。
+- 结构是局部变量的值，而不是全局变量的值。
+- 该结构要么没有被任何闭包捕获，要么仅被不冒号的闭包捕获。
+
+如果编译器无法证明访问是安全的，则它不允许访问。
+
+# Access Control
+## 模块和源文件
+Swift的访问控制模型基于模块和源文件的概念。
+## 五种访问级别
+从上到下逐渐增加访问限制，open access是最高的访问级别，是最低限制
+- open access和public access使实体可以在其定义模块的任何源文件中使用，也可以在导入定义模块的另一个模块的源文件中使用。指定框架的公共接口时，通常使用开放或公共访问权限。开放和公共访问之间的区别如下所述。
+- Internal access使实体可以在其定义模块的任何源文件中使用，但不能在该模块外部的任何源文件中使用。在定义应用程序或框架的内部结构时，通常使用内部访问。
+- file-private access将实体的使用限制为自己定义的源文件。当在整个文件中使用特定功能的实现细节时，使用文件专用访问权限可以隐藏这些细节。
+- private access将实体的使用限制为封闭的声明以及同一文件中该声明的扩展名。仅在单个声明中使用特定功能的实现细节时，请使用私有访问权限来隐藏这些细节。
+- 
+**默认访问级别**
+如果=未指定显式访问级别，则代码中的所有实体（有一些特定的例外）都具有默认的内部访问级别。
+
+**Single-Target Apps的访问级别**
+Single-Target Apps，应用程序中的代码通常是独立包含在应用程序内的，不需要在应用程序模块之外使用。内部的默认访问级别已经符合此要求。因此，您无需指定自定义访问级别。但是，您可能希望将代码的某些部分标记为私有文件或私有文件，以便在应用程序模块中的其他代码中隐藏其实现详细信息。
+
+**框架的访问级别**
+开发框架时，请将该框架的面向公众的接口标记为开放或公开，以便其他模块可以查看和访问它。此面向公众的接口是框架的应用程序编程接口（或API）。
+
+**Unit Test Targets的访问级别**
+Unit Test Targets，需要使该应用程序中的代码可用于该模块才能进行测试。默认情况下，其他模块只能访问标记为开放或公开的实体。但是，如果使用@testable属性标记产品模块的导入声明并在启用测试的情况下编译该产品模块，则单元测试目标可以访问任何内部实体。
+
+## 访问控制语法
+关键字open，public，internal，fileprivate，private。除非另有说明，否则默认访问级别是内部的。
+```swift
+public class SomePublicClass {}
+internal class SomeInternalClass {}
+fileprivate class SomeFilePrivateClass {}
+private class SomePrivateClass {}
+
+public var somePublicVariable = 0
+internal let someInternalConstant = 0
+fileprivate func someFilePrivateFunction() {}
+private func somePrivateFunction() {}
+
+
+class SomeInternalClass {}              // implicitly internal
+let someInternalConstant = 0            // implicitly internal
+```
+## 各种类型
+**自定义类型**
+如果要为自定义类型指定显式访问级别，请在定义类型时执行此操作。然后，只要访问级别允许，就可以使用新类型。例如，如果定义了文件专用类，则该类只能在定义了文件专用类的源文件中用作属性的类型，或用作函数参数或返回类型。
+类型的访问控制级别也会影响该类型的成员（属性，方法，初始化程序和下标）的默认访问级别。如果将类型的访问级别定义为私有或文件私有，则其成员的默认访问级别也将为私有或文件私有。如果将类型的访问级别定义为内部访问或公共访问（或使用内部访问的默认访问级别，而未明确指定访问级别），则类型成员的默认访问级别将是内部的。
+
+```swift
+public class SomePublicClass {                  // explicitly public class
+    public var somePublicProperty = 0            // explicitly public class member
+    var someInternalProperty = 0                 // implicitly internal class member
+    fileprivate func someFilePrivateMethod() {}  // explicitly file-private class member
+    private func somePrivateMethod() {}          // explicitly private class member
+}
+
+class SomeInternalClass {                       // implicitly internal class
+    var someInternalProperty = 0                 // implicitly internal class member
+    fileprivate func someFilePrivateMethod() {}  // explicitly file-private class member
+    private func somePrivateMethod() {}          // explicitly private class member
+}
+
+fileprivate class SomeFilePrivateClass {        // explicitly file-private class
+    func someFilePrivateMethod() {}              // implicitly file-private class member
+    private func somePrivateMethod() {}          // explicitly private class member
+}
+
+private class SomePrivateClass {                // explicitly private class
+    func somePrivateMethod() {}                  // implicitly private class member
+}
+```
+**元组类型**
+元组类型的访问级别是该元组中使用的所有类型中限制性最强的访问级别。例如，如果您由两种不同的类型组成一个元组，一种具有内部访问权，另一种具有私有访问权，则该复合元组类型的访问级别将是私有的。
+元组类型没有类，结构，枚举和函数那样的独立定义。元组类型的访问级别是由构成元组类型的类型自动确定的，因此无法明确指定。
+
+**function类型**
+函数类型的访问级别被计算为函数的参数类型和返回类型中限制性最强的访问级别。如果函数的计算访问级别与上下文默认值不匹配，则必须明确指定访问级别作为函数定义的一部分。
+
+因为该函数的返回类型是私有的，所以必须使用private修饰符标记该函数的整体访问级别，以使该函数声明有效：
+
+```swift
+private func someFunction() -> (SomeInternalClass, SomePrivateClass) {
+    // function implementation goes here
+}
+```
+
+someFunction()用public或internal修饰符标记的定义或使用internal的默认设置是无效的，因为该函数的公共或内部用户可能无法适当地访问该函数的返回类型中使用的私有类。
+
+**枚举类型**
+枚举的个别情况将自动获得与其所属的枚举相同的访问级别。您能为单个枚举案例指定其他访问级别。
+
+在下面的示例中，CompassPoint枚举具有显式的public访问级别。枚举的情况下north，south，east，和west因此也有公共的访问级别：
+
+```swift
+public enum CompassPoint {
+    case north
+    case south
+    case east
+    case west
+}
+```
+
+**原始值和关联值**
+枚举定义中用于任何原始值或关联值的类型的访问级别必须至少与枚举的访问级别一样高。例如，您不能将私有类型用作具有内部访问级别的枚举的原始值类型。
+
+**嵌套类型**
+嵌套类型的访问级别与其包含类型相同，除非包含类型是公共的。在公共类型内定义的嵌套类型具有内部的自动访问级别。如果要使公共类型中的嵌套类型可公开使用，则必须将嵌套类型显式声明为public。
+## Subclassing
+可以将在当前访问上下文中可以访问的，与该子类在同一模块中定义的任何类作为子类。还可以将在不同模块中定义的任何开放类作为子类。子类不能具有比其父类更高的访问级别-例如，不能编写内部父类的公共子类。
+
+此外，对于在同一模块中定义的类，您可以覆盖在特定访问上下文中可见的任何类成员（方法，属性，初始化程序或下标）。对于在另一个模块中定义的类，可以覆盖任何打开的类成员。
+
+```swift
+public class A {
+    fileprivate func someMethod() {}
+}
+
+internal class B: A {
+    override internal func someMethod() {}
+}
+```
+
+子类成员调用访问权限比子类成员低的超类成员甚至是有效的，只要对超类成员的调用发生在允许的访问级别上下文内（即，与文件私有成员调用的超类，或与内部成员调用的超类在同一模块内）：
+
+```swift
+public class A {
+    fileprivate func someMethod() {}
+}
+
+internal class B: A {
+    override internal func someMethod() {
+        super.someMethod()
+    }
+}
+```
+## Constants, Variables, Properties, and Subscripts
+常量，变量或属性不能比其类型更公开。例如，用私有类型编写公共属性是无效的。同样，下标不能比其索引类型或返回类型更公开。
+如果常量，变量，属性或下标使用私有类型，则常量，变量，属性或下标也必须标记为private：
+
+```swift
+private var privateInstance = SomePrivateClass()
+```
+**Getters and Setters**
+常量，变量，属性和下标的Getters and Setters将自动获得与其所属的常量，变量，属性或下标相同的访问级别。您可以为setter提供比其相应的getter 更低的访问级别，以限制该变量，属性或下标的读写范围。
+## Initializers
+初始化程序参数的类型不能比初始化程序自己的访问级别更私有。
+**默认初始化器**
+如Default Initializers中所述，Swift自动为所有结构或基类提供默认初始化器，而没有任何参数，该结构或基类为其所有属性提供默认值，并且自身不提供至少一个初始化器。
+
+默认初始化程序具有与其初始化类型相同的访问级别，除非该类型定义为public。对于定义为的类型，public默认初始化器被认为是内部的。如果要在另一个模块中使用某个公共参数时使用无参数初始化器来对其进行初始化，则必须自己明确地提供一个公共无参数初始化器作为类型定义的一部分。
+
+**Structure Types的默认成员级初始化器**
+如果结构的任何存储属性是私有的，则该结构类型的默认成员初始化器被认为是私有的。同样，如果结构的任何存储属性是文件专用的，则初始化程序是文件专用的。否则，初始化程序的访问级别为internal。
+
+与上面的默认初始化程序一样，如果希望在另一个模块中使用公用结构初始化程序初始化成员结构的公共结构类型时，则必须自己提供公用成员初始化程序作为该类型定义的一部分。
+## Protocols
+如果要为协议类型分配显式访问级别，请在定义协议时进行。这使您能够创建只能在特定访问上下文中采用的协议。
+
+协议定义中每个需求的访问级别会自动设置为与协议相同的访问级别。您不能将协议要求设置为与其支持的协议不同的访问级别。这样可以确保所有协议要求在采用该协议的任何类型上都是可见的。
+
+
+如果定义公共协议，则协议的要求在实施时就需要这些要求的公共访问级别。此行为不同于其他类型，在其他类型中，公共类型定义表示该类型成员的内部访问级别。
+
+**协议继承**
+如果定义从现有协议继承的新协议，则新协议最多可以具有与其继承的协议相同的访问级别。例如，您不能编写从内部协议继承的公共协议。
+
+**协议一致性**
+一种类型可以符合一种协议，该协议具有比该类型本身更低的访问级别。例如，您可以定义可以在其他模块中使用的公共类型，但是其与内部协议的一致性只能在内部协议的定义模块中使用。
+
+类型符合特定协议的上下文是该类型的访问级别和协议的访问级别中的最小值。例如，如果某个类型是公共的，但其遵循的协议是内部的，则该类型对该协议的符合性也是内部的。
+
+在编写或扩展类型以符合协议时，必须确保每种协议要求的类型实现至少具有与该协议所遵循的类型相同的访问级别。例如，如果公共类型符合内部协议，则每个协议要求的类型实现必须至少是内部的。
+
+# Extensions
+您可以在类，结构或枚举可用的任何访问上下文中扩展类，结构或枚举。在扩展中添加的任何类型成员都具有与在要扩展的原始类型中声明的类型成员相同的默认访问级别。如果扩展公共或内部类型，则添加的任何新类型成员的默认访问级别为内部。如果扩展文件专用类型，则添加的任何新类型成员都具有文件专用的默认访问级别。如果扩展私有类型，则添加的任何新类型成员的默认访问级别均为私有。
+
+另外，您可以使用显式访问级别修饰符（例如private）标记扩展，以为扩展中定义的所有成员设置新的默认访问级别。对于单个类型成员，仍可以在扩展名中覆盖此新的默认值。
+
+如果您使用扩展名添加协议一致性，则不能为该扩展名提供明确的访问级别修饰符。相反，协议本身的访问级别用于为扩展内的每个协议要求实现提供默认访问级别。
+
+**扩展中的私人成员**
+与扩展类，结构或枚举位于同一文件中的扩展的行为就像扩展中的代码已被编写为原始类型声明的一部分一样。因此，您可以：
+
+在原始声明中声明一个私有成员，然后从同一文件的扩展名访问该成员。
+在一个扩展名中声明一个私有成员，并从同一文件的另一个扩展名访问该成员。
+在扩展名中声明一个私有成员，然后从同一文件中的原始声明访问该成员。
+此行为意味着您可以以相同的方式使用扩展来组织代码，无论您的类型是否具有私有实体。例如，给出以下简单协议：
+
+```swift
+protocol SomeProtocol {
+    func doSomething()
+}
+```
+
+您可以使用扩展来添加协议一致性，如下所示：
+
+```swift
+struct SomeStruct {
+    private var privateVariable = 12
+}
+
+extension SomeStruct: SomeProtocol {
+    func doSomething() {
+        print(privateVariable)
+    }
+}
+```
+
+# Generics
+通用类型或通用函数的访问级别是通用类型或函数本身的访问级别以及对其类型参数的任何类型约束的访问级别的最小值。
+
+# Type Aliases
+出于访问控制的目的，您定义的任何类型别名都被视为不同的类型。类型别名的访问级别可以小于或等于其别名的访问级别。例如，私有类型别名可以为私有，文件私有，内部，公共或开放类型别名，但是公共类型别名不能为内部，文件私有或私有类型别名。
+
+此规则也适用于用于满足协议一致性的关联类型的类型别名。

@@ -7,7 +7,8 @@
 官网给出的youtube地址：https://youtu.be/jbtqIBpUG7g  
 国内搬运带机翻字幕的：https://www.bilibili.com/video/BV1EV411C77B?p=1  
 swift 5.3官方文档：https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html  
-swift 5.3官方文档中文笔记(github这里是swift_5.3_Language_Guide.md)：https://blog.csdn.net/xunciy/category_10183982.html
+swift 5.3官方文档中文笔记(对应github里的swift_5.3_Language_Guide.md文件)：https://blog.csdn.net/xunciy/category_10183982.html
+找到的一个前辈的swift5的中文翻译：https://www.jianshu.com/p/1fef53ccffe7
 
 ## 课程目录
 **Demo请以官方给出的完整项目代码为准，除lecture 1-6 外每个lecture的压缩包里有官网给出的Demo完整项目代码**  
