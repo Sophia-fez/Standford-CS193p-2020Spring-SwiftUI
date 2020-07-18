@@ -1,5 +1,11 @@
 # swift 5.3 Language Guide
+[swift 5.3官方文档](https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html)  
+[swift 5.3官方文档中文笔记](https://blog.csdn.net/xunciy/category_10183982.html)  
+[找到的一个前辈的swift5的中文翻译](https://www.jianshu.com/p/1fef53ccffe7)  
+从Protocols开始有不少地方看的不是很懂，后面笔记写的也很粗糙，只音隐约记得17的课程里也有讲过相关方面的只是。之后遇到Protocols、Generics、Access Control等等方面的问题再对照上面前辈的中文版翻译文档和最新英文官方文档，再回来修改补充相关部分的笔记
+
 [TOC]
+
 # 基础介绍
 ## 常量let & 变量var
 ```swift
@@ -3620,6 +3626,346 @@ func printIntegerKinds(_ numbers: [Int]) {
 printIntegerKinds([3, 19, -27, 0, -6, 0, 7])
 // Prints "+ + - 0 - 0 + "
 ```
+# Generics
+通用代码使您可以编写灵活，可重用的函数和类型，这些函数和类型可以根据您定义的要求与任何类型一起使用。如Swift Array和Dictionarytype都是通用集合。
+## 通用函数
+```swift
+func swapTwoInts(_ a: inout Int, _ b: inout Int) {
+    let temporaryA = a
+    a = b
+    b = temporaryA
+}
+
+var someInt = 3
+var anotherInt = 107
+swapTwoInts(&someInt, &anotherInt)
+print("someInt is now \(someInt), and anotherInt is now \(anotherInt)")
+// Prints "someInt is now 107, and anotherInt is now 3"
+```
+这里交换的两个值是Double或者String类型也是一样的功能，只要保证a和b的类型相同，所以可以使用Generic Functions
+
+```swift
+func swapTwoValues<T>(_ a: inout T, _ b: inout T) {
+    let temporaryA = a
+    a = b
+    b = temporaryA
+}
+
+func swapTwoInts(_ a: inout Int, _ b: inout Int)
+func swapTwoValues<T>(_ a: inout T, _ b: inout T)
+
+var someInt = 3
+var anotherInt = 107
+swapTwoValues(&someInt, &anotherInt)
+// someInt is now 107, and anotherInt is now 3
+
+var someString = "hello"
+var anotherString = "world"
+swapTwoValues(&someString, &anotherString)
+// someString is now "world", and anotherString is now "hello"
+```
+## 类型参数
+在swapTwoValues(_:_:)上面的示例中，占位符类型T是type参数的示例。类型参数指定并命名一个占位符类型，并在函数名称后立即写入一对匹配的尖括号（例如<T>）之间。在每种情况下，每当调用函数时，type参数都将替换为实际类型。通过在尖括号中用逗号分隔多个类型参数名称，可以提供多个类型参数。
+## 通用类型
+可以定义自己的通用类型。这些是可以与任何类型一起使用的自定义类，结构和枚举，类似于Array和的方式Dictionary。
+
+```swift
+struct IntStack {
+    var items = [Int]()
+    mutating func push(_ item: Int) {
+        items.append(item)
+    }
+    mutating func pop() -> Int {
+        return items.removeLast()
+    }
+}
+
+// 改成通用类型的，<Element>占位
+struct Stack<Element> {
+    var items = [Element]()
+    mutating func push(_ item: Element) {
+        items.append(item)
+    }
+    mutating func pop() -> Element {
+        return items.removeLast()
+    }
+}
+
+var stackOfStrings = Stack<String>()
+stackOfStrings.push("uno")
+stackOfStrings.push("dos")
+stackOfStrings.push("tres")
+stackOfStrings.push("cuatro")
+// the stack now contains 4 strings
+```
+## 扩展通用类型
+
+```swift
+// 返回堆栈上的顶层项目，而不将其从堆栈中弹出
+extension Stack {
+    var topItem: Element? {
+        return items.isEmpty ? nil : items[items.count - 1]
+    }
+}
+
+if let topItem = stackOfStrings.topItem {
+    print("The top item on the stack is \(topItem).")
+}
+// Prints "The top item on the stack is tres."
+```
+## 类型约束
+类型约束指定类型参数必须从特定的类继承，或符合特定的协议或协议组成。
+如字典键的类型必须是可哈希的。此要求是由的键类型上的类型约束强制执行的，该约束Dictionary指定键类型必须符合Hashable协议。
+
+通过将单个类或协议约束放在类型参数名称后（用冒号分隔）作为类型参数列表的一部分来编写类型约束。
+
+```swift
+func someFunction<T: SomeClass, U: SomeProtocol>(someT: T, someU: U) {
+    // function body goes here
+}
+// 第一个类型参数T的类型约束必须T为的子类SomeClass。第二种类型的参数U具有类型约束，该约束要求U符合协议SomeProtocol。
+```
+## Action中的类型约束
+
+```swift
+func findIndex<T>(of valueToFind: T, in array:[T]) -> Int? {
+    for (index, value) in array.enumerated() {
+        if value == valueToFind {
+            return index
+        }
+    }
+    return nil
+}
+```
+这样写是有问题的在尝试编译的时候会报错，问题在于相等性检查，并非Swift中的每种类型都可以与等于运算符（==）进行比较。但Swift的所有标准类型都自动支持该Equatable协议。
+所以可以将类型约束写入作为类型参数定义的一部分：
+
+```swift
+func findIndex<T: Equatable>(of valueToFind: T, in array:[T]) -> Int? {
+    for (index, value) in array.enumerated() {
+        if value == valueToFind {
+            return index
+        }
+    }
+    return nil
+}
+
+let doubleIndex = findIndex(of: 9.3, in: [3.14159, 0.1, 0.25])
+// doubleIndex is an optional Int with no value, because 9.3 isn't in the array
+let stringIndex = findIndex(of: "Andrea", in: ["Mike", "Malcolm", "Andrea"])
+// stringIndex is an optional Int containing a value of 2
+```
+## 关联类型
+### 实际中的关联类型（待研究）
+该Container协议定义了任何容器必须提供的三个必需功能：
+
+- 必须有可能使用方法将新项目添加到容器中append(_:)。
+- 必须有可能通过count返回Int值的属性来访问容器中的项目计数。
+- 必须有可能使用带有Int索引值的下标检索容器中的每个项目。
+```swift
+// 协议Container声明了一个关联类型Item
+protocol Container {
+    associatedtype Item
+    mutating func append(_ item: Item)
+    var count: Int { get }
+    subscript(i: Int) -> Item { get }
+}
+```
+该协议未指定容器中各项的存储方式或允许的类型。该协议仅指定任何类型必须提供的三个功能才能被视为a Container。只要符合这三个要求，符合类型就可以提供其他功能。
+
+这里的非泛型的IntStack类型符合Container协议，该IntStack类型实现了Container协议的所有三个要求，并且在每种情况下都包装了该IntStack类型的现有功能的一部分，以满足这些要求。
+```swift
+struct IntStack: Container {
+    // original IntStack implementation
+    var items = [Int]()
+    mutating func push(_ item: Int) {
+        items.append(item)
+    }
+    mutating func pop() -> Int {
+        return items.removeLast()
+    }
+    // conformance to the Container protocol
+    typealias Item = Int
+    mutating func append(_ item: Int) {
+        self.push(item)
+    }
+    var count: Int {
+        return items.count
+    }
+    subscript(i: Int) -> Int {
+        return items[i]
+    }
+}
+```
+还可以使泛型Stack类型符合Container协议：
+
+```swift
+struct Stack<Element>: Container {
+    // original Stack<Element> implementation
+    var items = [Element]()
+    mutating func push(_ item: Element) {
+        items.append(item)
+    }
+    mutating func pop() -> Element {
+        return items.removeLast()
+    }
+    // conformance to the Container protocol
+    mutating func append(_ item: Element) {
+        self.push(item)
+    }
+    var count: Int {
+        return items.count
+    }
+    subscript(i: Int) -> Element {
+        return items[i]
+    }
+}
+```
+### 扩展现有类型以指定关联类型
+Swift的Array类型已经提供了一个append(_:)方法，一个count属性和一个带有Int索引的下标来检索其元素。这三种功能符合Container协议的要求。这意味着您可以简单地通过声明采用该协议来扩展Array以符合该协议。
+
+```swift
+extension Array: Container {}
+```
+### 将约束添加到关联类型
+可以将类型约束添加到协议中的关联类型，以要求符合条件的类型满足这些约束。
+
+```swift
+protocol Container {
+    associatedtype Item: Equatable
+    mutating func append(_ item: Item)
+    var count: Int { get }
+    subscript(i: Int) -> Item { get }
+}
+```
+### 在关联类型的约束中使用协议（待研究）
+协议可以作为其自身要求的一部分出现。
+
+```swift
+protocol SuffixableContainer: Container {
+    associatedtype Suffix: SuffixableContainer where Suffix.Item == Item
+    func suffix(_ size: Int) -> Suffix
+}
+
+extension Stack: SuffixableContainer {
+    func suffix(_ size: Int) -> Stack {
+        var result = Stack()
+        for index in (count-size)..<count {
+            result.append(self[index])
+        }
+        return result
+    }
+    // Inferred that Suffix is Stack.
+}
+var stackOfInts = Stack<Int>()
+stackOfInts.append(10)
+stackOfInts.append(20)
+stackOfInts.append(30)
+let suffix = stackOfInts.suffix(2)
+// suffix contains 20 and 30
+
+extension IntStack: SuffixableContainer {
+    func suffix(_ size: Int) -> Stack<Int> {
+        var result = Stack<Int>()
+        for index in (count-size)..<count {
+            result.append(self[index])
+        }
+        return result
+    }
+    // Inferred that Suffix is Stack<Int>.
+}
+```
+## 通用条款：where
+通用where子句可以要求关联类型必须符合特定协议，或者某些类型参数和关联类型必须相同。型where子句以where关键字开头，后跟关联类型的约束或类型与关联类型之间的相等关系。where可以在类型或函数的主体的大括号前写一个通用子句。
+
+```swift
+func allItemsMatch<C1: Container, C2: Container>
+    (_ someContainer: C1, _ anotherContainer: C2) -> Bool
+    where C1.Item == C2.Item, C1.Item: Equatable {
+
+        // Check that both containers contain the same number of items.
+        if someContainer.count != anotherContainer.count {
+            return false
+        }
+
+        // Check each pair of items to see if they're equivalent.
+        for i in 0..<someContainer.count {
+            if someContainer[i] != anotherContainer[i] {
+                return false
+            }
+        }
+
+        // All items match, so return true.
+        return true
+}
+```
+
+## 具有通用Where子句的扩展
+也可以将通用where子句用作扩展的一部分。
+
+```swift
+extension Stack where Element: Equatable {
+    func isTop(_ item: Element) -> Bool {
+        guard let topItem = items.last else {
+            return false
+        }
+        return topItem == item
+    }
+}
+```
+## 上下文相关条款
+where当您已经在泛型类型的上下文中工作时，可以将泛型子句作为声明的一部分编写，该声明没有自己的泛型类型约束。
+
+```swift
+extension Container {
+    func average() -> Double where Item == Int {
+        var sum = 0.0
+        for index in 0..<count {
+            sum += Double(self[index])
+        }
+        return sum / Double(count)
+    }
+    func endsWith(_ item: Item) -> Bool where Item: Equatable {
+        return count >= 1 && self[count-1] == item
+    }
+}
+let numbers = [1260, 1200, 98, 37]
+print(numbers.average())
+// Prints "648.75"
+print(numbers.endsWith(37))
+// Prints "true"
+```
+## 具有通用Where子句的关联类型
+可以where在关联的类型上包括通用子句。如要制作一个Container包含迭代器的版本，如Sequence协议在标准库中使用的那样。这是您的写法：
+
+```swift
+protocol Container {
+    associatedtype Item
+    mutating func append(_ item: Item)
+    var count: Int { get }
+    subscript(i: Int) -> Item { get }
+
+    associatedtype Iterator: IteratorProtocol where Iterator.Element == Item
+    func makeIterator() -> Iterator
+}
+```
+## 通用下标
+下标可以是通用的，并且可以包含通用where子句。在subscript后的尖括号内写占位符类型名称，并在下标正文的左花括号前写一个where通用子句。例如：
+
+```swift
+extension Container {
+    subscript<Indices: Sequence>(indices: Indices) -> [Item]
+        where Indices.Iterator.Element == Int {
+            var result = [Item]()
+            for index in indices {
+                result.append(self[index])
+            }
+            return result
+    }
+}
+```
+
+
 # Opaque Types
 返回值类型不透明的函数或方法将隐藏其返回值的类型信息。
 
@@ -4296,7 +4642,7 @@ private var privateInstance = SomePrivateClass()
 
 在编写或扩展类型以符合协议时，必须确保每种协议要求的类型实现至少具有与该协议所遵循的类型相同的访问级别。例如，如果公共类型符合内部协议，则每个协议要求的类型实现必须至少是内部的。
 
-# Extensions
+## Extensions
 您可以在类，结构或枚举可用的任何访问上下文中扩展类，结构或枚举。在扩展中添加的任何类型成员都具有与在要扩展的原始类型中声明的类型成员相同的默认访问级别。如果扩展公共或内部类型，则添加的任何新类型成员的默认访问级别为内部。如果扩展文件专用类型，则添加的任何新类型成员都具有文件专用的默认访问级别。如果扩展私有类型，则添加的任何新类型成员的默认访问级别均为私有。
 
 另外，您可以使用显式访问级别修饰符（例如private）标记扩展，以为扩展中定义的所有成员设置新的默认访问级别。对于单个类型成员，仍可以在扩展名中覆盖此新的默认值。
@@ -4331,10 +4677,225 @@ extension SomeStruct: SomeProtocol {
 }
 ```
 
-# Generics
+## Generics
 通用类型或通用函数的访问级别是通用类型或函数本身的访问级别以及对其类型参数的任何类型约束的访问级别的最小值。
 
-# Type Aliases
+## Type Aliases
 出于访问控制的目的，您定义的任何类型别名都被视为不同的类型。类型别名的访问级别可以小于或等于其别名的访问级别。例如，私有类型别名可以为私有，文件私有，内部，公共或开放类型别名，但是公共类型别名不能为内部，文件私有或私有类型别名。
 
 此规则也适用于用于满足协议一致性的关联类型的类型别名。
+
+# 高级操作符Advanced Operators
+Swift还提供了一些高级运算符，它们执行更复杂的值操作。包括按位和移位运算符。
+不仅限于预定义的运算符。Swift使您可以自由定义自己的自定义中缀，前缀，后缀和赋值运算符，以及自定义优先级和关联性值。这些运算符可以像任何预定义的运算符一样在您的代码中使用和采用，您甚至可以扩展现有类型以支持您定义的自定义运算符。
+## 按位运算符
+按位运算符使您可以操纵数据结构中的各个原始数据位。它们通常用于低级编程中，例如图形编程和设备驱动程序创建。当您使用来自外部源的原始数据（例如，编码和解码数据以通过自定义协议进行通信）时，按位运算符也很有用。
+**按位取反运算符（~）反转数所有位**
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718172152636.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+let initialBits: UInt8 = 0b00001111
+let invertedBits = ~initialBits  // equals 11110000
+```
+**按位与运算符（&）**
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718172227660.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+let firstSixBits: UInt8 = 0b11111100
+let lastSixBits: UInt8  = 0b00111111
+let middleFourBits = firstSixBits & lastSixBits  // equals 00111100
+```
+**按位或运算符（|）**
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718172559838.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+let someBits: UInt8 = 0b10110010
+let moreBits: UInt8 = 0b01011110
+let combinedbits = someBits | moreBits  // equals 11111110
+```
+**按位异或运算符（ ^）**
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718172628565.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+let firstBits: UInt8 = 0b00010100
+let otherBits: UInt8 = 0b00000101
+let outputBits = firstBits ^ otherBits  // equals 00010001
+```
+**按位左移（<<）和右移（>>）运算符**，按位左移和右移具有将整数乘以或除以2的作用。将整数的位向左移一位将其值加倍，而将其向右移一位将其值减半。
+**无符号整数的移位**
+- 现有位向左或向右移动所请求的位数。
+- 任何超出整数存储范围的位都将被丢弃。
+- 在将原始位向左或向右移动之后，在后面的空格中插入零。
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718172754202.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+
+```swift
+let shiftBits: UInt8 = 4   // 00000100 in binary
+shiftBits << 1             // 00001000
+shiftBits << 2             // 00010000
+shiftBits << 5             // 10000000
+shiftBits << 6             // 00000000
+shiftBits >> 2             // 00000001
+
+let pink: UInt32 = 0xCC6699
+let redComponent = (pink & 0xFF0000) >> 16    // redComponent is 0xCC, or 204
+let greenComponent = (pink & 0x00FF00) >> 8   // greenComponent is 0x66, or 102
+let blueComponent = pink & 0x0000FF           // blueComponent is 0x99, or 153
+```
+**有符号整数的移位**
+有符号整数使用其第一位（称为符号位）来指示整数是正数还是负数。符号位0表示正，符号位1表示负。其余位（称为值位）存储实际值。![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718172850771.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718173054645.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2020071817305927.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+## 溢出运算符
+Swift提供了三种算术溢出运算符，它们选择对整数计算进行溢出运算。这些运算符都以“＆”号开头&：
+- 溢流加法（&+）
+- 溢出减法（&-）
+- 溢出乘法（&*）
+
+### 值溢出
+数字可以在正方向和负方向上溢出。
+**使用溢出加法运算符（&+）**
+```swift
+// 使用溢出加法运算符（&+）允许无符号整数沿正方向溢出的示例：
+var unsignedOverflow = UInt8.max
+// unsignedOverflow equals 255, which is the maximum value a UInt8 can hold
+unsignedOverflow = unsignedOverflow &+ 1
+// unsignedOverflow is now equal to 0
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718173248790.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+**使用溢出减法运算符（&-）**
+```swift
+var unsignedOverflow = UInt8.min
+// unsignedOverflow equals 0, which is the minimum value a UInt8 can hold
+unsignedOverflow = unsignedOverflow &- 1
+// unsignedOverflow is now equal to 255
+```
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/202007181733135.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+有符号整数也会发生溢出。
+```swift
+var signedOverflow = Int8.min
+// signedOverflow equals -128, which is the minimum value an Int8 can hold
+signedOverflow = signedOverflow &- 1
+// signedOverflow is now equal to 127
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718173428961.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+## 优先级和关联性
+运算符优先级赋予某些运算符更高的优先级；这些运算符首先被应用。
+运算符关联性定义了如何将具有相同优先级的运算符组合在一起-从左侧分组还是从右侧分组。可以将其理解为“他们与他们左侧的表情相关联”或“他们与他们右侧的表情相关联”。
+在计算复合表达式的计算顺序时，考虑每个运算符的优先级和关联性很重要。例如，运算符优先级解释了为什么以下表达式等于17。
+
+```swift
+2 + 3 % 4 * 5
+// this equals 17
+```
+## 运算符Methods
+类和结构可以提供它们自己的现有运算符的实现。这称为使现有运算符超载。
+以下示例显示了如何为自定义结构实现算术加法运算符（+）
+
+```swift
+// 矢量相加
+struct Vector2D {
+    var x = 0.0, y = 0.0
+}
+
+extension Vector2D {
+    static func + (left: Vector2D, right: Vector2D) -> Vector2D {
+        return Vector2D(x: left.x + right.x, y: left.y + right.y)
+    }
+}
+
+let vector = Vector2D(x: 3.0, y: 1.0)
+let anotherVector = Vector2D(x: 2.0, y: 4.0)
+let combinedVector = vector + anotherVector
+// combinedVector is a Vector2D instance with values of (5.0, 5.0)
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200718173946154.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1h1bkNpeQ==,size_16,color_FFFFFF,t_70)
+### 前缀和后缀运算符
+在关键字func之前编写prefixor或postfix修饰符来实现前缀或后缀一元运算符的Method
+
+```swift
+extension Vector2D {
+    static prefix func - (vector: Vector2D) -> Vector2D {
+        return Vector2D(x: -vector.x, y: -vector.y)
+    }
+}
+
+// 一元减运算符（-a）
+let positive = Vector2D(x: 3.0, y: 4.0)
+let negative = -positive
+// negative is a Vector2D instance with values of (-3.0, -4.0)
+let alsoPositive = -negative
+// alsoPositive is a Vector2D instance with values of (3.0, 4.0)
+```
+### 复合赋值运算符：+=等
+复合赋值运算符将赋值（=）与另一个操作结合在一起，如加法赋值运算符（+=）
+
+```swift
+extension Vector2D {
+    static func += (left: inout Vector2D, right: Vector2D) {
+        left = left + right
+    }
+}
+
+var original = Vector2D(x: 1.0, y: 2.0)
+let vectorToAdd = Vector2D(x: 3.0, y: 4.0)
+original += vectorToAdd
+// original now has values of (4.0, 6.0)
+```
+### 等效运算符  ==、!=
+默认情况下，自定义类和结构没有实现等效运算符，即等于运算符（==）和不等于运算符（!=）。通常，您可以实现运算符==，并使用标准库的默认运算符!=实现来抵消运算符==的结果。有两种实现操作符==的方式：可以自己实现，或者对于许多类型，可以要求Swift为综合实现。在这两种情况下，都将对标准库的Equatable协议添加一致性。
+
+```swift
+xtension Vector2D: Equatable {
+    static func == (left: Vector2D, right: Vector2D) -> Bool {
+        return (left.x == right.x) && (left.y == right.y)
+    }
+}
+
+// 使用此运算符检查两个Vector2D实例是否等效
+let twoThree = Vector2D(x: 2.0, y: 3.0)
+let anotherTwoThree = Vector2D(x: 2.0, y: 3.0)
+if twoThree == anotherTwoThree {
+    print("These two vectors are equivalent.")
+}
+// Prints "These two vectors are equivalent."
+```
+## 自定义运算符
+都是用operator的关键字，并且都有prefix, infix or postfix修饰
+
+```swift
+// 定义了一个名为+++的新前缀运算符
+prefix operator +++
+
+extension Vector2D {
+    static prefix func +++ (vector: inout Vector2D) -> Vector2D {
+        vector += vector
+        return vector
+    }
+}
+
+// 将Vector2D的x和y值加倍
+var toBeDoubled = Vector2D(x: 1.0, y: 4.0)
+let afterDoubling = +++toBeDoubled
+// toBeDoubled now has values of (2.0, 8.0)
+// afterDoubling also has values of (2.0, 8.0)
+```
+### 自定义中缀运算符的优先级
+自定义中缀运算符每个都属于一个优先级组。优先级组指定一个运算符相对于其他中缀运算符的优先级，以及该运算符的关联性。
+未明确放置在优先级组中的自定义中缀运算符将被赋予默认优先级组，其优先级立即高于三元条件运算符的优先级。
+以下示例定义了一个名为的新的自定义中缀运算符+-，它属于优先级组AdditionPrecedence：
+
+```swift
+infix operator +-: AdditionPrecedence
+extension Vector2D {
+    static func +- (left: Vector2D, right: Vector2D) -> Vector2D {
+        return Vector2D(x: left.x + right.x, y: left.y - right.y)
+    }
+}
+let firstVector = Vector2D(x: 1.0, y: 2.0)
+let secondVector = Vector2D(x: 3.0, y: 4.0)
+let plusMinusVector = firstVector +- secondVector
+// plusMinusVector is a Vector2D instance with values of (4.0, -2.0)
+```
+在定义前缀或后缀运算符时，您无需指定优先级。但是，如果将前缀和后缀运算符都应用于同一操作数，则将首先应用后缀运算符。
