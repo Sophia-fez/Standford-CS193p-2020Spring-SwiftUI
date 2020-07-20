@@ -1,8 +1,8 @@
 # swift 5.3 Language Guide
 [swift 5.3官方文档](https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html)  
-[swift 5.3官方文档中文笔记](https://blog.csdn.net/xunciy/category_10183982.html)  
-[找到的一个前辈的swift5的中文翻译](https://www.jianshu.com/p/1fef53ccffe7)  
-从Protocols开始有不少地方看的不是很懂，后面笔记写的也很粗糙，只音隐约记得17的课程里也有讲过相关方面的只是。之后遇到Protocols、Generics、Access Control等等方面的问题再对照上面前辈的中文版翻译文档和最新英文官方文档，再回来修改补充相关部分的笔记
+[swift 5.3官方文档中文版](https://swiftgg.gitbook.io/swift/)  
+[swift 5.3官方文档中文笔记博客](https://blog.csdn.net/xunciy/category_10183982.html) & [swift5.3 Language Guide中文笔记markdown](https://github.com/Sophia-fez/Standford-CS193p-2020Spring-SwiftUI/blob/master/swift_5.3_Language_Guide.md)  
+从Protocols开始有不少地方看的不是很懂，后面笔记写的也很粗糙，只隐约记得2017的课程里也有讲过相关方面的知识。之后遇到Protocols、Generics、Access Control等等方面的问题再对照上面前辈的中文版翻译文档和最新英文官方文档，再回来修改补充相关部分的笔记
 
 [TOC]
 
@@ -3626,6 +3626,612 @@ func printIntegerKinds(_ numbers: [Int]) {
 printIntegerKinds([3, 19, -27, 0, -6, 0, 7])
 // Prints "+ + - 0 - 0 + "
 ```
+# Protocols
+协议定义了适合特定methods、properties或function的的蓝图。 该协议可以由类，结构或枚举采用，以提供这些要求的实际实现。 满足协议要求的任何类型都被称为符合该协议。
+
+```swift
+protocol SomeProtocol {
+    // protocol definition goes here
+}
+
+struct SomeStructure: FirstProtocol, AnotherProtocol {
+    // structure definition goes here
+}
+
+class SomeClass: SomeSuperclass, FirstProtocol, AnotherProtocol {
+    // class definition goes here
+}
+```
+## Property Requirements
+协议可以要求任何符合条件的类型来提供具有特定名称和类型的实例属性或类型属性。协议没有指定该属性是存储属性还是计算属性，仅指定所需的属性名称和类型。该协议还指定每个属性必须是可获取的还是可获取的和可设置的。
+
+```swift
+protocol SomeProtocol {
+    var mustBeSettable: Int { get set }
+    var doesNotNeedToBeSettable: Int { get }
+}
+
+protocol AnotherProtocol {
+    static var someTypeProperty: Int { get set }
+}
+
+protocol FullyNamed {
+    var fullName: String { get }
+}
+
+struct Person: FullyNamed {
+    var fullName: String
+}
+let john = Person(fullName: "John Appleseed")
+// john.fullName is "John Appleseed"
+
+class Starship: FullyNamed {
+    var prefix: String?
+    var name: String
+    init(name: String, prefix: String? = nil) {
+        self.name = name
+        self.prefix = prefix
+    }
+    var fullName: String {
+        return (prefix != nil ? prefix! + " " : "") + name
+    }
+}
+var ncc1701 = Starship(name: "Enterprise", prefix: "USS")
+// ncc1701.fullName is "USS Enterprise"
+```
+
+如果协议要求某个属性是可获取和可设置的，则该常量要求不能由常量存储属性或只读计算属性来满足。如果协议仅要求一个属性是可获取的，则该要求可以由任何种类的属性来满足，并且对于可用于您自己的代码的属性，也可以对其进行设置是有效的。
+
+## Method Requirements
+协议可能要求特定的实例方法和类型方法要通过符合类型的方法来实现。这些方法以与普通实例和类型方法完全相同的方式编写为协议定义的一部分，但没有花括号或方法主体。可变参数是允许的，但要遵循与常规方法相同的规则。但是，不能在协议的定义中为方法参数指定默认值。
+
+```swift
+protocol SomeProtocol {
+    static func someTypeMethod()
+}
+
+protocol RandomNumberGenerator {
+    func random() -> Double
+}
+
+class LinearCongruentialGenerator: RandomNumberGenerator {
+    var lastRandom = 42.0
+    let m = 139968.0
+    let a = 3877.0
+    let c = 29573.0
+    func random() -> Double {
+        lastRandom = ((lastRandom * a + c)
+            .truncatingRemainder(dividingBy:m))
+        return lastRandom / m
+    }
+}
+let generator = LinearCongruentialGenerator()
+print("Here's a random number: \(generator.random())")
+// Prints "Here's a random number: 0.3746499199817101"
+print("And another one: \(generator.random())")
+// Prints "And another one: 0.729023776863283"
+```
+## Mutating Method Requirements
+有时，方法有必要修改（或变异）它所属的实例。对于值类型（即结构和枚举）的实例方法，请将mutating关键字放在方法的func关键字之前，以指示允许该方法修改其所属的实例以及该实例的任何属性。
+
+如果您定义了协议实例方法要求，该要求旨在使采用该协议的任何类型的实例发生变异，请将该方法标记为mutating关键字，作为协议定义的一部分。这使结构和枚举可以采用该协议并满足该方法要求。
+
+如果将协议实例方法的要求标记为mutating，则mutating在为类编写该方法的实现时无需编写关键字。该mutating关键字仅由结构和枚举。
+
+```swift
+protocol Togglable {
+    mutating func toggle()
+}
+
+enum OnOffSwitch: Togglable {
+    case off, on
+    mutating func toggle() {
+        switch self {
+        case .off:
+            self = .on
+        case .on:
+            self = .off
+        }
+    }
+}
+var lightSwitch = OnOffSwitch.off
+lightSwitch.toggle()
+// lightSwitch is now equal to .on
+```
+## Initializer Requirements
+
+```swift
+protocol SomeProtocol {
+    init(someParameter: Int)
+}
+```
+您可以在一致的类上实现协议初始化程序要求，既可以是指定的初始化程序，也可以是便捷初始化程序。在这两种情况下，都必须使用required修饰符标记初始化器实现：
+
+```swift
+class SomeClass: SomeProtocol {
+    required init(someParameter: Int) {
+        // initializer implementation goes here
+    }
+}
+```
+如果子类覆盖超类中的指定初始化程序，并且还通过协议实现了匹配的初始化程序要求，请同时使用required和override修饰符标记初始化程序的实现：
+
+```swift
+protocol SomeProtocol {
+    init()
+}
+
+class SomeSuperClass {
+    init() {
+        // initializer implementation goes here
+    }
+}
+
+class SomeSubClass: SomeSuperClass, SomeProtocol {
+    // "required" from SomeProtocol conformance; "override" from SomeSuperClass
+    required override init() {
+        // initializer implementation goes here
+    }
+}
+```
+## 协议作为类型
+协议本身实际上并未实现任何功能。但是，您可以将协议用作代码中的完整类型。将协议用作类型有时有时称为存在类型，它来自短语“存在类型T，使得T符合协议”。
+
+可以在允许使用其他类型的许多地方使用协议，包括：
+
+- 作为函数，方法或初始化程序中的参数类型或返回类型
+- 作为常量，变量或属性的类型
+- 作为数组，字典或其他容器中项目的类型
+
+```swift
+class Dice {
+    let sides: Int
+    let generator: RandomNumberGenerator
+    init(sides: Int, generator: RandomNumberGenerator) {
+        self.sides = sides
+        self.generator = generator
+    }
+    func roll() -> Int {
+        return Int(generator.random() * Double(sides)) + 1
+    }
+}
+
+var d6 = Dice(sides: 6, generator: LinearCongruentialGenerator())
+for _ in 1...5 {
+    print("Random dice roll is \(d6.roll())")
+}
+// Random dice roll is 3
+// Random dice roll is 5
+// Random dice roll is 4
+// Random dice roll is 5
+// Random dice roll is 4
+```
+## Delegation
+委托是一种设计模式，使类或结构可以将其某些职责移交给（或委托）其他类型的实例。通过定义封装委托职责的协议来实现此设计模式，从而确保符合类型（称为委托）可以提供已委托的功能。委托可用于响应特定操作，或从外部源检索数据而无需了解该源的基础类型。
+
+```swift
+protocol DiceGame {
+    var dice: Dice { get }
+    func play()
+}
+protocol DiceGameDelegate: AnyObject {
+    func gameDidStart(_ game: DiceGame)
+    func game(_ game: DiceGame, didStartNewTurnWithDiceRoll diceRoll: Int)
+    func gameDidEnd(_ game: DiceGame)
+}
+
+class SnakesAndLadders: DiceGame {
+    let finalSquare = 25
+    let dice = Dice(sides: 6, generator: LinearCongruentialGenerator())
+    var square = 0
+    var board: [Int]
+    init() {
+        board = Array(repeating: 0, count: finalSquare + 1)
+        board[03] = +08; board[06] = +11; board[09] = +09; board[10] = +02
+        board[14] = -10; board[19] = -11; board[22] = -02; board[24] = -08
+    }
+    weak var delegate: DiceGameDelegate?
+    func play() {
+        square = 0
+        delegate?.gameDidStart(self)
+        gameLoop: while square != finalSquare {
+            let diceRoll = dice.roll()
+            delegate?.game(self, didStartNewTurnWithDiceRoll: diceRoll)
+            switch square + diceRoll {
+            case finalSquare:
+                break gameLoop
+            case let newSquare where newSquare > finalSquare:
+                continue gameLoop
+            default:
+                square += diceRoll
+                square += board[square]
+            }
+        }
+        delegate?.gameDidEnd(self)
+    }
+}
+
+class DiceGameTracker: DiceGameDelegate {
+    var numberOfTurns = 0
+    func gameDidStart(_ game: DiceGame) {
+        numberOfTurns = 0
+        if game is SnakesAndLadders {
+            print("Started a new game of Snakes and Ladders")
+        }
+        print("The game is using a \(game.dice.sides)-sided dice")
+    }
+    func game(_ game: DiceGame, didStartNewTurnWithDiceRoll diceRoll: Int) {
+        numberOfTurns += 1
+        print("Rolled a \(diceRoll)")
+    }
+    func gameDidEnd(_ game: DiceGame) {
+        print("The game lasted for \(numberOfTurns) turns")
+    }
+}
+
+let tracker = DiceGameTracker()
+let game = SnakesAndLadders()
+game.delegate = tracker
+game.play()
+// Started a new game of Snakes and Ladders
+// The game is using a 6-sided dice
+// Rolled a 3
+// Rolled a 5
+// Rolled a 4
+// Rolled a 5
+// The game lasted for 4 turns
+```
+## 通过扩展添加协议一致性
+可以扩展现有类型以采用并遵循新协议，即使您无权访问现有类型的源代码。扩展可以向现有类型添加新的属性，方法和下标，因此可以添加协议可能要求的任何要求。
+
+```swift
+protocol TextRepresentable {
+    var textualDescription: String { get }
+}
+
+extension Dice: TextRepresentable {
+    var textualDescription: String {
+        return "A \(sides)-sided dice"
+    }
+}
+
+let d12 = Dice(sides: 12, generator: LinearCongruentialGenerator())
+print(d12.textualDescription)
+// Prints "A 12-sided dice"
+
+extension SnakesAndLadders: TextRepresentable {
+    var textualDescription: String {
+        return "A game of Snakes and Ladders with \(finalSquare) squares"
+    }
+}
+print(game.textualDescription)
+// Prints "A game of Snakes and Ladders with 25 squares"
+```
+通用类型仅在某些条件下（例如，当该类型的通用参数符合该协议时）才能够满足协议的要求。通过在扩展类型时列出约束，可以使泛型类型有条件地符合协议。通过编写泛型where子句，在要采用的协议名称后编写这些约束。
+
+```swift
+extension Array: TextRepresentable where Element: TextRepresentable {
+    var textualDescription: String {
+        let itemsAsText = self.map { $0.textualDescription }
+        return "[" + itemsAsText.joined(separator: ", ") + "]"
+    }
+}
+let myDice = [d6, d12]
+print(myDice.textualDescription)
+// Prints "[A 6-sided dice, A 12-sided dice]"
+```
+如果类型已经符合协议的所有要求，但尚未声明采用该协议，则可以使它采用带有空扩展名的协议：
+
+```swift
+struct Hamster {
+    var name: String
+    var textualDescription: String {
+        return "A hamster named \(name)"
+    }
+}
+extension Hamster: TextRepresentable {}
+
+let simonTheHamster = Hamster(name: "Simon")
+let somethingTextRepresentable: TextRepresentable = simonTheHamster
+print(somethingTextRepresentable.textualDescription)
+// Prints "A hamster named Simon"
+```
+## 通过Synthesized Implementation实现Protocol 
+Swift提供了**Equatable**以下几种自定义类型的综合实现：
+- 仅存储符合Equatable协议属性的结构
+- 仅具有符合Equatable协议的关联类型的枚举
+- 没有关联类型的枚举
+
+```swift
+struct Vector3D: Equatable {
+    var x = 0.0, y = 0.0, z = 0.0
+}
+
+let twoThreeFour = Vector3D(x: 2.0, y: 3.0, z: 4.0)
+let anotherTwoThreeFour = Vector3D(x: 2.0, y: 3.0, z: 4.0)
+if twoThreeFour == anotherTwoThreeFour {
+    print("These two vectors are also equivalent.")
+}
+// Prints "These two vectors are also equivalent."
+```
+
+Swift提供了**Hashable**以下几种自定义类型的综合实现：
+
+- 仅存储符合Hashable协议属性的结构
+- 仅具有符合Hashable协议的关联类型的枚举
+- 没有关联类型的枚举
+
+```swift
+enum SkillLevel: Comparable {
+    case beginner
+    case intermediate
+    case expert(stars: Int)
+}
+var levels = [SkillLevel.intermediate, SkillLevel.beginner,
+              SkillLevel.expert(stars: 5), SkillLevel.expert(stars: 3)]
+for level in levels.sorted() {
+    print(level)
+}
+// Prints "beginner"
+// Prints "intermediate"
+// Prints "expert(stars: 3)"
+// Prints "expert(stars: 5)"
+```
+## Collections of Protocol Types
+
+```swift
+let things: [TextRepresentable] = [game, d12, simonTheHamster]
+
+for thing in things {
+    print(thing.textualDescription)
+}
+// A game of Snakes and Ladders with 25 squares
+// A 12-sided dice
+// A hamster named Simon
+```
+## 协议继承
+协议可以继承一个或多个其他协议，并且可以在继承的要求之上添加更多要求。协议继承的语法类似于类继承的语法，但是可以选择列出多个继承的协议，并用逗号分隔：
+
+```swift
+protocol InheritingProtocol: SomeProtocol, AnotherProtocol {
+    // protocol definition goes here
+}
+```
+
+```swift
+protocol PrettyTextRepresentable: TextRepresentable {
+    var prettyTextualDescription: String { get }
+}
+
+extension SnakesAndLadders: PrettyTextRepresentable {
+    var prettyTextualDescription: String {
+        var output = textualDescription + ":\n"
+        for index in 1...finalSquare {
+            switch board[index] {
+            case let ladder where ladder > 0:
+                output += "▲ "
+            case let snake where snake < 0:
+                output += "▼ "
+            default:
+                output += "○ "
+            }
+        }
+        return output
+    }
+}
+```
+## Class-Only Protocols
+通过将AnyObject协议添加到协议的继承列表中，可以将协议采用限制为类类型（而不是结构或枚举）。
+
+```swift
+protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {
+    // class-only protocol definition goes here
+}
+```
+## 协议组成
+要求一种类型同时符合多种协议可能很有用。您可以将多个协议组合为具有协议组成的单个需求。协议组合的行为就像您定义了一个临时本地协议，该协议具有组合中所有协议的组合要求。协议组成未定义任何新协议类型。
+
+协议组成具有`SomeProtocol & AnotherProtocol`的形式。您可以根据需要列出任意数量的协议，并用“＆”号分隔。除了协议列表之外，协议组成还可以包含一个类类型，您可以使用该类类型来指定所需的超类。
+
+```swift
+protocol Named {
+    var name: String { get }
+}
+protocol Aged {
+    var age: Int { get }
+}
+struct Person: Named, Aged {
+    var name: String
+    var age: Int
+}
+func wishHappyBirthday(to celebrator: Named & Aged) {
+    print("Happy birthday, \(celebrator.name), you're \(celebrator.age)!")
+}
+let birthdayPerson = Person(name: "Malcolm", age: 21)
+wishHappyBirthday(to: birthdayPerson)
+// Prints "Happy birthday, Malcolm, you're 21!"
+
+
+class Location {
+    var latitude: Double
+    var longitude: Double
+    init(latitude: Double, longitude: Double) {
+        self.latitude = latitude
+        self.longitude = longitude
+    }
+}
+class City: Location, Named {
+    var name: String
+    init(name: String, latitude: Double, longitude: Double) {
+        self.name = name
+        super.init(latitude: latitude, longitude: longitude)
+    }
+}
+func beginConcert(in location: Location & Named) {
+    print("Hello, \(location.name)!")
+}
+
+let seattle = City(name: "Seattle", latitude: 47.6, longitude: -122.3)
+beginConcert(in: seattle)
+// Prints "Hello, Seattle!"
+```
+## 检查协议一致性
+您可以使用类型转换中描述的is和as运算符来检查协议一致性，并转换为特定协议。检查并转换为协议遵循与检查并转换为类型完全相同的语法：
+
+`is`：如果一个实例符合协议返回true，反之返回false。
+`as?`：返回协议类型的可选值，如果该实例不符合该协议返回nil。
+`as!`：向下转换强制为协议类型，如果向下转换失败，则会触发运行时错误。
+
+```swift
+protocol HasArea {
+    var area: Double { get }
+}
+
+class Circle: HasArea {
+    let pi = 3.1415927
+    var radius: Double
+    var area: Double { return pi * radius * radius }
+    init(radius: Double) { self.radius = radius }
+}
+class Country: HasArea {
+    var area: Double
+    init(area: Double) { self.area = area }
+}
+
+class Animal {
+    var legs: Int
+    init(legs: Int) { self.legs = legs }
+}
+
+let objects: [AnyObject] = [
+    Circle(radius: 2.0),
+    Country(area: 243_610),
+    Animal(legs: 4)
+]
+
+for object in objects {
+    if let objectWithArea = object as? HasArea {
+        print("Area is \(objectWithArea.area)")
+    } else {
+        print("Something that doesn't have an area")
+    }
+}
+// Area is 12.5663708
+// Area is 243610.0
+// Something that doesn't have an area
+```
+## Optional Protocol Requirements
+您可以定义协议的可选要求。这些要求不必通过符合协议的类型来实现。可选要求以optional修饰符作为协议定义的一部分。提供了可选要求，以便您可以编写与Objective-C互操作的代码。协议和可选要求都必须用@objc属性标记。请注意，@objc协议只能被从Objective-C类或其他@objc类继承的类采用。它们不能被结构或枚举采用。
+
+当您在可选要求中使用方法或属性时，其类型将自动变为可选。例如，类型的方法变为(Int) -> String((Int) -> String)?。是整个函数类型都包装在可选变量中，而不是方法的返回值中。
+
+```swift
+@objc protocol CounterDataSource {
+    @objc optional func increment(forCount count: Int) -> Int
+    @objc optional var fixedIncrement: Int { get }
+}
+
+class Counter {
+    var count = 0
+    var dataSource: CounterDataSource?
+    func increment() {
+        if let amount = dataSource?.increment?(forCount: count) {
+            count += amount
+        } else if let amount = dataSource?.fixedIncrement {
+            count += amount
+        }
+    }
+}
+
+class ThreeSource: NSObject, CounterDataSource {
+    let fixedIncrement = 3
+}
+
+var counter = Counter()
+counter.dataSource = ThreeSource()
+for _ in 1...4 {
+    counter.increment()
+    print(counter.count)
+}
+// 3
+// 6
+// 9
+// 12
+
+class TowardsZeroSource: NSObject, CounterDataSource {
+    func increment(forCount count: Int) -> Int {
+        if count == 0 {
+            return 0
+        } else if count < 0 {
+            return 1
+        } else {
+            return -1
+        }
+    }
+}
+
+counter.count = -4
+counter.dataSource = TowardsZeroSource()
+for _ in 1...5 {
+    counter.increment()
+    print(counter.count)
+}
+// -3
+// -2
+// -1
+// 0
+// 0
+```
+## 协议扩展
+可以扩展协议以将方法，初始化程序，下标和计算属性实现提供给符合类型。这使您可以定义协议本身的行为，而不是每种类型的单独一致性或全局函数。
+
+```swift
+extension RandomNumberGenerator {
+    func randomBool() -> Bool {
+        return random() > 0.5
+    }
+}
+
+let generator = LinearCongruentialGenerator()
+print("Here's a random number: \(generator.random())")
+// Prints "Here's a random number: 0.3746499199817101"
+print("And here's a random Boolean: \(generator.randomBool())")
+// Prints "And here's a random Boolean: true"
+```
+您可以使用协议扩展为该协议的任何方法或计算属性要求提供默认实现。如果符合类型提供了自己的所需方法或属性的实现，则将使用该实现而不是扩展提供的实现。
+
+```swift
+extension PrettyTextRepresentable  {
+    var prettyTextualDescription: String {
+        return textualDescription
+    }
+}
+```
+### 向协议扩展添加约束
+定义协议扩展时，可以指定在扩展的方法和属性可用之前必须符合的类型的约束。
+通过将集合的元素限制为Equatable协议（是标准库的一部分），可以使用==和!=运算符检查两个元素之间的相等性和不相等性。
+
+```swift
+extension Collection where Element: Equatable {
+    func allEqual() -> Bool {
+        for element in self {
+            if element != self.first {
+                return false
+            }
+        }
+        return true
+    }
+}
+
+let equalNumbers = [100, 100, 100, 100, 100]
+let differentNumbers = [100, 100, 200, 100, 200]
+
+print(equalNumbers.allEqual())
+// Prints "true"
+print(differentNumbers.allEqual())
+// Prints "false"
+```
+
 # Generics
 通用代码使您可以编写灵活，可重用的函数和类型，这些函数和类型可以根据您定义的要求与任何类型一起使用。如Swift Array和Dictionarytype都是通用集合。
 ## 通用函数
