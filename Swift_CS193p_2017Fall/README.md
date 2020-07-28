@@ -12,7 +12,9 @@ cmd+option+0	显示/隐藏 右侧窗格
 cmd+1,2,3,4,5	右侧窗格内切换  
 cmd+shift+y		显示/隐藏 控制台  
 cmd+option+shift+enter	打开辅助编辑窗格 add editor on right  
-cmd+shift+O				搜索并打开想要的文件  
+cmd+shift+o				搜索并打开想要的文件  
+cmd+shift+左箭头   选中光标所在行以左  
+cmd+shift+右箭头   选中光标所在行以右  
 
 ## Mac快捷键
 **command+空格  搜索框**

@@ -6,14 +6,17 @@
 - Array 
 - Optional: `if let`, `!`
 
-## view模块
+## M model模块
+
+## V view模块(storyboard)
+- **Main.storyboard**
+    + 添加四个Btton作为card
+    + 添加一个Label作为计数器
+
+## C controller模块
 - **ViewController.swift**  
     + 在console用 `\()`打印信息
     + 用array存储card
     + 实现 `func flipCard`, 卡片翻面
     + 实现 `func touchCard`， `if let`实现optional, 显示array中对应index的emoji，若index非法则执行`else`中语句防止app崩溃
     + 实现 `flipCountLabel`，用 `didSet` 实现实时计数功能
-
-## model模块
-
-## viewModel模块
