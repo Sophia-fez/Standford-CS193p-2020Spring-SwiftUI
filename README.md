@@ -8,6 +8,7 @@
 [swift 5.3官方文档](https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html)  
 [swift 5.3官方文档中文版](https://swiftgg.gitbook.io/swift/)  
 [swift 5.3官方文档中文笔记博客](https://blog.csdn.net/xunciy/category_10183982.html) & [swift5.3 Language Guide中文笔记markdown](https://github.com/Sophia-fez/Standford-CS193p-2020Spring-SwiftUI/blob/master/swift_5.3_Language_Guide.md)  
+新增[2017Fall swift课程的笔记文件夹](https://github.com/Sophia-fez/Standford-CS193p-2020Spring-SwiftUI/tree/master/Swift_CS193p_2017Fall)，是2017Fall课程的复习巩固，在各demo的README.md里记录了每个demo的主要修改内容，[大佬的笔记](https://github.com/Sophia-fez/Standford-CS193p-2017Fall-Swift)和[官方课程视频](https://www.bilibili.com/video/BV1rb411C7eN?p=3)作为参考答案
 
 ## 课程目录
 **Demo请以官方给出的完整项目代码为准，除lecture 1-6 外每个lecture的压缩包里有官网给出的Demo完整项目代码**  
