@@ -1,8 +1,10 @@
 # lecture_3 Demo_Concentration 总结
 ## Demo Topics: Concentration
-- We want our UI to work on different iPhones and in both landscape and portrait 
-- We’ll do this using UIStackView and autolayout
-- This is only a taste of what’s to come on this front in a couple of weeks
+- Making Concentration’s button layout dynamic  
+We want our UI to work on different iPhones and in both landscape and portrait We’ll do this using **UIStackView and autolayout**  
+- Make indexOfOneAndOnlyFaceUpCard be **computed**  
+- Make **arc4random** code a lot cleaner
+- Make Concentration into a struct (lecture04开头做的)
 
 ## M model模块
 - **Concentration.swift**
@@ -40,3 +42,6 @@
     ```
     + access control,加上`private`、`private(set)`
     + `extension Int`
+
+## MyTips
+- Extension的用法要再研究一下

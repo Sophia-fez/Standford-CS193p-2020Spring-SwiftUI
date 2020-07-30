@@ -20,3 +20,5 @@
     + 实现 `func flipCard`, 卡片翻面
     + 实现 `func touchCard`， `if let`实现optional, 显示array中对应index的emoji，若index非法则执行`else`中语句防止app崩溃
     + 实现 `flipCountLabel`，用 `didSet` 实现实时计数功能
+
+## MyTips

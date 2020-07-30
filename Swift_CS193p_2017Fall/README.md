@@ -26,6 +26,7 @@ cmmand+Q	退出程序
 cmmand+W	关闭窗口  
 cmmand+M	最小化窗口  
 option+command+esc	强制退出程序  
+Command+Option+H    隐藏除当前应用程序之外所有程序窗口  
 
 
 **文件夹内对文件的操作：**  
@@ -33,21 +34,23 @@ cmmand+delete			删除文件（会进入废纸篓）
 cmmand+option+delete	彻底删除文件  
 cmmand+shift+delete		倾倒废纸篓  
 
-
 control+command+1	按名称自动排列  
 control+command+2	按种类自动排列  
-
 
 command+n	新建访达  
 command+C	复制文件  
 Command+V	在目标位置拷贝文件  
-command+option+v	移动文件  
+Command+[       回到上一页
+Command+]       前往下一页
 
 
 **safari浏览器：**  
 Command+R	刷新网页  
 Command+D	添加书签  
-Command+Option+H	隐藏除当前应用程序之外所有程序窗口  
+Command+T   当前页面添加新标签页面  
+Command+N   添加新的safari页面
+Command+Shift+N     添加新的无痕浏览safari页面
+Command+Z   恢复之前关闭的页面
 
 **隐藏文件问题：**（不知道有没有更好的办法）  
 Mac下初始化仓库后，默认是不显示.git文件的。如果需要展示的话，可以执行下面的命令：（其他隐藏的文件、文件夹也可以这样显示）  
