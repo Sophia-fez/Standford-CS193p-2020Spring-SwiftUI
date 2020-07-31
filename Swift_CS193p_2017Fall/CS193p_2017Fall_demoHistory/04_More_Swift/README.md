@@ -103,6 +103,7 @@ We probably used more lines of code to make indexOfOneAndOnlyFaceUpCard computed
         flipCountLabel.attributedText = attributedString
     }
     ```
+    **注意：`NSAttributedStringKey` 的写法已经变成 `NSAttributedString.Key`**
 
 ## MyTips
 - protocol的用法要再研究一下

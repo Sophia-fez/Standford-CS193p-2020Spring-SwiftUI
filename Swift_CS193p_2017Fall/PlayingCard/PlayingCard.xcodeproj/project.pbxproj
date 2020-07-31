@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		243F4E3D24D40C68008E4501 /* PlayingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 243F4E3C24D40C68008E4501 /* PlayingCardView.swift */; };
 		247ABC9224D30FAB00FC0CE3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247ABC9124D30FAB00FC0CE3 /* AppDelegate.swift */; };
 		247ABC9424D30FAB00FC0CE3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247ABC9324D30FAB00FC0CE3 /* SceneDelegate.swift */; };
 		247ABC9624D30FAB00FC0CE3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247ABC9524D30FAB00FC0CE3 /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		243F4E3C24D40C68008E4501 /* PlayingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingCardView.swift; sourceTree = "<group>"; };
 		247ABC8E24D30FAB00FC0CE3 /* PlayingCard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlayingCard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		247ABC9124D30FAB00FC0CE3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		247ABC9324D30FAB00FC0CE3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				247ABC9524D30FAB00FC0CE3 /* ViewController.swift */,
 				247ABC9724D30FAB00FC0CE3 /* Main.storyboard */,
 				247ABCA624D3115E00FC0CE3 /* PlayingCard.swift */,
+				243F4E3C24D40C68008E4501 /* PlayingCardView.swift */,
 				247ABCA824D31B9800FC0CE3 /* playingCardDeck.swift */,
 				247ABC9A24D30FAC00FC0CE3 /* Assets.xcassets */,
 				247ABCA524D310E000FC0CE3 /* Supporting Files */,
@@ -153,6 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				247ABC9624D30FAB00FC0CE3 /* ViewController.swift in Sources */,
+				243F4E3D24D40C68008E4501 /* PlayingCardView.swift in Sources */,
 				247ABC9224D30FAB00FC0CE3 /* AppDelegate.swift in Sources */,
 				247ABCA724D3115E00FC0CE3 /* PlayingCard.swift in Sources */,
 				247ABC9424D30FAB00FC0CE3 /* SceneDelegate.swift in Sources */,
