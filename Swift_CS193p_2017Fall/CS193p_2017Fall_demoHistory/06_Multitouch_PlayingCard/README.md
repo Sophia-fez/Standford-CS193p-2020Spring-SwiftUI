@@ -163,6 +163,11 @@
         playingCardView.isFaceUp != playingCardView.isFaceUp
     }
     ```
+    - 缩放牌面图片
+    ```
+    let pinch = UIPinchGestureRecognizer(target: playingCardView, action: #selector(playingCardView.adjustFaceCardScale(byHandlingGestureRecognizedBy:)))
+    playingCardView.addGestureRecognizer(pinch)
+    ```
 
 ## MyTips
 - UIBezierPath
