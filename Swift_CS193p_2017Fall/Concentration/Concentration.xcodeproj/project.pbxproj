@@ -16,6 +16,7 @@
 		242FFC3324CDC9C900B624DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 242FFC3124CDC9C900B624DA /* Main.storyboard */; };
 		242FFC3524CDC9CA00B624DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 242FFC3424CDC9CA00B624DA /* Assets.xcassets */; };
 		242FFC3824CDC9CA00B624DA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 242FFC3624CDC9CA00B624DA /* LaunchScreen.storyboard */; };
+		245B6E6B24D8589D0045221D /* VCLLoggingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245B6E6A24D8589D0045221D /* VCLLoggingViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		242FFC3424CDC9CA00B624DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		242FFC3724CDC9CA00B624DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		242FFC3924CDC9CA00B624DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		245B6E6A24D8589D0045221D /* VCLLoggingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VCLLoggingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				242FFC2F24CDC9C900B624DA /* ConcentrationViewController.swift */,
 				242FFC3124CDC9C900B624DA /* Main.storyboard */,
 				242DEDF124D01297003FDDDD /* Concentration.swift */,
+				245B6E6A24D8589D0045221D /* VCLLoggingViewController.swift */,
 				242DEDF324D01D5C003FDDDD /* Card.swift */,
 				24C4382024CEB0DB0048A21D /* Supporting Files */,
 				242FFC3924CDC9CA00B624DA /* Info.plist */,
@@ -155,6 +158,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				245B6E6B24D8589D0045221D /* VCLLoggingViewController.swift in Sources */,
 				242FFC3024CDC9C900B624DA /* ConcentrationViewController.swift in Sources */,
 				242DEDF224D01297003FDDDD /* Concentration.swift in Sources */,
 				242DEDF424D01D5C003FDDDD /* Card.swift in Sources */,
