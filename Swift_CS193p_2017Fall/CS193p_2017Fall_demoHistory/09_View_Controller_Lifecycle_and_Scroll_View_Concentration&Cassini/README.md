@@ -60,7 +60,7 @@ Let’s put some print()’s in our multiple-MVC version of Concentration
     + 直接导入的文件，存了image的url
 
 - **ImageViewController.swift**
-    + model部分
+    + 
     ```
     var imageURL: URL? {
         didSet {
@@ -76,4 +76,5 @@ Let’s put some print()’s in our multiple-MVC version of Concentration
 
 
 ## MyTips
-- 不管是storyboard还是code实现image view，事实上都不能成功显示image，why???
+- 不管是storyboard还是code实现image view，事实上都不能成功显示image，why??? 大佬的参考答案运行出来也是无法显示image，但是拖动会有滚动条，就好像其实显示了image只是看不到一样???
+- 删除storyboard里的image view后，代码实现image view，scroll view的content size一直报错，why??? `scrollable content size is ambiguous for scrol view`
