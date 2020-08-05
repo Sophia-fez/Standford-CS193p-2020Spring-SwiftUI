@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="ipad9_7" orientation="landscape" layout="fullscreen" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Emoji Art View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="EmojiArtViewController" customModule="EmojiArt" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5lv-u8-jhg">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VJO-0e-2MQ" customClass="EmojiArtView" customModule="EmojiArt" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemGray4Color" red="0.81960784310000001" green="0.81960784310000001" blue="0.83921568629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="VJO-0e-2MQ" secondAttribute="bottom" id="ZJ4-ii-m8g"/>
+                                    <constraint firstAttribute="trailing" secondItem="VJO-0e-2MQ" secondAttribute="trailing" id="kKD-Ah-Q5N"/>
+                                    <constraint firstItem="VJO-0e-2MQ" firstAttribute="leading" secondItem="5lv-u8-jhg" secondAttribute="leading" id="oRp-Fu-4rW"/>
+                                    <constraint firstItem="VJO-0e-2MQ" firstAttribute="top" secondItem="5lv-u8-jhg" secondAttribute="top" id="yjt-Rs-WWA"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="5lv-u8-jhg" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="J4t-tK-J62"/>
+                            <constraint firstItem="5lv-u8-jhg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="KYo-F6-x5S"/>
+                            <constraint firstItem="5lv-u8-jhg" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Lrp-hq-swm"/>
+                            <constraint firstItem="5lv-u8-jhg" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="r3z-d4-w68"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="dropZone" destination="5lv-u8-jhg" id="F4A-Jq-nbD"/>
+                        <outlet property="emojiArtView" destination="VJO-0e-2MQ" id="ib9-QX-DBf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="138.8671875" y="117.96875"/>
+        </scene>
+    </scenes>
+</document>

@@ -5,6 +5,11 @@
 
 **Tips**：还是要用Xcode来实际开发一遍，之前mac还没到干看课程or用编辑器将就着敲一敲没办法调试根本不知道哪里有问题，也不了解整个projetc的组成。不过也多亏了之前看过一遍课程也稍微看了一下开发文档，至少小语法不会一脸懵逼了，之前第一遍只能无脑跟敲，现在在复习进一步学习轻松一些并更关注project的构成
 
+## MyTips
+- Cassini的image实际显示不出来的问题，但拖动会有滚动条看起来很像只是看不见图片而不是没显示？？？
+- Cassini用code实现image view时，scroll view一直存在content size问题，暂时还没找到原因，这个问题解决后再看从网络地址获取图片是否还存在问题
+- Concentration在横屏模式下修改，把flips移到右侧时候，如果删掉card stcak view相对safe area trailling constrain时，整个card stack view都会消失，why？？？最后暂时保留了相对safe area trailling constrain，但似乎会影响到flips横屏时分两行显示的功能，数字会消失
+
 ## Xcode快捷键
 cmd+N           新建文件
 cmd+R			运行程序  
