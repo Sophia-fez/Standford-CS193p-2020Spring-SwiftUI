@@ -50,7 +50,7 @@ Let’s put some print()’s in our multiple-MVC version of Concentration
     + 点击右下角的 `add new constrain` 给 imageview 四周都添上constrain，在document outline里选中想要修改的constrain，把 second item 的 safe view are 改成 superview，这样image就能铺满全屏了
     + embed in scroll view，调整大小后，在outline里把constrain也调成super view，还有距离调成0
     + 把 image view 的 `intrinsic Size` 调成 `placeholder`，把 scroll view的大小固定下来，when you are setting constrains between image view and scroll view, you are talking about content area, and that is controlling the size of the content area
-    + 删除image View用代码实现，但为什么scroll view还是警告捏，已经是上下左右都constrain 到 superview了呀_(:з」∠)_ 还是content size的警告：`scrollable content size is ambiguous for scrol view`
+    + 删除image View用代码实现，但为什么scroll view还是警告捏，已经是上下左右都constrain 到 superview了呀_(:з」∠)_ 还是content size的警告：`scrollable content size is ambiguous for scrol view`。此问题虽然不知道为什么还是一直有警告，但是无视就好了
 
 ## C controller模块
 - **ViewController.swift**
@@ -76,5 +76,5 @@ Let’s put some print()’s in our multiple-MVC version of Concentration
 
 
 ## MyTips
-- 不管是storyboard还是code实现image view，事实上都不能成功显示image，why??? 大佬的参考答案运行出来也是无法显示image，但是拖动会有滚动条，就好像其实显示了image只是看不到一样???
-- 删除storyboard里的image view后，代码实现image view，scroll view的content size一直报错，why??? `scrollable content size is ambiguous for scrol view`
+- 不管是storyboard还是code实现image view，事实上都不能成功显示image，why??? 大佬的参考答案运行出来也是无法显示image，但是拖动会有滚动条，就好像其实显示了image只是看不到一样???此问题经查证，是给出的standford图片有问题(给的这张图非常神奇)，确实加载出来了，但是在很远的中间，没滚动到正确位置所以看不到，应该是是原图片有问题，自己找一张图片换上去就好了。
+- 删除storyboard里的image view后，代码实现image view，scroll view的content size一直报错，why??? `scrollable content size is ambiguous for scrol view`。此问题虽然不知道为什么还是一直有警告，但是无视就好了

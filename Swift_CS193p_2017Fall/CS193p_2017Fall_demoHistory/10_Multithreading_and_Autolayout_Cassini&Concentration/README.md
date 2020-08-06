@@ -73,6 +73,5 @@
 
 
 ## MyTips
-- 删除storyboard里的image view后，代码实现image view，scroll view的content size一直报错问题依然没有解决 `scrollable content size is ambiguous for scrol view`
-- lecture09本地图片显示不出来，现在网络加在的图片还是一样的问题。大佬的参考答案运行出来也是无法显示image，但加载会停止转动并消失，然后拖动会有滚动条，就好像其实显示了image只是看不到一样???
+- lecture09本地图片显示不出来，现在网络加在的图片还是一样的问题。大佬的参考答案运行出来也是无法显示image，但加载会停止转动并消失，然后拖动会有滚动条，就好像其实显示了image只是看不到一样???此问题还是图片本身的问题，换掉本地图片以及网络图片地址就可以加载出来了。
 - concentration项目中，在修改横屏模式下，把flips移到右侧时候，删掉card stcak view相对safe area trailling constrain时，整个card stack view都会消失，why???最后暂时保留了相对safe area trailling constrain
