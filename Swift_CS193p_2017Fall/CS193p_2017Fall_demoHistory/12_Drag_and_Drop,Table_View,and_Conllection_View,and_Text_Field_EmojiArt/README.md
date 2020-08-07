@@ -1,4 +1,4 @@
-# lecture_11 Demo_EmojiArt 总结
+# lecture_12 Demo_EmojiArt 总结
 ## Demo Topics: EmojiArt
 - drag & drop
 - add & delete
@@ -10,12 +10,10 @@
     + 删除原来的Emoji Art view,拖入scroll view，并且订到边缘，和之前的Cassini项目一样，会有警告，无视吧_(:з」∠)_
     + 在最上面增加一行collection view并设置高度，一定要选drop zone进行缩小，一开始我直接点的点的是scroll view，后来constrain一直有问题
     + 向collection view 拖入label，为了在storyboard里预览效果，设置一下fontsize（之后要在代码里实现的）并填入一个emoji
-    + 
-    + 
+    + 增加cell，拖入activity
 
 ## C controller模块
 - **EmojiArtViewController.swift**
-    + 
 
 - **EmojiArtDocumentTableViewController.swift**
     + 不需要额外加以下代码，也可以实现侧边栏的功能了,难道是改了？？？
