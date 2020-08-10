@@ -1,6 +1,6 @@
-# lecture_13 Demo_EmojiArt 总结
+# lecture_14 Demo_EmojiArt 总结
 ## Demo Topics: EmojiArt
-- addemoji
+- 存储文件到本地/icloud
 
 ## M model模块
 - **EmojiArt.swift**
