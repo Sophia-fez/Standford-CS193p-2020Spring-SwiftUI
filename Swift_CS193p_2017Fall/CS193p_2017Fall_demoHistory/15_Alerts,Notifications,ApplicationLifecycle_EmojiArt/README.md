@@ -1,6 +1,7 @@
 # lecture_15 Demo_EmojiArt 总结
 ## Demo Topics: EmojiArt
 - alert弹窗
+- observer
 
 ## M model模块
 - **EmojiArt.swift**
@@ -52,4 +53,4 @@
 
 ## MyTips
 - alert弹窗
-- 同observer代替了原来的不少写法，需要再对照参考答案的详细注释看一看
+- 用observer代替了原来的不少写法，需要再对照参考答案的详细注释看一看

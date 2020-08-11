@@ -24,6 +24,7 @@ cmd+shift+右箭头   选中光标所在行以右
 Xcode->File->Open Recent->Clear Menu，清除右侧的最近打开过的项目的历史记录，删了源文件都没用历史记录还在的，只能这样一键清理所有历史记录 
 
 cmd+E搜索选定的内容，cms+G下一个 
+shift+control选择storyboard里的view图层
 
 ## Mac快捷键
 **command+空格  搜索框**
