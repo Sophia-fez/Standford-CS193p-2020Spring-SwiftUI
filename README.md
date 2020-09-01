@@ -5,9 +5,9 @@
 [斯坦福本课程官网](https://cs193p.sites.stanford.edu/)  
 课程视频：  [官网给出的youtube课程视频](https://youtu.be/jbtqIBpUG7g)
 & [国内搬运带机翻字幕的课程视频](https://www.bilibili.com/video/BV1EV411C77B?p=1)  
-[swift 5.3官方文档](https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html)  
-[swift 5.3官方文档中文版](https://swiftgg.gitbook.io/swift/)  
+[swift 5.3官方文档](https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html)  & [swift 5.3官方文档中文版](https://swiftgg.gitbook.io/swift/) & [swift5腾讯课堂教程笔记](https://github.com/Sophia-fez/Standford-CS193p-2020Spring-SwiftUI/blob/master/Switf语法/腾讯课堂：从入门到精通Swift编程.md)  
 [swift 5.3官方文档中文笔记博客](https://blog.csdn.net/xunciy/category_10183982.html) & [swift5.3 Language Guide中文笔记markdown](https://github.com/Sophia-fez/Standford-CS193p-2020Spring-SwiftUI/blob/master/swift_5.3_Language_Guide.md)  
+
 新增[2017Fall swift课程的笔记文件夹](https://github.com/Sophia-fez/Standford-CS193p-2020Spring-SwiftUI/tree/master/Swift_CS193p_2017Fall)，是2017Fall课程的复习巩固，在各demo的README.md里记录了每个demo的主要修改内容，[大佬的笔记](https://github.com/Sophia-fez/Standford-CS193p-2017Fall-Swift)和[官方课程视频](https://www.bilibili.com/video/BV1rb411C7eN?p=3)作为参考答案
 
 ## 课程目录

@@ -86,7 +86,7 @@ class ConcentrationViewController: VCLLoggingViewController {
                     button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
                 } else {
                     button.setTitle("", for: UIControl.State.normal)
-                    button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : #colorLiteral(red: 0, green: 0.4697437286, blue: 1, alpha: 1)
+                    button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : #colorLiteral(red: 0.07319629937, green: 0.587113142, blue: 0.8577551246, alpha: 1)
                 }
             }
         }
