@@ -36,4 +36,5 @@
 
 ## 最终效果
 主要实现了使用shape和ViewModifier重新绘制卡片背景部分  
-![](./MyDemo_5效果图.png)
+<img src="./MyDemo_5效果图.png">
+

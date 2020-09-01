@@ -43,7 +43,7 @@
     + `private func fetchBackgroundImageData(){}` 也改成了published 的版本
 
 ## 最终效果
-![](./MyDemo_9效果图.png)
+<img src="./MyDemo_9效果图.png">
 
 ## MyTips
 - 几个Published写法怎么回事要再研究一下

@@ -31,7 +31,7 @@
 
 
 ## 最终效果
-![](./MyDemo_8效果图.png)
+<img src="./MyDemo_8效果图.png">
 
 ## MyTips
 - EmojiArtDocumentView.swift需要再研究一下，如何实现双击缩放、两指缩放、单指移动image同时起作用的

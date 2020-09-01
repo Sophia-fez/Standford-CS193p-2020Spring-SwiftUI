@@ -11,7 +11,7 @@
     + Toggle，一个开关
 
 ## 最终效果
-![](./MyDemo_11_Picker&Toggle.png)
-![](./MyDemo_11_Picker_详情页.png)
+<img src="./MyDemo_11_Picker&Toggle.png">
+<img src="./MyDemo_11_Picker_详情页.png">
 
 ## MyTips

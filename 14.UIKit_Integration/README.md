@@ -28,6 +28,7 @@
     + `typealias PickedImageHandler = (UIImage?) -> Void`，用typealias代替functions arguments，如果频繁被使用的话这样可以有效防止出错
 
 ## 最终效果
-![](./MyDemo_14_地图.png)
-![](./MyDemo_14_相册.png)
-![](./MyDemo_14_相机权限.png)
+<img src="./MyDemo_14_地图.png">
+<img src="./MyDemo_14_相册.png">
+<img src="./MyDemo_14_相机权限.png">
+

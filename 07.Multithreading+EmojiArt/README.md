@@ -37,7 +37,7 @@
     - `let contentView = EmojiArtDocumentView(document: EmojiArtDocument())`
 
 ## 最终效果
-![](./MyDemo_7效果图.png)
+<img src="./MyDemo_7效果图.png">
 
 ## MyTips
 这期涉及的东西有点多，没有都搞懂，需要进一步研究

@@ -79,11 +79,11 @@
       `let contentView = EmojiArtDocumentChooser().environmentObject(store)`
 
 ## 最终效果
-![](./MyDemo_10_popover弹窗.png)
-![](./MyDemo_10_sheet弹窗.png)
-![](./MyDemo_10_popover弹窗+document.png)
-![](./MyDemo_10_alert.png)
-![](./MyDemo_10_document.png)
+<img src="./MyDemo_10_popover弹窗.png">
+<img src="./MyDemo_10_sheet弹窗.png">
+<img src="./MyDemo_10_popover弹窗+document.png">
+<img src="./MyDemo_10_alert.png">
+<img src="./MyDemo_10_document.png">
 
 ## MyTips
 - 关于hashable的问题
