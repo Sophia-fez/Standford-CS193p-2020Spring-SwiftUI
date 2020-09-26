@@ -52,7 +52,6 @@ Command+V	在目标位置拷贝文件
 Command+[       回到上一页
 Command+]       前往下一页
 
-
 **safari浏览器：**  
 Command+R	刷新网页  
 Command+D	添加书签  
@@ -60,6 +59,7 @@ Command+T   当前页面添加新标签页面
 Command+N   添加新的safari页面
 Command+Shift+N     添加新的无痕浏览safari页面
 Command+Z   恢复之前关闭的页面
+Command+Control+1 关闭边栏
 
 **隐藏文件问题：**（不知道有没有更好的办法）  
 Mac下初始化仓库后，默认是不显示.git文件的。如果需要展示的话，可以执行下面的命令：（其他隐藏的文件、文件夹也可以这样显示）  

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24D1DDA924FF5BDB00076E01 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24D1DDA824FF5BDB00076E01 /* API.swift */; };
 		24EA1C1924FE366800680466 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24EA1C1824FE366800680466 /* AppDelegate.swift */; };
 		24EA1C1B24FE366800680466 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24EA1C1A24FE366800680466 /* SceneDelegate.swift */; };
 		24EA1C2024FE366800680466 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 24EA1C1E24FE366800680466 /* Main.storyboard */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		24D1DDA824FF5BDB00076E01 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		24EA1C1524FE366800680466 /* QiuShi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QiuShi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24EA1C1824FE366800680466 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		24EA1C1A24FE366800680466 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 				24EA1C3324FE3C6100680466 /* trendViewController.swift */,
 				24EA1C3524FE3C6600680466 /* liveViewController.swift */,
 				24EA1C1E24FE366800680466 /* Main.storyboard */,
+				24D1DDA824FF5BDB00076E01 /* API.swift */,
 				24EA1C2624FE366A00680466 /* Info.plist */,
 				24EA1C2C24FE368600680466 /* Supporting Files */,
 			);
@@ -164,6 +167,7 @@
 				24EA1C1B24FE366800680466 /* SceneDelegate.swift in Sources */,
 				24EA1C3424FE3C6100680466 /* trendViewController.swift in Sources */,
 				24EA1C3224FE3C4C00680466 /* homeViewController.swift in Sources */,
+				24D1DDA924FF5BDB00076E01 /* API.swift in Sources */,
 				24EA1C3A24FE8A2D00680466 /* TabBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
