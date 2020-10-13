@@ -46,6 +46,7 @@ cmmand+shift+delete		倾倒废纸篓
 control+command+1	按名称自动排列  
 control+command+2	按种类自动排列  
 
+command+shift+G	输入路径并跳转到目标
 command+n	新建访达  
 command+C	复制文件  
 Command+V	在目标位置拷贝文件  
