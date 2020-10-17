@@ -1,0 +1,48 @@
+PODS:
+  - ChainableAnimations (3.0.1)
+  - FaveButton (3.2.1)
+  - Just (0.8.0)
+  - Kingfisher (5.15.6):
+    - Kingfisher/Core (= 5.15.6)
+  - Kingfisher/Core (5.15.6)
+  - lottie-ios (3.1.8)
+  - MarqueeLabel (4.0.5)
+  - NVActivityIndicatorView (5.1.1):
+    - NVActivityIndicatorView/Base (= 5.1.1)
+  - NVActivityIndicatorView/Base (5.1.1)
+  - SnapKit (5.0.1)
+
+DEPENDENCIES:
+  - ChainableAnimations
+  - FaveButton
+  - Just
+  - Kingfisher
+  - lottie-ios
+  - MarqueeLabel
+  - NVActivityIndicatorView
+  - SnapKit
+
+SPEC REPOS:
+  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
+    - ChainableAnimations
+    - FaveButton
+    - Just
+    - Kingfisher
+    - lottie-ios
+    - MarqueeLabel
+    - NVActivityIndicatorView
+    - SnapKit
+
+SPEC CHECKSUMS:
+  ChainableAnimations: 12e0a88e72fb554ad4cda38c40474e4d65c972a2
+  FaveButton: 93cfebf6030336fa7653fad2068c3152ed668b39
+  Just: aef5105fb2c7069b65aa6f21aec8f429057f9c19
+  Kingfisher: b3554e7bf6106115b44e8795300bad580ef2fdc7
+  lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
+  MarqueeLabel: 00cc0bcd087111dca575878b3531af980559707d
+  NVActivityIndicatorView: 1f6c5687f1171810aa27a3296814dc2d7dec3667
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+
+PODFILE CHECKSUM: 138bc2d9b45fa1daf03fa17829d1981d566248b9
+
+COCOAPODS: 1.9.3

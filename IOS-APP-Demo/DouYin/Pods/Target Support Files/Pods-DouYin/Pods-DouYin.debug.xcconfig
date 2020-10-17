@@ -1,0 +1,12 @@
+ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/ChainableAnimations" "${PODS_CONFIGURATION_BUILD_DIR}/FaveButton" "${PODS_CONFIGURATION_BUILD_DIR}/Just" "${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher" "${PODS_CONFIGURATION_BUILD_DIR}/MarqueeLabel" "${PODS_CONFIGURATION_BUILD_DIR}/NVActivityIndicatorView" "${PODS_CONFIGURATION_BUILD_DIR}/SnapKit" "${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/ChainableAnimations/ChainableAnimations.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/FaveButton/FaveButton.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Just/Just.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Kingfisher/Kingfisher.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/MarqueeLabel/MarqueeLabel.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SnapKit/SnapKit.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios/Lottie.framework/Headers"
+LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
+OTHER_LDFLAGS = $(inherited) -framework "Accelerate" -framework "CFNetwork" -framework "ChainableAnimations" -framework "CoreGraphics" -framework "FaveButton" -framework "Just" -framework "Kingfisher" -framework "Lottie" -framework "MarqueeLabel" -framework "NVActivityIndicatorView" -framework "QuartzCore" -framework "SnapKit" -framework "UIKit"
+OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
+PODS_BUILD_DIR = ${BUILD_DIR}
+PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PODS_PODFILE_DIR_PATH = ${SRCROOT}/.
+PODS_ROOT = ${SRCROOT}/Pods
+USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES
