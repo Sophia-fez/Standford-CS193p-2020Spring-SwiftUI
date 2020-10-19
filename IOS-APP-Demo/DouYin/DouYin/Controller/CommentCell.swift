@@ -90,6 +90,7 @@ class CommentCell: UITableViewCell {
         let interval = Date().timeIntervalSince1970 - Double(exactly: comment.create_time)!
         createTimeLabel.text = interval.timeAgoDisplay()
         
+        // TODO: 支持显示emoji，对emoji进行解析
         commentTextLabel.attributedText = NSAttributedString(string: comment.text)
     }
     
