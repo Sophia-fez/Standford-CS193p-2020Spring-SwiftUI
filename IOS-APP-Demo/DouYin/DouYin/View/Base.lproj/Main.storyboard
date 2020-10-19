@@ -230,7 +230,7 @@
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
                                             <outlet property="addFollowBtn" destination="ioX-ry-RYj" id="wZX-35-vHq"/>
-                                            <outlet property="addLikeBtn" destination="vw7-vo-OVv" id="UPY-7F-9OB"/>
+                                            <outlet property="addLikeBtn" destination="vw7-vo-OVv" id="a8o-4a-6sw"/>
                                             <outlet property="commentBtn" destination="ehU-pt-UZ5" id="dY3-UN-DtD"/>
                                             <outlet property="coverImageView" destination="1vl-ka-a0M" id="CB4-rJ-xQq"/>
                                             <outlet property="diskView" destination="Y3j-l0-bix" id="d1D-0C-CnJ"/>
@@ -381,22 +381,25 @@
                                                                         </subviews>
                                                                     </stackView>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="nyf-af-Rbr" userLabel="Like Stack View">
-                                                                        <rect key="frame" x="362" y="10" width="37" height="39.5"/>
+                                                                        <rect key="frame" x="359" y="10" width="40" height="39.5"/>
                                                                         <subviews>
                                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OP0-WH-ttx" userLabel="like" customClass="ScaleAnimateButton" customModule="DouYin" customModuleProvider="target">
-                                                                                <rect key="frame" x="6" y="0.0" width="25" height="25"/>
+                                                                                <rect key="frame" x="7.5" y="0.0" width="25" height="25"/>
                                                                                 <state key="normal" image="icon_modern_feed_like_before_Normal"/>
                                                                                 <connections>
                                                                                     <action selector="likeBtnTap:" destination="gUk-L5-KUt" eventType="touchUpInside" id="qhR-DM-6C6"/>
                                                                                 </connections>
                                                                             </button>
                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="点赞数" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eYs-Vn-5Hf">
-                                                                                <rect key="frame" x="0.0" y="25" width="37" height="14.5"/>
+                                                                                <rect key="frame" x="1.5" y="25" width="37" height="14.5"/>
                                                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                 <nil key="highlightedColor"/>
                                                                             </label>
                                                                         </subviews>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="width" constant="40" id="Trd-Z0-4Rh"/>
+                                                                        </constraints>
                                                                     </stackView>
                                                                 </subviews>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

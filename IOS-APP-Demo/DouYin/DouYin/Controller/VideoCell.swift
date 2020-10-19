@@ -15,7 +15,7 @@ class VideoCell: UITableViewCell {
     
     var addFollowAnimator: ChainableAnimator! // 关注按钮的动画
     var diskAnimator: ChainableAnimator! // 转盘的动画
-    var addLikeAnimator: AnimationView! // 关注按钮的动画
+    var addLikeAnimator: AnimationView! // 点赞的动画
     
     // 重复使用cell所以有些动画要清空重制
     override func prepareForReuse() {
@@ -40,19 +40,14 @@ class VideoCell: UITableViewCell {
         // 重置音符散发动画
         diskView.resetViewAnimation()
         
-        // 重置点赞动画
-        if addLikeAnimator != nil {
-            addLikeAnimator.stop()
-            
-            addLikeAnimator.removeFromSuperview()
-            
-            addLikeBtn.setImage(UIImage(named: "icon_home_like_before"), for: .normal)
-        }
+        // TODO: 点赞按钮的状态是否重制，判断条件应该是获取服务器json数据里是否点过赞
+        addLikeBtn.setImage(UIImage(named: "icon_home_like_before"), for: .normal) // 重置点赞icon为白色
+        likeTapped = false // 重置点赞状态
     }
     
     // 关注动画
     @IBAction func addFollowTap(_ sender: UIButton) {
-        print("点击了关注")
+        print("关注")
         
         addFollowAnimator = ChainableAnimator(view: sender) // 将动画关联到关注按钮
         
@@ -66,24 +61,55 @@ class VideoCell: UITableViewCell {
                 .transform(scale: 0)
                 .animate(t: 0.2)
         }
-
     }
     
+    // TODO: 点赞动画
+    // VideoCell的点赞动画和CommentCell的高度重合，可以写成扩展文件然后调用函数
+    // 点赞动画结束后移除动画层与剩下的icon颜色有些违和，调用lottie动画的一般是如何解决这个问题的
+    // 点赞动画结束后才将动画层移除，如何应对点完赞立刻要取消点赞的情况（动画播放时间22帧此问题其实可以忽略不计）
+    
     // 点赞动画
-    @IBAction func addLikeTap(_ sender: UIButton) {
-        print("点了点赞")
+    // 点赞数变化监测
+    var likeCount: Int = 0 {
+        didSet {
+            labelLikeNum.text = likeCount.toWantStr
+        }
+    }
+    
+    // 监测是否点赞
+    var likeTapped: Bool = false {
+        didSet {
+            if likeTapped {
+                print("点赞")
+                likeCount += 1
                 
-        addLikeAnimator = AnimationView(name: "addLike") // 将动画关联到点赞按钮
-        
-        // 动画的范围，frame或者使用自动布局，这里位置不对
-        addLikeAnimator.frame = CGRect(x: -sender.center.x - 8, y: -sender.center.y - 15, width: 106, height: 106)
-        
-        // 添加到父视图上
-        sender.addSubview(addLikeAnimator)
-        
-        sender.setImage(UIImage(named: "icon_home_like_after"), for: .normal)
-        
-        addLikeAnimator.play()
+                addLikeBtn.setImage(UIImage(named: "icon_home_like_after"), for: .normal)
+                
+                addLikeAnimator = AnimationView(name: "addLike") // 将动画关联到点赞按钮
+                
+                // 动画的范围，frame或者使用自动布局，这里位置不对
+                addLikeAnimator.frame = CGRect(x: -addLikeBtn.center.x - 8, y: -addLikeBtn.center.y - 15, width: 106, height: 106)
+                
+                // 添加到父视图上
+                addLikeBtn.addSubview(addLikeAnimator)
+                
+                addLikeAnimator.play(fromProgress: 0, toProgress: 1, loopMode: .playOnce) { (isFinished) in
+                    // 播放完成后的回调闭包
+                    self.addLikeAnimator.stop()
+                    self.addLikeAnimator.removeFromSuperview()
+                }
+            } else {
+                print("取消点赞")
+                likeCount -= 1
+                
+                addLikeBtn.setImage(UIImage(named: "icon_home_like_before"), for: .normal)
+            }
+        }
+    }
+
+    // 点赞
+    @IBAction func addLikeTap(_ sender: UIButton) {
+        likeTapped.toggle()
     }
     
     // 加载数据
@@ -111,7 +137,8 @@ class VideoCell: UITableViewCell {
 //            followBtn.clipsToBounds = true
             
             // 点赞、评论、转发的数量
-            labelLikeNum.text = aweme.statistics!.diggCount!.toWantStr
+            likeCount = aweme.statistics!.diggCount!
+            labelLikeNum.text = likeCount.toWantStr
             labelCommentNum.text = aweme.statistics!.commentCount!.description
             labelShareNum.text = aweme.statistics!.shareCount!.description
             
