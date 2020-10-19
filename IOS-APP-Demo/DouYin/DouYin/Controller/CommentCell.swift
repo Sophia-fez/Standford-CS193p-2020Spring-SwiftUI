@@ -52,7 +52,10 @@ class CommentCell: UITableViewCell {
     
     func setupUI() {
         let avatarUrl = URL(string: comment.user.avatar_thumb.url_list[0])!
+        
         avatarBtn.kf.setImage(with: avatarUrl, for: .normal)
+        avatarBtn.layer.cornerRadius = 15
+        avatarBtn.clipsToBounds = true
         userNameLabel.text = comment.user.nickname
         
         self.likeCount = comment.digg_count

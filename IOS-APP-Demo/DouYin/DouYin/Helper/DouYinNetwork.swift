@@ -6,18 +6,18 @@
 //
 
 import Foundation
-import Just // 网络请求
+import Just
 
 // 服务器数据地址封装
 struct DouYinURL {
     static let baseLocal = "http://127.0.0.1:5500/"
     static let feedFile = "feed.json"
     
-    static let commentLocal = URL(string: baseLocal + "comment/xsy.json")!
+    static let commentLocal = URL(string: baseLocal + "/comment/xsy.json")!
 }
 
 typealias Success = () -> Void
-typealias SuccessWithJson = (Any?) -> Void // 成功获取到json后要做的事
+typealias SuccessWithJson = (Any?) -> Void // 成功获取到json后要解析json
 
 struct DouyinNetwork {
     static let ERROR = "json获取错误："
