@@ -18,6 +18,7 @@
 		24EA1C3624FE3C6600680466 /* liveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24EA1C3524FE3C6600680466 /* liveViewController.swift */; };
 		24EA1C3824FE538200680466 /* tabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24EA1C3724FE538200680466 /* tabBarViewController.swift */; };
 		24EA1C3A24FE8A2D00680466 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24EA1C3924FE8A2D00680466 /* TabBar.swift */; };
+		5E4943CDBB14FB611B48B251 /* Pods_QiuShi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3315232BD1D80EC0AC815AB3 /* Pods_QiuShi.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,9 @@
 		24EA1C3524FE3C6600680466 /* liveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = liveViewController.swift; sourceTree = "<group>"; };
 		24EA1C3724FE538200680466 /* tabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = tabBarViewController.swift; path = QiuShi/tabBarViewController.swift; sourceTree = SOURCE_ROOT; };
 		24EA1C3924FE8A2D00680466 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
+		3315232BD1D80EC0AC815AB3 /* Pods_QiuShi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QiuShi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F1D5469CEAAA18637827E86 /* Pods-QiuShi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QiuShi.debug.xcconfig"; path = "Target Support Files/Pods-QiuShi/Pods-QiuShi.debug.xcconfig"; sourceTree = "<group>"; };
+		F49446E77527267E81C4D359 /* Pods-QiuShi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QiuShi.release.xcconfig"; path = "Target Support Files/Pods-QiuShi/Pods-QiuShi.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E4943CDBB14FB611B48B251 /* Pods_QiuShi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +57,8 @@
 			children = (
 				24EA1C1724FE366800680466 /* QiuShi */,
 				24EA1C1624FE366800680466 /* Products */,
+				2BF2B3AB4655407DE0490F4C /* Pods */,
+				4C8D2309D642CC6EF2F390E8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -90,6 +97,24 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		2BF2B3AB4655407DE0490F4C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7F1D5469CEAAA18637827E86 /* Pods-QiuShi.debug.xcconfig */,
+				F49446E77527267E81C4D359 /* Pods-QiuShi.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		4C8D2309D642CC6EF2F390E8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3315232BD1D80EC0AC815AB3 /* Pods_QiuShi.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -97,9 +122,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 24EA1C2924FE366A00680466 /* Build configuration list for PBXNativeTarget "QiuShi" */;
 			buildPhases = (
+				F5B55EFA4D69DD198E5A2E3F /* [CP] Check Pods Manifest.lock */,
 				24EA1C1124FE366800680466 /* Sources */,
 				24EA1C1224FE366800680466 /* Frameworks */,
 				24EA1C1324FE366800680466 /* Resources */,
+				AD7EF7369119A923C622800D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -155,6 +182,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AD7EF7369119A923C622800D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-QiuShi/Pods-QiuShi-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-QiuShi/Pods-QiuShi-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-QiuShi/Pods-QiuShi-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F5B55EFA4D69DD198E5A2E3F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-QiuShi-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		24EA1C1124FE366800680466 /* Sources */ = {
@@ -310,6 +379,7 @@
 		};
 		24EA1C2A24FE366A00680466 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7F1D5469CEAAA18637827E86 /* Pods-QiuShi.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -328,6 +398,7 @@
 		};
 		24EA1C2B24FE366A00680466 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F49446E77527267E81C4D359 /* Pods-QiuShi.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

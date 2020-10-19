@@ -6,5 +6,5 @@ target 'QiuShi' do
 	pod 'Kingfisher'
 	pod 'MJRefresh'
 	pod 'KakaJSON'
-	pod 'KingfisherWebP'
+	pod 'Kingfisher'
 end
