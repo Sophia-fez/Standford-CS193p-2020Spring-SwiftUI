@@ -39,6 +39,15 @@ class VideoCell: UITableViewCell {
         
         // 重置音符散发动画
         diskView.resetViewAnimation()
+        
+        // 重置点赞动画
+        if addLikeAnimator != nil {
+            addLikeAnimator.stop()
+            
+            addLikeAnimator.removeFromSuperview()
+            
+            addLikeBtn.setImage(UIImage(named: "icon_home_like_before"), for: .normal)
+        }
     }
     
     // 关注动画
@@ -60,20 +69,22 @@ class VideoCell: UITableViewCell {
 
     }
     
+    // 点赞动画
     @IBAction func addLikeTap(_ sender: UIButton) {
         print("点了点赞")
-        
+                
         addLikeAnimator = AnimationView(name: "addLike") // 将动画关联到点赞按钮
         
-        // 动画的范围，frame或者使用自动布局
-        addLikeAnimator.frame = CGRect(x: bounds.midX, y: bounds.midY, width: 100, height: 100)
-
+        // 动画的范围，frame或者使用自动布局，这里位置不对
+        addLikeAnimator.frame = CGRect(x: -sender.center.x - 8, y: -sender.center.y - 15, width: 106, height: 106)
+        
         // 添加到父视图上
         sender.addSubview(addLikeAnimator)
         
+        sender.setImage(UIImage(named: "icon_home_like_after"), for: .normal)
+        
         addLikeAnimator.play()
     }
-    
     
     // 加载数据
     var aweme : AwemeList! {
@@ -130,7 +141,7 @@ class VideoCell: UITableViewCell {
     @IBOutlet weak var followBtn: UIButton!
     @IBOutlet weak var addFollowBtn: UIButton!
     
-    @IBOutlet weak var likeBtn: UIButton!
+    @IBOutlet weak var addLikeBtn: UIButton!
     @IBOutlet weak var labelLikeNum: UILabel!
     
     @IBOutlet weak var commentBtn: UIButton!

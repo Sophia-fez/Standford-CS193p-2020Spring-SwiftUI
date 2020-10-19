@@ -1,6 +1,6 @@
 use_frameworks!
 
-target 'Qiushibaike' do
+target 'QiuShi' do
 	pod 'Alamofire'
 	pod 'SwiftyJSON'
 	pod 'Kingfisher'

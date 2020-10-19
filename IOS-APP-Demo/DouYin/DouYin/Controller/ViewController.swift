@@ -47,6 +47,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     // 拖动加载，滑动显示下一页
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         videoJsonIndex -= 1
+        if videoJsonIndex == 0 {
+            videoJsonIndex = 12;
+        }
         getList()
         
         // 获取当前页码，可以在本组数据滑完前提前加载后一组数据（但还未实现该功能）

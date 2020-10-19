@@ -6,8 +6,14 @@
 //
 
 import UIKit
+import Lottie
 
 var layers = [CAShapeLayer]()
+
+// 让属性改动可以在storyboard上看到
+@IBDesignable open class ClippedView: UIView {
+    // 只继承不改动
+}
 
 extension UIView {
     // @IBInspectable 在storyboard里可见，并在里面设置
@@ -40,6 +46,48 @@ extension UIView {
             layer.borderColor = newValue.cgColor
         }
     }
+    
+    // 阴影色
+    @IBInspectable public var shadowColor: UIColor {
+        get {
+            UIColor(cgColor: layer.shadowColor!)
+        }
+        set {
+            layer.shadowColor = newValue.cgColor
+        }
+    }
+    
+    // 阴影的位移
+    @IBInspectable public var shadowOffset: CGSize {
+        get {
+            layer.shadowOffset
+        }
+        set {
+            layer.shadowOffset = newValue
+        }
+    }
+    
+    // 阴影的圆角
+    @IBInspectable public var shadowRadius: CGFloat {
+        get {
+            layer.shadowRadius
+        }
+        set {
+            layer.shadowRadius = newValue
+        }
+    }
+    
+    // 阴影的透明度
+    @IBInspectable public var shadowOpacity: Float {
+        get {
+            layer.shadowOpacity
+        }
+        set {
+            layer.shadowOpacity = newValue
+            layer.masksToBounds = false // 让透明度起效
+        }
+    }
+    
     
     // 音符散发动画
     func raiseAnimate(imageName: String, delay: TimeInterval) {
