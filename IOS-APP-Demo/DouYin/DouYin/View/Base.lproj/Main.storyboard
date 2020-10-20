@@ -545,13 +545,13 @@
                                                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3yM-T4-gVy">
                                                     <rect key="frame" x="0.0" y="30" width="414" height="80"/>
                                                     <subviews>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="do7-mr-sHC">
-                                                            <rect key="frame" x="7" y="8" width="400" height="63.5"/>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="do7-mr-sHC">
+                                                            <rect key="frame" x="8" y="8" width="400" height="63.5"/>
                                                             <subviews>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="hDn-4d-Bng">
                                                                     <rect key="frame" x="0.0" y="0.0" width="48" height="63.5"/>
                                                                     <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rgt-jd-bAG">
+                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rgt-jd-bAG" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
                                                                             <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
                                                                             <state key="normal" image="icon_profile_share_weibo"/>
                                                                         </button>
@@ -629,6 +629,8 @@
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="80" id="6Om-pf-Qrj"/>
+                                                        <constraint firstItem="do7-mr-sHC" firstAttribute="leading" secondItem="Wfv-lf-Cum" secondAttribute="leading" constant="8" id="FmO-Eu-Sch"/>
+                                                        <constraint firstItem="do7-mr-sHC" firstAttribute="top" secondItem="Wfv-lf-Cum" secondAttribute="top" constant="8" id="ihW-KM-Hl3"/>
                                                     </constraints>
                                                     <viewLayoutGuide key="contentLayoutGuide" id="gJT-ya-TKe"/>
                                                     <viewLayoutGuide key="frameLayoutGuide" id="Wfv-lf-Cum"/>
@@ -636,7 +638,7 @@
                                                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lEH-Jm-pIs">
                                                     <rect key="frame" x="0.0" y="109" width="414" height="80"/>
                                                     <subviews>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="juN-pV-7HD">
+                                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="juN-pV-7HD">
                                                             <rect key="frame" x="8" y="8" width="405" height="64.5"/>
                                                             <subviews>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="ejq-Ni-OIN">
@@ -720,12 +722,15 @@
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="80" id="CC2-nN-PSV"/>
+                                                        <constraint firstItem="juN-pV-7HD" firstAttribute="top" secondItem="xz3-oh-dfy" secondAttribute="top" constant="8" id="UqW-hg-AEW"/>
+                                                        <constraint firstItem="juN-pV-7HD" firstAttribute="leading" secondItem="xz3-oh-dfy" secondAttribute="leading" constant="8" id="oVH-Kr-81G"/>
                                                     </constraints>
                                                     <viewLayoutGuide key="contentLayoutGuide" id="HLK-Me-etD"/>
                                                     <viewLayoutGuide key="frameLayoutGuide" id="xz3-oh-dfy"/>
                                                 </scrollView>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="lEH-Jm-pIs" firstAttribute="top" secondItem="iir-sB-2ga" secondAttribute="bottom" constant="90" id="24t-FU-KRG"/>
                                                 <constraint firstAttribute="trailing" secondItem="lEH-Jm-pIs" secondAttribute="trailing" id="C6M-nY-RPe"/>
                                                 <constraint firstItem="iir-sB-2ga" firstAttribute="centerX" secondItem="cwB-E0-sLD" secondAttribute="centerX" id="WMI-gs-fR7"/>
                                                 <constraint firstItem="3yM-T4-gVy" firstAttribute="top" secondItem="iir-sB-2ga" secondAttribute="bottom" constant="5" id="dAa-WT-Mrx"/>
@@ -826,6 +831,9 @@
     <designables>
         <designable name="YRK-ej-4TD">
             <size key="intrinsicContentSize" width="82.5" height="18"/>
+        </designable>
+        <designable name="rgt-jd-bAG">
+            <size key="intrinsicContentSize" width="48" height="53"/>
         </designable>
     </designables>
     <resources>

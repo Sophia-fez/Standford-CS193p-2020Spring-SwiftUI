@@ -10,41 +10,41 @@ import MarqueeLabel
 import Kingfisher
 import ChainableAnimations
 import Lottie
+import AVFoundation
 
-class VideoCell: UITableViewCell {
+// 通过ASAutoPlayVideoLayerContainer协议，计算cell可见高度
+class VideoCell: UITableViewCell, ASAutoPlayVideoLayerContainer {
+
+    @IBOutlet weak var coverImageView: UIImageView!
+    @IBOutlet weak var pauseImageView: UIImageView!
+    
+    @IBOutlet weak var labelAuthor: UILabel!
+    @IBOutlet weak var labelDesc: UILabel!
+    @IBOutlet weak var labelMusic: MarqueeLabel!
+    
+    
+    @IBOutlet weak var followBtn: UIButton!
+    @IBOutlet weak var addFollowBtn: UIButton!
+    
+    @IBOutlet weak var addLikeBtn: UIButton!
+    @IBOutlet weak var labelLikeNum: UILabel!
+    
+    @IBOutlet weak var commentBtn: UIButton!
+    @IBOutlet weak var labelCommentNum: UILabel!
+    
+    @IBOutlet weak var shareBtn: UIButton!
+    @IBOutlet weak var labelShareNum: UILabel!
+    
+    @IBOutlet weak var diskView: UIView!
+    @IBOutlet weak var subDiskView: UIView!
+    @IBOutlet weak var rotateDiskView: UIImageView!
+    @IBOutlet weak var musicCoverImageView: UIImageView!
     
     var addFollowAnimator: ChainableAnimator! // 关注按钮的动画
     var diskAnimator: ChainableAnimator! // 转盘的动画
     var addLikeAnimator: AnimationView! // 点赞的动画
-    
-    // 重复使用cell所以有些动画要清空重制
-    override func prepareForReuse() {
-        // 重制关注按钮的所有动画
-        if addFollowAnimator != nil {
-            addFollowAnimator.stop()
-            
-            addFollowBtn.transform = .identity
-            addFollowBtn.layer.removeAllAnimations()
-            
-            addFollowBtn.setImage(UIImage(named: "icon_personal_add_little"), for: .normal)
-        }
+    var tapGesture : UITapGestureRecognizer!
         
-        // 重制唱盘转动动画
-        if diskAnimator != nil {
-            diskAnimator.stop()
-            
-            subDiskView.transform = .identity
-            subDiskView.layer.removeAllAnimations()
-        }
-        
-        // 重置音符散发动画
-        diskView.resetViewAnimation()
-        
-        // TODO: 点赞按钮的状态是否重制，判断条件应该是获取服务器json数据里是否点过赞
-        addLikeBtn.setImage(UIImage(named: "icon_home_like_before"), for: .normal) // 重置点赞icon为白色
-        likeTapped = false // 重置点赞状态
-    }
-    
     // 关注动画
     @IBAction func addFollowTap(_ sender: UIButton) {
         print("关注")
@@ -119,17 +119,12 @@ class VideoCell: UITableViewCell {
             labelAuthor.text = aweme.author!.nickname
             labelDesc.text = aweme.desc!
             
-            // 视频封面图
-            let cover = aweme.video!.cover!.urlList![0]
-            let coverUrl = URL(string: cover)
-            coverImageView.kf.setImage(with: coverUrl)
-            
             // 标题、作者，因为类型就是MarqueeLabel所以会自己跑马灯
             labelMusic.text = aweme.music!.title! + " - " + aweme.music!.author!
+            labelMusic.restartLabel()
             
             // 作者头像、关注
-            let authorAvatar = aweme.author!.avatarThumb!.urlList![0]
-            let avatarUrl = URL(string: authorAvatar)
+            let avatarUrl = URL(string: aweme.author!.avatarThumb!.urlList![0])
             followBtn.kf.setImage(with: avatarUrl, for: .normal)
             
 //            // 圆角化，不用一个个写，用extension统一写
@@ -143,8 +138,8 @@ class VideoCell: UITableViewCell {
             labelShareNum.text = aweme.statistics!.shareCount!.description
             
             // 唱盘音乐封面
-            let musicCover = aweme.music!.coverThumb!.urlList![0]
-            musicCoverImageView.kf.setImage(with: URL(string: musicCover)!)
+            let musicCover = URL(string: aweme.music!.coverThumb!.urlList![0])
+            musicCoverImageView.kf.setImage(with: musicCover)
             
             // 唱盘转动动画
             diskAnimator = ChainableAnimator(view: subDiskView) // 将动画关联到唱盘
@@ -154,44 +149,126 @@ class VideoCell: UITableViewCell {
             diskView.raiseAnimate(imageName: "icon_home_musicnote1", delay: 0) // raiseAnimate()写在extension里了，所有的UIView都可以用
             diskView.raiseAnimate(imageName: "icon_home_musicnote2", delay: 1) // 延迟1s散发第二个音符
             diskView.raiseAnimate(imageName: "icon_home_musicnote1", delay: 2) // 延迟2s散发第三个音符
+        
+            // 视频封面图
+            let coverUrl = URL(string: aweme.video!.cover!.urlList![0])
+            coverImageView.kf.setImage(with: coverUrl)
+            
+            //设置视频播放地址
+            videoURL = aweme.video!.playAddr!.urlList![2]
         }
     }
+    
+    var videoLayer = AVPlayerLayer()
+    var videoURL: String? {
+        didSet {
+            if let videoURL = videoURL {
+                ASVideoPlayerController.sharedVideoPlayer.setupVideoFor(url: videoURL)
+            }
+            videoLayer.isHidden = videoURL == nil
+        }
+    }
+    
+    // 暂停/播放功能切换
+    @objc func pausePlayer() {
+        showPauseViewAnim(rate: videoLayer.player!.rate)
+        ASVideoPlayerController.sharedVideoPlayer.pausePlayer()
+    }
+    
+    func setupUI() {
+        coverImageView.layer.borderColor = UIColor.gray.withAlphaComponent(0.3).cgColor
+        
+        videoLayer.backgroundColor = UIColor.clear.cgColor
+        videoLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        coverImageView.layer.addSublayer(videoLayer)
+        
+        pauseImageView.isHidden = true
 
-    @IBOutlet weak var coverImageView: UIImageView!
-    @IBOutlet weak var pauseImageView: UIImageView!
-    
-    @IBOutlet weak var labelAuthor: UILabel!
-    @IBOutlet weak var labelDesc: UILabel!
-    @IBOutlet weak var labelMusic: MarqueeLabel!
-    
-    
-    @IBOutlet weak var followBtn: UIButton!
-    @IBOutlet weak var addFollowBtn: UIButton!
-    
-    @IBOutlet weak var addLikeBtn: UIButton!
-    @IBOutlet weak var labelLikeNum: UILabel!
-    
-    @IBOutlet weak var commentBtn: UIButton!
-    @IBOutlet weak var labelCommentNum: UILabel!
-    
-    @IBOutlet weak var shareBtn: UIButton!
-    @IBOutlet weak var labelShareNum: UILabel!
-    
-    @IBOutlet weak var diskView: UIView!
-    @IBOutlet weak var subDiskView: UIView!
-    @IBOutlet weak var rotateDiskView: UIImageView!
-    @IBOutlet weak var musicCoverImageView: UIImageView!
-    
+        //添加全屏暂停 点击
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(pausePlayer))
+        self.contentView.addGestureRecognizer(tapGesture)
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
+        setupUI()
+    }
+    
+    // 重复使用cell所以有些动画要清空重制
+    override func prepareForReuse() {
+        coverImageView.image = nil
+        pauseImageView.isHidden = true
+        
+        // 重制关注按钮的所有动画
+        if addFollowAnimator != nil {
+            addFollowAnimator.stop()
+            
+            addFollowBtn.transform = .identity
+            addFollowBtn.layer.removeAllAnimations()
+            
+            addFollowBtn.setImage(UIImage(named: "icon_personal_add_little"), for: .normal)
+        }
+        
+        // 重制唱盘转动动画
+        if diskAnimator != nil {
+            diskAnimator.stop()
+            
+            subDiskView.transform = .identity
+            subDiskView.layer.removeAllAnimations()
+        }
+        
+        // 重置音符散发动画
+        diskView.resetViewAnimation()
+        
+        // TODO: 点赞按钮的状态是否重制，判断条件应该是获取服务器json数据里是否点过赞
+        addLikeBtn.setImage(UIImage(named: "icon_home_like_before"), for: .normal) // 重置点赞icon为白色
+        likeTapped = false // 重置点赞状态
+        
+        super.prepareForReuse()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let width = UIScreen.main.bounds.size.width
+        let height = UIScreen.main.bounds.size.height
+        videoLayer.frame = CGRect(x: 0, y: 0, width: width, height: height)
+        //        print("视频层frame：",videoLayer.frame)
+    }
+    
+    // 计算可见的视频层高度，以便播放在可视范围内的cell
+    /// - REturns: 可见的视频层高度
+    func visibleVideoHeight() -> CGFloat {
+        let videoFrameInParentSuperView = superview?.superview?.convert(coverImageView.frame, from: coverImageView)
+
+        guard let videoFrame = videoFrameInParentSuperView, let superViewFrame = superview?.frame else {
+            return 0
+        }
+
+        let visibleVideoFrame = videoFrame.intersection(superViewFrame)
+        print("视频可见高度： ", visibleVideoFrame.size.height)
+        return visibleVideoFrame.size.height
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    // 视频暂停/播放奇幻按钮的动画
+    /// - Parameter rate: 视频播放速率
+    func showPauseViewAnim(rate: Float) {
+        if rate == 0 {
+            UIView.animate(withDuration: 0.25) {
+                self.pauseImageView.alpha = 0
+            } completion: { (_) in
+                self.pauseImageView.isHidden = true
+            }
+        } else {
+            pauseImageView.isHidden = false
+            pauseImageView.transform = CGAffineTransform.init(scaleX: 1.8, y: 1.8)
+            pauseImageView.alpha = 1.0
 
-        // Configure the view for the selected state
+            UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveEaseIn) {
+                self.pauseImageView.transform = .init(scaleX: 1.0, y: 1.0)
+            }
+        }
     }
 
 }
