@@ -503,6 +503,7 @@
                             <outletCollection property="gestureRecognizers" destination="Qc9-5x-JQJ" appends="YES" id="usp-Pj-xeC"/>
                         </connections>
                     </view>
+                    <navigationItem key="navigationItem" id="rbn-Z6-xLU"/>
                     <connections>
                         <outlet property="commentAreaView" destination="JOS-G9-0pi" id="SHF-mj-jy4"/>
                         <outlet property="commentTableView" destination="12X-sk-lxI" id="P1l-ci-SRS"/>
@@ -546,83 +547,33 @@
                                                     <rect key="frame" x="0.0" y="30" width="414" height="80"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="do7-mr-sHC">
-                                                            <rect key="frame" x="8" y="8" width="400" height="63.5"/>
+                                                            <rect key="frame" x="8" y="8" width="400" height="68"/>
                                                             <subviews>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="hDn-4d-Bng">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="48" height="63.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rgt-jd-bAG" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
-                                                                            <state key="normal" image="icon_profile_share_weibo"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="微博" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fYc-QN-VxJ">
-                                                                            <rect key="frame" x="11.5" y="49" width="25" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="Yv2-FO-u2h">
-                                                                    <rect key="frame" x="88" y="0.0" width="48" height="63.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kma-7K-JYE">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
-                                                                            <state key="normal" image="icon_profile_share_wechat"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="微信" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kck-Ta-3c0">
-                                                                            <rect key="frame" x="11.5" y="49" width="25" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="6w6-ZU-S6H">
-                                                                    <rect key="frame" x="176" y="0.0" width="48" height="63.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Oy-m7-392">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
-                                                                            <state key="normal" image="icon_profile_share_wxTimeline"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="朋友圈" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4f3-io-xXk">
-                                                                            <rect key="frame" x="5.5" y="49" width="37" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="hka-46-Vo7">
-                                                                    <rect key="frame" x="264" y="0.0" width="48" height="63.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uOh-0g-tJk">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
-                                                                            <state key="normal" image="icon_profile_share_qq"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="QQ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="86g-Ij-3st">
-                                                                            <rect key="frame" x="14.5" y="49" width="19" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="SxO-Ox-KB7">
-                                                                    <rect key="frame" x="352" y="0.0" width="48" height="63.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rR5-TR-1Jg">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
-                                                                            <state key="normal" image="icon_profile_share_qqZone"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="QQ空间" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Xo-lO-ZlX">
-                                                                            <rect key="frame" x="2.5" y="49" width="43.5" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rgt-jd-bAG" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="48" height="68"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="微博" image="icon_profile_share_weibo"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kma-7K-JYE" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="88" y="0.0" width="48" height="68"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="微信" image="icon_profile_share_wechat"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Oy-m7-392" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="176" y="0.0" width="48" height="68"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="朋友圈" image="icon_profile_share_wxTimeline"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uOh-0g-tJk" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="264" y="0.0" width="48" height="68"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="QQ" image="icon_profile_share_qq"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rR5-TR-1Jg" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="352" y="0.0" width="48" height="68"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="QQ空间" image="icon_profile_share_qqZone"/>
+                                                                </button>
                                                             </subviews>
                                                         </stackView>
                                                     </subviews>
@@ -639,83 +590,33 @@
                                                     <rect key="frame" x="0.0" y="109" width="414" height="80"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="juN-pV-7HD">
-                                                            <rect key="frame" x="8" y="8" width="405" height="64.5"/>
+                                                            <rect key="frame" x="8" y="8" width="405" height="69"/>
                                                             <subviews>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="ejq-Ni-OIN">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="49" height="64.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KyY-Td-ol3">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="49" height="49"/>
-                                                                            <state key="normal" image="icon_home_allshare_report"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="举报" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dES-mk-DKb">
-                                                                            <rect key="frame" x="12" y="50" width="25" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="cRH-Tu-USr">
-                                                                    <rect key="frame" x="89" y="0.0" width="49.5" height="64.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2OQ-B2-mig">
-                                                                            <rect key="frame" x="0.5" y="0.0" width="49" height="49"/>
-                                                                            <state key="normal" image="icon_home_allshare_download"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="保存本地" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q60-tz-KMc">
-                                                                            <rect key="frame" x="0.0" y="50" width="49.5" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="T8W-b1-lLh">
-                                                                    <rect key="frame" x="178.5" y="0.0" width="48" height="64.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vFi-M3-4ol">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="48" height="49"/>
-                                                                            <state key="normal" image="iconHomeAllshareCollection1_Normal"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="收藏" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tkL-ER-H5W">
-                                                                            <rect key="frame" x="11.5" y="50" width="25" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="D7j-IP-vVo">
-                                                                    <rect key="frame" x="266.5" y="0.0" width="49.5" height="64.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N7F-GY-a7b">
-                                                                            <rect key="frame" x="0.5" y="0.0" width="49" height="49"/>
-                                                                            <state key="normal" image="icon_home_allshare_copylink"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="复制链接" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VHc-L4-XyJ">
-                                                                            <rect key="frame" x="0.0" y="50" width="49.5" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="CZo-i2-AZw">
-                                                                    <rect key="frame" x="356" y="0.0" width="49" height="64.5"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0x-d9-FjU">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="49" height="49"/>
-                                                                            <state key="normal" image="icon_home_allshare_delete"/>
-                                                                        </button>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="删除" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nbs-X8-Zgf">
-                                                                            <rect key="frame" x="12" y="50" width="25" height="14.5"/>
-                                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                            <nil key="highlightedColor"/>
-                                                                        </label>
-                                                                    </subviews>
-                                                                </stackView>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KyY-Td-ol3" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="49" height="69"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="举报" image="icon_home_allshare_report"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2OQ-B2-mig" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="89" y="0.0" width="49" height="69"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="保存" image="icon_home_allshare_download"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vFi-M3-4ol" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="178" y="0.0" width="48" height="69"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="收藏" image="iconHomeAllshareCollection1_Normal"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N7F-GY-a7b" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="266" y="0.0" width="50" height="69"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="复制链接" image="icon_home_allshare_copylink"/>
+                                                                </button>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0x-d9-FjU" customClass="VerticalButton" customModule="DouYin" customModuleProvider="target">
+                                                                    <rect key="frame" x="356" y="0.0" width="49" height="69"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <state key="normal" title="删除" image="icon_home_allshare_delete"/>
+                                                                </button>
                                                             </subviews>
                                                         </stackView>
                                                     </subviews>
@@ -829,11 +730,38 @@
         </scene>
     </scenes>
     <designables>
+        <designable name="2OQ-B2-mig">
+            <size key="intrinsicContentSize" width="49" height="69"/>
+        </designable>
+        <designable name="4Oy-m7-392">
+            <size key="intrinsicContentSize" width="48" height="68"/>
+        </designable>
+        <designable name="A0x-d9-FjU">
+            <size key="intrinsicContentSize" width="49" height="69"/>
+        </designable>
+        <designable name="KyY-Td-ol3">
+            <size key="intrinsicContentSize" width="49" height="69"/>
+        </designable>
+        <designable name="N7F-GY-a7b">
+            <size key="intrinsicContentSize" width="50" height="69"/>
+        </designable>
         <designable name="YRK-ej-4TD">
             <size key="intrinsicContentSize" width="82.5" height="18"/>
         </designable>
+        <designable name="kma-7K-JYE">
+            <size key="intrinsicContentSize" width="48" height="68"/>
+        </designable>
+        <designable name="rR5-TR-1Jg">
+            <size key="intrinsicContentSize" width="48" height="68"/>
+        </designable>
         <designable name="rgt-jd-bAG">
-            <size key="intrinsicContentSize" width="48" height="53"/>
+            <size key="intrinsicContentSize" width="48" height="68"/>
+        </designable>
+        <designable name="uOh-0g-tJk">
+            <size key="intrinsicContentSize" width="48" height="68"/>
+        </designable>
+        <designable name="vFi-M3-4ol">
+            <size key="intrinsicContentSize" width="48" height="68"/>
         </designable>
     </designables>
     <resources>
