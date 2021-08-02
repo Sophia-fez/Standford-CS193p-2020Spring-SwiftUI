@@ -12,7 +12,7 @@ class EmojiArtDocument: ObservableObject{
 		}
 		didSet{
 			//print("json = \(emojiArt.json?.utf8 ?? "nil")")
-			UderDefaults.standard.set(emojiArt.json, forKey: EmojiArtDocument.untitled)
+			UserDefaults.standard.set(emojiArt.json, forKey: EmojiArtDocument.untitled)
 		}
 	}
 
@@ -20,7 +20,7 @@ class EmojiArtDocument: ObservableObject{
 
 	//如果之前有存就显示之前的，没有的话就创建一个新的空白EmojiArt
 	init(){
-		emojiArt = emojiArt(json: UserDefault.standard.data(forKey: EmojiArtDocument.untitled)) ?? EmojiArt()
+		emojiArt = emojiArt(json: UserDefaults.standard.data(forKey: EmojiArtDocument.untitled)) ?? EmojiArt()
 		fetchBackgroundImageData() 
 	}
 
